@@ -1,0 +1,1 @@
+The AMD University Program (AUP) Teaching Solutions initiative empowers educators with high-quality curriculum resources designed to support modern computing and AI education. Developed in collaboration with academic partners, each module blends AMD technologies with foundational theory and effective pedagogy to help instructors accelerate course development.
