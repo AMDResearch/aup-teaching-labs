@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AUP Teaching Courses</title>
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --card: #ffffff;
+      --text: #13233a;
+      --muted: #4e5f79;
+      --accent: #0f62fe;
+      --border: #dde3ec;
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans", sans-serif;
+      background: radial-gradient(circle at 20% 10%, #eef4ff, #f7f8fb 40%);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 980px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    h1 {
+      margin: 0 0 8px;
+    }
+    p {
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 6px 20px rgba(18, 37, 65, 0.06);
+    }
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+    }
+    .card a {
+      text-decoration: none;
+      color: #fff;
+      background: var(--accent);
+      display: inline-block;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>AUP Teaching Courses</h1>
+    <p>Course portal powered by GitHub Pages and GitHub Actions.</p>
+    <div class="grid">
+      <article class="card">
+        <h2>CV</h2>
+        <a href="https://github.com/AMDResearch/aup-learning-cloud/tree/main/projects/cv" target="_blank" rel="noreferrer">Open Course</a>
+      </article>
+      <article class="card">
+        <h2>DL</h2>
+        <a href="https://github.com/AMDResearch/aup-learning-cloud/tree/main/projects/dl" target="_blank" rel="noreferrer">Open Course</a>
+      </article>
+      <article class="card">
+        <h2>LLM</h2>
+        <a href="https://github.com/AMDResearch/aup-learning-cloud/tree/main/projects/llm" target="_blank" rel="noreferrer">Open Course</a>
+      </article>
+      <article class="card">
+        <h2>PhySim</h2>
+        <a href="https://github.com/AMDResearch/aup-learning-cloud/tree/main/projects/physim" target="_blank" rel="noreferrer">Open Course</a>
+      </article>
+    </div>
+  </div>
+</body>
+</html>
