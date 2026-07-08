@@ -47,16 +47,6 @@ These notebooks are designed to run on [AUP Learning Cloud](https://github.com/A
 
 Full platform documentation: [https://amdresearch.github.io/aup-learning-cloud/](https://amdresearch.github.io/aup-learning-cloud/)
 
-## GitHub Pages
-
-The site is published at [https://amdresearch.github.io/aup-teaching-labs/](https://amdresearch.github.io/aup-teaching-labs/).
-
-If the site shows a 404, enable GitHub Pages on the repository:
-
-1. Open [Repository Settings → Pages](https://github.com/AMDResearch/aup-teaching-labs/settings/pages)
-2. Under **Build and deployment**, set **Source** to **Deploy from a branch**
-3. Choose branch **gh-pages** and folder **/ (root)**
-4. Save, then re-run the **Deploy to gh-pages branch** workflow from the Actions tab if needed
 
 ## Repository Structure
 
