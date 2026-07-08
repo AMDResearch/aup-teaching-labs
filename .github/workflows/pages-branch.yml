@@ -1,0 +1,41 @@
+# Fallback deploy: push static site to gh-pages branch.
+# Use this if GitHub Actions-based Pages is not yet enabled on the repo.
+# Settings → Pages → Build and deployment → Deploy from branch → gh-pages / (root)
+name: Deploy to gh-pages branch
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "pages-branch"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build site
+        run: |
+          mkdir -p _site/projects/{CV,DL,LLM,PhySim}
+          cp index.html .nojekyll _site/
+          cp -r assets _site/
+          cp projects/CV/index.html _site/projects/CV/
+          cp projects/DL/index.html _site/projects/DL/
+          cp projects/LLM/index.html _site/projects/LLM/
+          cp projects/PhySim/index.html _site/projects/PhySim/
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          publish_branch: gh-pages
+          force_orphan: true
