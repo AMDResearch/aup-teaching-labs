@@ -6,8 +6,6 @@ The AMD University Program (AUP) Teaching Solutions initiative empowers educator
 
 **Browse the labs:** [https://amdresearch.github.io/aup-teaching-labs/](https://amdresearch.github.io/aup-teaching-labs/)
 
-**Repository:** [https://github.com/AMDResearch/aup-teaching-labs](https://github.com/AMDResearch/aup-teaching-labs)
-
 ## Overview
 
 AUP Teaching Labs provides four progressive teaching labs that cover the major areas of modern AI and robotics. Each lab is a series of Jupyter notebooks — from classical machine learning and computer vision to large language models and physics simulation — with no prior GPU setup required when running on AUP Learning Cloud.
