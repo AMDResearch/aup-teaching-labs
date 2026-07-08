@@ -25,10 +25,20 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Build site
+        run: |
+          mkdir -p _site/projects/{CV,DL,LLM,PhySim}
+          cp index.html .nojekyll _site/
+          cp -r assets _site/
+          cp projects/CV/index.html _site/projects/CV/
+          cp projects/DL/index.html _site/projects/DL/
+          cp projects/LLM/index.html _site/projects/LLM/
+          cp projects/PhySim/index.html _site/projects/PhySim/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
   deploy:
     environment:
@@ -39,4 +49,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
