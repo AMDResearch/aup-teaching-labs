@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Physics Simulation — AUP Teaching Labs</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="Main">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../">Overview</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../CV/">Computer Vision</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../DL/">Deep Learning</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../LLM/">Large Language Model from Scratch</a></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="./">Physics Simulation</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="physics-simulation">
+                <h1>Physics Simulation</h1>
+                <p>Get started with Genesis, a high-performance physics engine with native AMD GPU support. Load robots into simulated scenes, apply PD controllers, perform pick-and-place with Inverse Kinematics, and scale to hundreds of parallel environments for reinforcement learning.</p>
+
+                <div class="lab-gallery">
+                  <img src="../../assets/images/PhySim_03_Scene.png" alt="Genesis simulation scene" />
+                  <img src="../../assets/images/PhySim_04_Three_img.png" alt="Robot control in simulation" />
+                  <img src="../../assets/images/PhySim_05_IK_motion.png" alt="Inverse kinematics motion planning" />
+                  <img src="../../assets/images/PhySim_06_parallel.png" alt="Parallel simulation environments" />
+                </div>
+
+                <h2>Goals</h2>
+                <ul>
+                  <li>Set up and run physics simulations with the Genesis engine</li>
+                  <li>Load and control robotic manipulators in simulated environments</li>
+                  <li>Apply PD controllers and motion planning with Inverse Kinematics</li>
+                  <li>Scale simulations to hundreds of parallel environments for RL workflows</li>
+                </ul>
+
+                <h2>Genesis Labs (PhySim01 to PhySim04)</h2>
+                <div class="admonition note">
+                  <p class="admonition-title">What this section covers</p>
+                  <p>Progressive introduction to physics simulation, robot control, and parallel environments.</p>
+                </div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/PhySim/PhySim01_hello_genesis.ipynb">PhySim01 — Hello Genesis</a></h3><p>Introduction to the Genesis physics engine — set up a scene and run your first simulation.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/PhySim/PhySim02_control_your_robot.ipynb">PhySim02 — Control Your Robot</a></h3><p>Load a Franka Emika Panda robot and apply PD controllers to manipulate joints.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/PhySim/PhySim03_motion_planning.ipynb">PhySim03 — Motion Planning</a></h3><p>Perform pick-and-place tasks using Inverse Kinematics and motion planning.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/PhySim/PhySim04_parallel_simulation.ipynb">PhySim04 — Parallel Simulation</a></h3><p>Scale to hundreds of parallel environments for reinforcement learning experiments.</p></li>
+                </ul>
+
+                <p class="see-also">Explore the other teaching labs: <a href="../CV/">Computer Vision</a>, <a href="../DL/">Deep Learning</a>, <a href="../LLM/">LLM from Scratch</a>.</p>
+              </section>
+            </article>
+
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">By AMD Research</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

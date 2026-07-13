@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Computer Vision — AUP Teaching Labs</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="Main">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../">Overview</a></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="./">Computer Vision</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../DL/">Deep Learning</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../LLM/">Large Language Model from Scratch</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../PhySim/">Physics Simulation</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="computer-vision">
+                <h1>Computer Vision</h1>
+                <p>From classifying a single image to tracking objects across video frames and generating entirely new images from noise, this teaching lab covers the full spectrum of modern computer vision. Across 8 progressive labs you will build, train, and deploy models in PyTorch on AMD GPUs, gaining hands-on experience with the architectures that power real-world vision systems.</p>
+
+                <div class="lab-gallery">
+                  <img src="../../assets/images/CV_01.png" alt="Image classification example" />
+                  <img src="../../assets/images/CV_02.png" alt="Object detection example" />
+                  <img src="../../assets/images/CV_03.png" alt="Segmentation example" />
+                </div>
+
+                <h2>Goals</h2>
+                <ul>
+                  <li>Build and train CNN and ResNet classifiers for image recognition</li>
+                  <li>Apply object detection (YOLOv9) and semantic segmentation (SegNet) to real-world datasets</li>
+                  <li>Use foundation models like Segment Anything (SAM) for zero-shot segmentation</li>
+                  <li>Implement multi-object tracking across video frames</li>
+                  <li>Explore generative models including VAE, Conditional VAE, and Diffusion Models</li>
+                </ul>
+
+                <h2>Classification and Detection (CV01 to CV03)</h2>
+                <div class="admonition note">
+                  <p class="admonition-title">What this section covers</p>
+                  <p>Supervised image classification with CNNs and ResNets, followed by object detection with YOLO.</p>
+                </div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/CV/CV01_Classification.ipynb">CV01 — Image Classification with CNN</a></h3><p>Build a Convolutional Neural Network from scratch and train it on the CIFAR-100 dataset.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/CV/CV02_ResNet.ipynb">CV02 — Deep Residual Networks (ResNet-50)</a></h3><p>Train a ResNet-50 classifier on CIFAR-100 and explore how residual connections solve vanishing gradients.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/CV/CV03_Object_Detection.ipynb">CV03 — Object Detection with YOLOv9</a></h3><p>Apply YOLOv9 to locate and classify multiple objects in a single forward pass.</p></li>
+                </ul>
+
+                <h2>Segmentation and Tracking (CV04 to CV06)</h2>
+                <div class="admonition note">
+                  <p class="admonition-title">What this section covers</p>
+                  <p>Pixel-level understanding and temporal reasoning — dense prediction and multi-frame object tracking.</p>
+                </div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/CV/CV04_Segmentation.ipynb">CV04 — Semantic Segmentation with SegNet</a></h3><p>Train a SegNet encoder-decoder on the CamVid dataset to assign a class label to every pixel.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/CV/CV05_Segment_Anything.ipynb">CV05 — Segment Anything (SAM)</a></h3><p>Run inference with Meta AI's Segment Anything Model for automatic and prompt-based segmentation.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/CV/CV06_Tracking.ipynb">CV06 — Multi-Object Tracking with YOLOv8 + ByteTrack</a></h3><p>Track multiple objects across video frames with persistent identities using YOLOv8 and ByteTrack.</p></li>
+                </ul>
+
+                <h2>Generative Models (CV07 to CV08)</h2>
+                <div class="admonition note">
+                  <p class="admonition-title">What this section covers</p>
+                  <p>Learning to generate new images — variational autoencoders and diffusion models.</p>
+                </div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/CV/CV07_VAE_cVAE.ipynb">CV07 — Variational Autoencoder (VAE and cVAE)</a></h3><p>Implement a VAE on MNIST and explore the Conditional VAE variant for controlled generation.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/main/projects/CV/DL08_Diffusion_Model.ipynb">CV08 — Diffusion Model</a></h3><p>Build and train a Diffusion Model that generates images by iteratively denoising random noise.</p></li>
+                </ul>
+
+                <p class="see-also">Explore the other teaching labs: <a href="../DL/">Deep Learning</a>, <a href="../LLM/">LLM from Scratch</a>, <a href="../PhySim/">Physics Simulation</a>.</p>
+              </section>
+            </article>
+
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">By AMD Research</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
