@@ -1,11 +1,12 @@
-# Fallback deploy: push static site to gh-pages branch.
-# Use this if GitHub Actions-based Pages is not yet enabled on the repo.
-# Settings → Pages → Build and deployment → Deploy from branch → gh-pages / (root)
+# Deploy the static site (this `doc` branch) to the gh-pages branch.
+# Repo setting: Settings → Pages → Build and deployment → Deploy from branch → gh-pages / (root)
+# The site sources (index.html, assets/, per-lab index.html) live on the `doc` branch;
+# the `main` branch holds reimplementation-ready course code only.
 name: Deploy to gh-pages branch
 
 on:
   push:
-    branches: ["main"]
+    branches: ["doc"]
   workflow_dispatch:
 
 permissions:
