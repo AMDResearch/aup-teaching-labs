@@ -85,14 +85,36 @@ under `output/videos`.
 ## Models & dependencies
 
 The Dockerfile installs `lerobot==0.5.0` + `transformers==5.3.0` (lerobot 0.5.0
-requires transformers ≥5.3.0,<6) on top of `auplc-base`'s ROCm PyTorch. All model
-weights MT05 needs are **baked into the image at build time** (into the HF cache at
-`HF_HOME=/opt/hf`), so the notebook runs without the ~2.8 GB first-run download and
-works offline: `lerobot/smolvla_base`, its SmolVLM2 backbone
+requires transformers ≥5.3.0,<6) on top of `auplc-base`'s ROCm PyTorch. MT05 bakes
+**pinned, filtered snapshots** into Hugging Face's native cache at `HF_HOME=/opt/hf`
+for `lerobot/smolvla_base`, its SmolVLM2 backbone
 (`HuggingFaceTB/SmolVLM2-500M-Video-Instruct`), and the fully-trained checkpoint
 [`sonya-tw/mt05-smolvla-lift`](https://huggingface.co/sonya-tw/mt05-smolvla-lift).
-The runtime cells still call `snapshot_download` / `from_pretrained`, but these
-resolve from the baked cache; network is only needed if you swap in other models.
+Each repository is downloaded in its own image layer as `jovyan`; the cache retains
+its blob/snapshot symlinks and `refs/main` aliases for named model loading. The
+policy repositories retain only the model, configuration, and processor files that
+LeRobot loads. SmolVLM retains its model plus Transformers configuration, tokenizer,
+and processor metadata; all `onnx/**` and `*.onnx` variants are excluded.
+
+`HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1` are runtime defaults. MT05 uses
+`snapshot_download(..., local_files_only=True)` and `from_pretrained` against the
+baked cache, so it performs no runtime download. To validate a built image with
+network disabled, run `python3 /opt/workspace/MuJoCo-Torch/tests/verify_mt05_offline.py`.
+To gate a pulled image, run:
+
+```bash
+python3 /opt/workspace/MuJoCo-Torch/tests/check_oci_layers.py \
+  /path/to/linux-amd64-runtime-manifest.json \
+  --inherited-layer-count 18 \
+  --max-course-layer-bytes 2147483648
+```
+
+The positional manifest must be the linux/amd64 runtime image manifest JSON, not the
+multi-platform image index.
+
+XLeRobot's MuJoCo assets are pinned to commit
+`51ca0ec31bdb48713b94bacdba828bf8d889296b`; the image removes their `.git`
+metadata after the detached checkout.
 
 MT06 (PPO) and MT07 (Cross-Domain RL) add no extra pip dependencies — they run on the
 existing torch + mujoco + gymnasium + robosuite stack. The shared RL implementation
