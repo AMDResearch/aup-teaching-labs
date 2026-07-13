@@ -61,7 +61,7 @@ Full platform documentation: [https://amdresearch.github.io/aup-learning-cloud/]
 
 ## Acknowledgments
 
-Lab content is adapted from [AMDResearch/aup-learning-cloud](https://github.com/AMDResearch/aup-learning-cloud), developed as part of the AMD University Program in collaboration with university partners including National Taiwan University (CV, DL) and Nanjing University (LLM).
+Lab content is developed and maintained as part of the AMD University Program, in collaboration with university partners including National Taiwan University (CV, DL) and Nanjing University (LLM).
 
 ## License
 
