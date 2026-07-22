@@ -4,7 +4,7 @@
 
 A hands-on lab series for collecting demonstrations and training/deploying robot
 manipulation policies on a **real SO-101 arm** with [LeRobot](https://github.com/huggingface/lerobot),
-on an **AMD Ryzen AI** machine (Radeon gfx1152, ROCm — no NVIDIA/CUDA). You
+on an **AMD Ryzen AI** machine (Radeon gfx1152, ROCm). You
 teleoperate the arm, record **your own** demonstration dataset, then train and run
 two kinds of policy on it: **ACT** (trained from scratch) and **SmolVLA** (a
 vision-language-action foundation model, finetuned).
