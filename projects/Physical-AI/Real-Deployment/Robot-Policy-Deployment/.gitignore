@@ -1,0 +1,17 @@
+# Keep local_data folder but ignore its contents (datasets you record)
+local_data/*
+!local_data/.gitkeep
+
+# Ignore model weights (too large for GitHub)
+models/
+
+# Ignore training logs
+logs/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Trash
+.Trash-*/

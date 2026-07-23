@@ -1,0 +1,16 @@
+# Jupyter
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# Runtime artifacts produced on the robot (each student's own — never commit)
+lekiwi_ros2/utils/RAFT-Stereo/
+lekiwi_ros2/utils/calib.conf
+lekiwi_ros2/utils/scene_map.*
+lekiwi_ros2/utils/scan_map.*
+lekiwi_ros2/utils/block_waypoints.txt
+lekiwi_ros2/utils/blocks_map.png
+lekiwi_ros2/utils/*_preview.png
+
+# Recorded mapping sessions
+lekiwi_ros2/**/rec/
