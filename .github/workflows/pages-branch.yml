@@ -37,6 +37,7 @@ jobs:
           mkdir -p _site/projects/Physical-AI/Real-Deployment/{Robot-Policy-Deployment,ROS2-Deployment}
           cp index.html .nojekyll _site/
           cp -r assets _site/
+          cp -r zh _site/
           cp projects/Physical-AI/index.html _site/projects/Physical-AI/
           cp projects/Physical-AI/Physical-Simulation/Genesis-Simulation/index.html _site/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/
           cp projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/index.html _site/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/

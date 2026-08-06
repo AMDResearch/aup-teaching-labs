@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="電腦視覺 — AMD GPU 實作課程" />
+  <title>電腦視覺 — AUP Teaching Labs</title>
+  <link rel="alternate" hreflang="en" href="../../../projects/CV/" />
+  <link rel="alternate" hreflang="zh-Hant" href="./" />
+  <link rel="alternate" hreflang="x-default" href="../../../projects/CV/" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">跳至主要內容</a></div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="主要導覽">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../">總覽</a></li>
+                  <li class="caption"><span>實體 AI</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/">實體 AI 總覽</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">機器人策略部署</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 部署</a></li>
+                  <li class="caption"><span>AI 基礎課程</span></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="../../projects/CV/">電腦視覺</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/DL/">深度學習</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/LLM/">從零打造大型語言模型</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="cv">
+                <h1>電腦視覺</h1>
+                <p>從單張影像分類一路學習物件偵測、分割、追蹤與生成式模型，並在 AMD GPU 上使用 PyTorch 建立真實的視覺系統。</p>
+                <img class="lab-hero" src="../../../assets/images/CV_01.png" alt="電腦視覺" />
+                <h2>學習目標</h2><ul><li>建立 CNN 與 ResNet 影像分類器</li><li>使用 YOLO 與 SegNet 完成偵測與分割</li><li>運用 Segment Anything 進行 zero-shot segmentation</li><li>實作多物件追蹤、VAE 與擴散模型</li></ul>
+<h2>分類與偵測</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/CV/CV01_Classification.ipynb">CV01 — CNN 影像分類</a></h3><p>從零建立 CNN，並在 CIFAR-100 上訓練。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/CV/CV02_ResNet.ipynb">CV02 — ResNet-50 殘差網路</a></h3><p>訓練 ResNet-50，理解 residual connection。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/CV/CV03_Object_Detection.ipynb">CV03 — YOLOv9 物件偵測</a></h3><p>在單次 forward pass 中定位並分類多個物件。</p></li></ul><h2>分割與追蹤</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/CV/CV04_Segmentation.ipynb">CV04 — SegNet 語意分割</a></h3><p>在 CamVid 上訓練 encoder-decoder，為每個 pixel 指派類別。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/CV/CV05_Segment_Anything.ipynb">CV05 — Segment Anything 影像分割</a></h3><p>使用 SAM 完成自動與 prompt-based segmentation。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/CV/CV06_Tracking.ipynb">CV06 — 多物件追蹤</a></h3><p>結合 YOLOv8 與 ByteTrack 追蹤跨影格物件。</p></li></ul><h2>生成式模型</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/CV/CV07_VAE_cVAE.ipynb">CV07 — VAE 與 cVAE</a></h3><p>在 MNIST 上實作 VAE 與條件式生成。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/CV/CV08_Diffusion_Model.ipynb">CV08 — 擴散模型</a></h3><p>訓練逐步去噪並生成影像的 diffusion model。</p></li></ul>
+                <p class="see-also">接著探索<a href="../../projects/Physical-AI/">實體 AI</a>或其他 AI 基礎課程。</p>
+              </section>
+            </article>
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">由 AMD Research 製作</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div class="language-switcher">
+    <details>
+      <summary><i class="fa-solid fa-globe" aria-hidden="true"></i> 繁體中文</summary>
+      <nav aria-label="語言選擇">
+        <a href="../../../projects/CV/">English</a>
+        <a href="./" aria-current="page">繁體中文</a>
+      </nav>
+    </details>
+  </div>
+
+</body>
+</html>

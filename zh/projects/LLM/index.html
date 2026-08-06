@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="從零打造大型語言模型 — AMD GPU 實作課程" />
+  <title>從零打造大型語言模型 — AUP Teaching Labs</title>
+  <link rel="alternate" hreflang="en" href="../../../projects/LLM/" />
+  <link rel="alternate" hreflang="zh-Hant" href="./" />
+  <link rel="alternate" hreflang="x-default" href="../../../projects/LLM/" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">跳至主要內容</a></div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="主要導覽">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../">總覽</a></li>
+                  <li class="caption"><span>實體 AI</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/">實體 AI 總覽</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">機器人策略部署</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 部署</a></li>
+                  <li class="caption"><span>AI 基礎課程</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/CV/">電腦視覺</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/DL/">深度學習</a></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="../../projects/LLM/">從零打造大型語言模型</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="llm">
+                <h1>從零打造大型語言模型</h1>
+                <p>從 tensors 與 gradients 開始，逐步實作 Transformer 元件、訓練與推論最佳化，最後完成 Tiny LLaMA。</p>
+                <img class="lab-hero" src="../../../assets/images/LLM_01.jpg" alt="從零打造大型語言模型" />
+                <h2>學習目標</h2><ul><li>理解 LLM forward、backpropagation 與 autograd</li><li>實作 tokenization、position encoding、normalization 與 attention</li><li>使用 FlashAttention、MoE 與 LoRA</li><li>建立訓練 pipeline、KV cache 與 Tiny LLaMA</li></ul>
+<h2>基礎</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM01-LLM-Introduction-and-Inference.ipynb">LLM01 — LLM 介紹與推論</a></h3><p>載入預訓練模型、tokenize 文字並執行 autoregressive generation。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM02-Forward-Propagation.ipynb">LLM02 — 前向傳播</a></h3><p>理解 tensor operations、linear layers 與 activations。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM03-Backpropagation-and-Autograd.ipynb">LLM03 — 反向傳播與 Autograd</a></h3><p>建立 computation graph、驗證 gradient 並完成訓練迴圈。</p></li></ul><h2>Transformer 元件</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM04-Tokenization-and-Positional-Encoding.ipynb">LLM04 — Tokenization 與位置編碼</a></h3><p>實作 tokenizer、embedding、sinusoidal encoding 與 RoPE。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM05-Normalization-and-FFN.ipynb">LLM05 — Normalization 與 FFN</a></h3><p>比較 LayerNorm、RMSNorm、SwiGLU 與 Pre-LN/Post-LN。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM06-Attention-Mechanisms.ipynb">LLM06 — Attention 機制</a></h3><p>實作 scaled dot-product、causal mask、MHA 與 GQA。</p></li></ul><h2>效率與適應</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM07-FlashAttention.ipynb">LLM07 — FlashAttention</a></h3><p>理解 GPU memory hierarchy、tiling 與 IO-aware attention。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM08-MoE-and-Numerical-Precision.ipynb">LLM08 — MoE 與數值精度</a></h3><p>學習 Mixture of Experts 與數值格式。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM09-LoRA-Fine-Tuning.ipynb">LLM09 — LoRA 微調</a></h3><p>使用 Low-Rank Adaptation 進行參數高效率微調。</p></li></ul><h2>訓練與資料</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM10-Data-Processing-and-Model-Packaging.ipynb">LLM10 — 資料處理與模型封裝</a></h3><p>處理 dataset、state_dict、safetensors 與 HuggingFace wrapper。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM11-Training-Pipeline.ipynb">LLM11 — 模型訓練 Pipeline</a></h3><p>建立 collate、loss、AMP、gradient accumulation 與 Trainer。</p></li></ul><h2>推論與服務</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM12-Inference-and-KV-Cache.ipynb">LLM12 — 推論與 KV Cache</a></h3><p>理解 prefill/decode、decoding strategies 與 KV cache。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM13-Sparse-Attention-and-PagedAttention.ipynb">LLM13 — Sparse Attention 與 PagedAttention</a></h3><p>學習 sliding window、attention sink 與 block-based KV memory。</p></li></ul><h2>總整專題</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/LLM/LLM14-Build-a-Tiny-LLaMA-from-Scratch.ipynb">LLM14 — 從零打造 Tiny LLaMA</a></h3><p>整合 RoPE、RMSNorm、MHA、SwiGLU、訓練與文字生成。</p></li></ul>
+                <p class="see-also">接著探索<a href="../../projects/Physical-AI/">實體 AI</a>或其他 AI 基礎課程。</p>
+              </section>
+            </article>
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">由 AMD Research 製作</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div class="language-switcher">
+    <details>
+      <summary><i class="fa-solid fa-globe" aria-hidden="true"></i> 繁體中文</summary>
+      <nav aria-label="語言選擇">
+        <a href="../../../projects/LLM/">English</a>
+        <a href="./" aria-current="page">繁體中文</a>
+      </nav>
+    </details>
+  </div>
+
+</body>
+</html>

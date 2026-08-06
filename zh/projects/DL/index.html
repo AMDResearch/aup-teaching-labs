@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="深度學習 — AMD GPU 實作課程" />
+  <title>深度學習 — AUP Teaching Labs</title>
+  <link rel="alternate" hreflang="en" href="../../../projects/DL/" />
+  <link rel="alternate" hreflang="zh-Hant" href="./" />
+  <link rel="alternate" hreflang="x-default" href="../../../projects/DL/" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">跳至主要內容</a></div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="主要導覽">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../">總覽</a></li>
+                  <li class="caption"><span>實體 AI</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/">實體 AI 總覽</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">機器人策略部署</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 部署</a></li>
+                  <li class="caption"><span>AI 基礎課程</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/CV/">電腦視覺</a></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="../../projects/DL/">深度學習</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/LLM/">從零打造大型語言模型</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="dl">
+                <h1>深度學習</h1>
+                <p>從傳統機器學習打好基礎，再進入神經網路、CNN、Word2Vec、自編碼器、GAN 與 Transformer。</p>
+                <img class="lab-hero" src="../../../assets/images/DL_01.png" alt="深度學習" />
+                <h2>學習目標</h2><ul><li>理解降維、分類、分群、決策樹與迴歸</li><li>從零實作神經網路與反向傳播</li><li>使用 PyTorch 建立 CNN 與生成式模型</li><li>實作 Seq2Seq、GAN 與 Transformer</li></ul>
+<h2>機器學習基礎</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL01_PCA.ipynb">DL01 — 主成分分析（PCA）</a></h3><p>使用 eigendecomposition 從零實作 PCA。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL02_SVM.ipynb">DL02 — 支援向量機（SVM）</a></h3><p>使用 kernel function 處理非線性可分資料。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL03_KMeans.ipynb">DL03 — K-Means 分群</a></h3><p>逐步實作分群並觀察 cluster 演化。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL04_Decision_Tree.ipynb">DL04 — 決策樹</a></h3><p>在 Iris dataset 上訓練並視覺化決策樹。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL05_Regression_Model.ipynb">DL05 — 迴歸模型</a></h3><p>建立房價預測線性迴歸模型。</p></li></ul><h2>核心深度學習</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL06_Neural_Network.ipynb">DL06 — 從零建立神經網路</a></h3><p>只使用 NumPy 實作全連接網路與反向傳播。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL07_Word2Vec.ipynb">DL07 — Word2Vec 詞向量</a></h3><p>使用 Skip-gram 與 CBOW 訓練 word embeddings。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL08_Basic_CNN_CIFAR10.ipynb">DL08 — CIFAR-10 卷積神經網路</a></h3><p>使用 PyTorch 在 CIFAR-10 上訓練 CNN。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL09_AutoEncoder.ipynb">DL09 — 去噪自編碼器</a></h3><p>使用 MLP 與 CNN 去除 MNIST 雜訊。</p></li></ul><h2>進階架構</h2><ul class="lab-list"><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL10_Seq2Seq.ipynb">DL10 — Seq2Seq 翻譯</a></h3><p>建立 LSTM 英中翻譯模型。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL11_GAN.ipynb">DL11 — DCGAN 生成模型</a></h3><p>訓練深度卷積 GAN 生成手寫數字。</p></li><li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/DL/DL12_Transformer.ipynb">DL12 — 從零建立 Transformer</a></h3><p>從零實作字元層級語言生成 Transformer。</p></li></ul>
+                <p class="see-also">接著探索<a href="../../projects/Physical-AI/">實體 AI</a>或其他 AI 基礎課程。</p>
+              </section>
+            </article>
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">由 AMD Research 製作</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div class="language-switcher">
+    <details>
+      <summary><i class="fa-solid fa-globe" aria-hidden="true"></i> 繁體中文</summary>
+      <nav aria-label="語言選擇">
+        <a href="../../../projects/DL/">English</a>
+        <a href="./" aria-current="page">繁體中文</a>
+      </nav>
+    </details>
+  </div>
+
+</body>
+</html>

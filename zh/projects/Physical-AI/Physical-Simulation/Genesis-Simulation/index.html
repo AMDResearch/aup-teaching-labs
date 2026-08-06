@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Genesis Simulation — AMD GPU 實作課程" />
+  <title>Genesis Simulation — AUP Teaching Labs</title>
+  <link rel="alternate" hreflang="en" href="../../../../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/" />
+  <link rel="alternate" hreflang="zh-Hant" href="./" />
+  <link rel="alternate" hreflang="x-default" href="../../../../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../../../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../../../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../../../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../../../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">跳至主要內容</a></div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="主要導覽">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../">總覽</a></li>
+                  <li class="caption"><span>實體 AI</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/">實體 AI 總覽</a></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">機器人策略部署</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 部署</a></li>
+                  <li class="caption"><span>AI 基礎課程</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/CV/">電腦視覺</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/DL/">深度學習</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/LLM/">從零打造大型語言模型</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="genesis">
+                <div class="course-kicker">物理模擬</div>
+                <h1>Genesis Simulation</h1>
+                <p>在 AMD GPU 上使用 Genesis 1.3 建立與控制機器人，從第一個模擬場景一路進階到平行環境。</p>
+                <img class="demo-gif" src="../../../../../assets/readme/genesis.gif" alt="Genesis Simulation 示範" />
+                <h2>學習目標</h2><ul>
+                  <li>建立 Genesis 場景並載入 Franka Panda 機器人</li>
+                  <li>調整 PD 控制器並讀取機器人狀態</li>
+                  <li>使用逆向運動學完成夾取與放置</li>
+                  <li>將單一場景擴展成 GPU 批次平行環境</li>
+                </ul>
+                <h2>Genesis 實作課程</h2>
+                <div class="admonition note"><p class="admonition-title">本節內容</p><p>從模擬基礎、機器人控制到 GPU 平行模擬的完整路徑。</p></div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/PhySim01_hello_genesis.ipynb">PhySim01 — 初探 Genesis</a></h3><p>初始化 Genesis、建立場景、載入機器人並取得相機影像。</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/PhySim02_control_your_robot.ipynb">PhySim02 — 控制你的機器人</a></h3><p>使用 PD 控制器、調整增益並在重力環境中控制關節。</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/PhySim03_motion_planning.ipynb">PhySim03 — 運動規劃</a></h3><p>透過逆向運動學與路徑規劃完成接近、夾取與抬升。</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/PhySim04_parallel_simulation.ipynb">PhySim04 — 平行模擬</a></h3><p>同時執行多個 Franka 環境，提升實驗吞吐量。</p></li>
+                </ul>
+                <p class="see-also">返回<a href="../../../../projects/Physical-AI/">實體 AI 總覽</a>。</p>
+              </section>
+            </article>
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">由 AMD Research 製作</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div class="language-switcher">
+    <details>
+      <summary><i class="fa-solid fa-globe" aria-hidden="true"></i> 繁體中文</summary>
+      <nav aria-label="語言選擇">
+        <a href="../../../../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">English</a>
+        <a href="./" aria-current="page">繁體中文</a>
+      </nav>
+    </details>
+  </div>
+
+</body>
+</html>

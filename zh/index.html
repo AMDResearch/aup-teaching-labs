@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="總覽 — AMD GPU 實作課程" />
+  <title>總覽 — AUP Teaching Labs</title>
+  <link rel="alternate" hreflang="en" href="../" />
+  <link rel="alternate" hreflang="zh-Hant" href="./" />
+  <link rel="alternate" hreflang="x-default" href="../" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">跳至主要內容</a></div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="主要導覽">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1 current"><a class="current reference internal" href="./">總覽</a></li>
+                  <li class="caption"><span>實體 AI</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="projects/Physical-AI/">實體 AI 總覽</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">機器人策略部署</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 部署</a></li>
+                  <li class="caption"><span>AI 基礎課程</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="projects/CV/">電腦視覺</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="projects/DL/">深度學習</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="projects/LLM/">從零打造大型語言模型</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="teaching-labs">
+                <h1>AUP Teaching Labs</h1>
+                <p class="hero-copy"><strong>以 AMD GPU 加速的現代 AI 與實體 AI 實作課程。</strong></p>
+                <p>從虛擬機器人與 GPU 平行實驗開始，學習智慧策略並部署至真實硬體；同時也能從電腦視覺與深度學習基礎，一路完成從零打造 Tiny LLaMA 的學習路徑。</p>
+                <div class="stats-row" aria-label="課程總覽"><span><strong>62</strong> 份 notebooks</span><span><strong>28</strong> 個實體 AI 實作課程</span><span>已於 <strong>AMD GPU</strong> 驗證</span></div>
+                <h2 class="section-heading">實體 AI</h2>
+                <p>從模擬與策略學習開始，進階到真實機械手臂操作與自主導航。</p>
+                <div class="sd-container-fluid sd-sphinx-override sd-mb-4"><div class="sd-row sd-row-cols-2 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3">
+<div class="sd-col sd-d-flex-row">
+  <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover course-card">
+    <img alt="Genesis Simulation 示範" class="sd-card-img-top" src="../assets/readme/genesis.gif" />
+    <div class="sd-card-body"><div class="course-kicker">物理模擬</div><div class="sd-card-title sd-font-weight-bold">Genesis Simulation</div><p class="sd-card-text">在 AMD GPU 上使用 Genesis 1.3 建立與控制機器人，從第一個模擬場景一路進階到平行環境。</p></div>
+    <a class="sd-stretched-link sd-hide-link-text" href="projects/Physical-AI/Physical-Simulation/Genesis-Simulation/"><span>Genesis Simulation</span></a>
+  </div>
+</div>
+<div class="sd-col sd-d-flex-row">
+  <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover course-card">
+    <img alt="MuJoCo + PyTorch 示範" class="sd-card-img-top" src="../assets/readme/Mujoco_Torch_Demo.gif" />
+    <div class="sd-card-body"><div class="course-kicker">物理模擬</div><div class="sd-card-title sd-font-weight-bold">MuJoCo + PyTorch</div><p class="sd-card-text">從腳本式機器人控制，進階到行為克隆、視覺語言動作模型、PPO 與跨領域強化學習。</p></div>
+    <a class="sd-stretched-link sd-hide-link-text" href="projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/"><span>MuJoCo + PyTorch</span></a>
+  </div>
+</div>
+<div class="sd-col sd-d-flex-row">
+  <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover course-card">
+    <img alt="MuJoCo MJX 示範" class="sd-card-img-top" src="../assets/readme/MJX_Demo.gif" />
+    <div class="sd-card-body"><div class="course-kicker">物理模擬</div><div class="sd-card-title sd-font-weight-bold">MuJoCo MJX</div><p class="sd-card-text">從 MuJoCo 機器人模擬基礎，進階到 JAX、MJX、向量化 rollouts、domain randomization 與 Playground PPO。</p></div>
+    <a class="sd-stretched-link sd-hide-link-text" href="projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/"><span>MuJoCo MJX</span></a>
+  </div>
+</div>
+<div class="sd-col sd-d-flex-row">
+  <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover course-card">
+    <img alt="機器人策略部署 示範" class="sd-card-img-top" src="../assets/readme/robot_policy_demo.gif" />
+    <div class="sd-card-body"><div class="course-kicker">真實部署</div><div class="sd-card-title sd-font-weight-bold">機器人策略部署</div><p class="sd-card-text">在真實 SO-101 機械手臂上收集示範，並將資料轉換為可部署的 ACT 與 SmolVLA 策略。</p></div>
+    <a class="sd-stretched-link sd-hide-link-text" href="projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/"><span>機器人策略部署</span></a>
+  </div>
+</div>
+<div class="sd-col sd-d-flex-row">
+  <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover course-card">
+    <img alt="ROS2 部署 示範" class="sd-card-img-top" src="../assets/readme/ros2.gif" />
+    <div class="sd-card-body"><div class="course-kicker">真實部署</div><div class="sd-card-title sd-font-weight-bold">ROS2 部署</div><p class="sd-card-text">使用全 AMD ROCm 與 ROS2 軟體環境，在真實 LeKiwi 機器人上部署感知、建圖與自主導航。</p></div>
+    <a class="sd-stretched-link sd-hide-link-text" href="projects/Physical-AI/Real-Deployment/ROS2-Deployment/"><span>ROS2 部署</span></a>
+  </div>
+</div>
+                </div></div>
+                <p class="see-all"><a href="projects/Physical-AI/">探索完整實體 AI 學習路徑 →</a></p>
+                <h2 class="section-heading">更多 AI 課程</h2>
+                <p>建立現代智慧系統需要的視覺、建模與語言基礎。</p>
+                <div class="sd-container-fluid sd-sphinx-override sd-mb-4"><div class="sd-row sd-row-cols-3 sd-row-cols-xs-1 sd-row-cols-sm-1 sd-row-cols-md-3 sd-row-cols-lg-3 sd-g-3">
+<div class="sd-col sd-d-flex-row">
+  <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover course-card">
+    <img alt="電腦視覺" class="sd-card-img-top" src="../assets/images/CV_01.png" />
+    <div class="sd-card-body"><div class="sd-card-title sd-font-weight-bold">電腦視覺</div><p class="sd-card-text">從單張影像分類一路學習物件偵測、分割、追蹤與生成式模型，並在 AMD GPU 上使用 PyTorch 建立真實的視覺系統。</p></div>
+    <a class="sd-stretched-link sd-hide-link-text" href="projects/CV/"><span>電腦視覺</span></a>
+  </div>
+</div>
+<div class="sd-col sd-d-flex-row">
+  <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover course-card">
+    <img alt="深度學習" class="sd-card-img-top" src="../assets/images/DL_01.png" />
+    <div class="sd-card-body"><div class="sd-card-title sd-font-weight-bold">深度學習</div><p class="sd-card-text">從傳統機器學習打好基礎，再進入神經網路、CNN、Word2Vec、自編碼器、GAN 與 Transformer。</p></div>
+    <a class="sd-stretched-link sd-hide-link-text" href="projects/DL/"><span>深度學習</span></a>
+  </div>
+</div>
+<div class="sd-col sd-d-flex-row">
+  <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover course-card">
+    <img alt="從零打造大型語言模型" class="sd-card-img-top" src="../assets/images/LLM_01.jpg" />
+    <div class="sd-card-body"><div class="sd-card-title sd-font-weight-bold">從零打造大型語言模型</div><p class="sd-card-text">從 tensors 與 gradients 開始，逐步實作 Transformer 元件、訓練與推論最佳化，最後完成 Tiny LLaMA。</p></div>
+    <a class="sd-stretched-link sd-hide-link-text" href="projects/LLM/"><span>從零打造大型語言模型</span></a>
+  </div>
+</div>
+                </div></div>
+                <h2 class="section-heading">開始學習</h2>
+                <p>你可以在本機使用課程提供的環境執行 notebooks。部分課程也能整合 <a href="https://github.com/AMDResearch/aup-learning-cloud">AUP Learning Cloud</a>，使用預先建置且支援 ROCm 的 Jupyter 環境。</p>
+                <ul><li><a href="https://github.com/AMDResearch/aup-teaching-labs/tree/develop">在 GitHub 瀏覽課程原始碼</a></li><li><a href="https://amdresearch.github.io/aup-learning-cloud/">閱讀 AUP Learning Cloud 文件</a></li></ul>
+                <h2>致謝</h2>
+                <p>AUP 感謝共同投入課程內容的大學夥伴與開源社群。</p>
+                <table class="acknowledgments-table">
+                  <thead><tr><th scope="col">大學</th><th scope="col">教授與實驗室</th><th scope="col">課程貢獻</th></tr></thead>
+                  <tbody>
+                    <tr><td>國立臺灣大學</td><td><a href="https://www.csie.ntu.edu.tw/en/member/Faculty/Chun-Yi-Lee-67240464">李濬屹教授</a>、<a href="https://elsalab.ai/">ELSA Lab</a></td><td>DL、CV</td></tr>
+                    <tr><td>南京大學</td><td><a href="https://njudeepengine.github.io/jingweixu/">徐经纬教授</a>、<a href="https://github.com/NJUDeepEngine">NJUDeepEngine</a></td><td>LLM</td></tr>
+                    <tr><td>國立陽明交通大學</td><td><a href="https://pinghsieh.github.io/">謝秉均教授</a>、<a href="https://pinghsieh.github.io/group.html">Reinforcement Learning and Bandits Lab</a></td><td>實體 AI、MuJoCo 強化學習</td></tr>
+                  </tbody>
+                </table>
+                <p>我們也感謝 <a href="https://github.com/Genesis-Embodied-AI/Genesis">Genesis</a> 與 <a href="https://github.com/google-deepmind/mujoco">MuJoCo</a>。</p>
+              </section>
+            </article>
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">由 AMD Research 製作</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div class="language-switcher">
+    <details>
+      <summary><i class="fa-solid fa-globe" aria-hidden="true"></i> 繁體中文</summary>
+      <nav aria-label="語言選擇">
+        <a href="../">English</a>
+        <a href="./" aria-current="page">繁體中文</a>
+      </nav>
+    </details>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="機器人策略部署 — AMD GPU 實作課程" />
+  <title>機器人策略部署 — AUP Teaching Labs</title>
+  <link rel="alternate" hreflang="en" href="../../../../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/" />
+  <link rel="alternate" hreflang="zh-Hant" href="./" />
+  <link rel="alternate" hreflang="x-default" href="../../../../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../../../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../../../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../../../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../../../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">跳至主要內容</a></div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="主要導覽">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../">總覽</a></li>
+                  <li class="caption"><span>實體 AI</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/">實體 AI 總覽</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="../../../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">機器人策略部署</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 部署</a></li>
+                  <li class="caption"><span>AI 基礎課程</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/CV/">電腦視覺</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/DL/">深度學習</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/LLM/">從零打造大型語言模型</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="robot-policy">
+                <div class="course-kicker">真實部署</div>
+                <h1>機器人策略部署</h1>
+                <p>在真實 SO-101 機械手臂上收集示範，並將資料轉換為可部署的 ACT 與 SmolVLA 策略。</p>
+                <img class="demo-gif" src="../../../../../assets/readme/robot_policy_demo.gif" alt="機器人策略部署 示範" />
+                <h2>學習目標</h2><ul>
+                  <li>遙控 leader-follower SO-101 機械手臂</li>
+                  <li>使用雙相機錄製個人的 LeRobot dataset</li>
+                  <li>從零訓練並評估 ACT</li>
+                  <li>使用相同示範資料微調並部署 SmolVLA</li>
+                </ul>
+                <h2>SO-101 策略學習流程</h2>
+                <div class="admonition note"><p class="admonition-title">本節內容</p><p>每一課都建立在前一課完成的校正與資料之上。</p></div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/RPD01_SO101_Teleoperation.ipynb">RPD01 — 遙控操作</a></h3><p>連接、校正並遙控 leader 與 follower 機械手臂。</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/RPD02_Data_Collection.ipynb">RPD02 — 資料收集</a></h3><p>錄製同步的機器人狀態與相機示範。</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/RPD03_ACT_Train_and_Eval.ipynb">RPD03 — ACT 訓練與評估</a></h3><p>從零訓練 ACT 並部署至 follower 機械手臂。</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/RPD04_SmolVLA_Finetune_and_Eval.ipynb">RPD04 — SmolVLA 微調與評估</a></h3><p>微調 SmolVLA，並與 ACT 比較。</p></li>
+                </ul>
+                <p class="see-also">返回<a href="../../../../projects/Physical-AI/">實體 AI 總覽</a>。</p>
+              </section>
+            </article>
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">由 AMD Research 製作</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div class="language-switcher">
+    <details>
+      <summary><i class="fa-solid fa-globe" aria-hidden="true"></i> 繁體中文</summary>
+      <nav aria-label="語言選擇">
+        <a href="../../../../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">English</a>
+        <a href="./" aria-current="page">繁體中文</a>
+      </nav>
+    </details>
+  </div>
+
+</body>
+</html>

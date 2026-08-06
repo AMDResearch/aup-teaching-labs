@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="ROS2 部署 — AMD GPU 實作課程" />
+  <title>ROS2 部署 — AUP Teaching Labs</title>
+  <link rel="alternate" hreflang="en" href="../../../../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/" />
+  <link rel="alternate" hreflang="zh-Hant" href="./" />
+  <link rel="alternate" hreflang="x-default" href="../../../../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../../../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../../../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../../../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../../../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">跳至主要內容</a></div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="主要導覽">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../">總覽</a></li>
+                  <li class="caption"><span>實體 AI</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/">實體 AI 總覽</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">機器人策略部署</a></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="../../../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 部署</a></li>
+                  <li class="caption"><span>AI 基礎課程</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/CV/">電腦視覺</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/DL/">深度學習</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/LLM/">從零打造大型語言模型</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="ros2">
+                <div class="course-kicker">真實部署</div>
+                <h1>ROS2 部署</h1>
+                <p>使用全 AMD ROCm 與 ROS2 軟體環境，在真實 LeKiwi 機器人上部署感知、建圖與自主導航。</p>
+                <img class="demo-gif" src="../../../../../assets/readme/ros2.gif" alt="ROS2 部署 示範" />
+                <h2>學習目標</h2><ul>
+                  <li>在 ROCm 上使用 RAFT-Stereo 產生 stereo depth</li>
+                  <li>使用 RTAB-Map 建圖並進行定位</li>
+                  <li>透過 frontier planning 自主探索</li>
+                  <li>使用 Nav2 導航並執行顏色指定任務</li>
+                </ul>
+                <h2>LeKiwi 自主導航</h2>
+                <div class="admonition note"><p class="admonition-title">本節內容</p><p>先建立地圖，再從點選目標導航進階到任務導向的自主導航。</p></div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/ROS2-Deployment/ROS01_Mapping_Manual.ipynb">ROS01 — 手動建圖</a></h3><p>手動駕駛、產生 depth、建立地圖並偵測彩色方塊。</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/ROS2-Deployment/ROS02_Mapping_AutoExplore.ipynb">ROS02 — 自主探索</a></h3><p>尋找 frontier 並自主完成環境建圖。</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/ROS2-Deployment/ROS03_Click_Navigation.ipynb">ROS03 — 點選目標導航</a></h3><p>使用 RTAB-Map 定位，並從 RViz 傳送 Nav2 goal。</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/ROS2-Deployment/ROS04_Color_Navigation.ipynb">ROS04 — 顏色目標導航</a></h3><p>指定顏色，讓機器人移動至對應方塊。</p></li>
+                </ul>
+                <p class="see-also">返回<a href="../../../../projects/Physical-AI/">實體 AI 總覽</a>。</p>
+              </section>
+            </article>
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">由 AMD Research 製作</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div class="language-switcher">
+    <details>
+      <summary><i class="fa-solid fa-globe" aria-hidden="true"></i> 繁體中文</summary>
+      <nav aria-label="語言選擇">
+        <a href="../../../../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">English</a>
+        <a href="./" aria-current="page">繁體中文</a>
+      </nav>
+    </details>
+  </div>
+
+</body>
+</html>

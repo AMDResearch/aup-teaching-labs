@@ -184,6 +184,20 @@ body {
   width: 100%;
 }
 
+.acknowledgments-table {
+  border-collapse: collapse;
+  margin: 1rem 0 1.5rem;
+  width: 100%;
+}
+
+.acknowledgments-table th,
+.acknowledgments-table td {
+  border: 1px solid var(--pst-color-border);
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+
 .demo-gif {
   border: 1px solid var(--pst-color-border);
   border-radius: 0.25rem;
@@ -192,6 +206,61 @@ body {
   margin: 1rem 0 1.75rem;
   max-width: 520px;
   width: 100%;
+}
+
+.language-switcher {
+  bottom: 1rem;
+  position: fixed;
+  right: 1rem;
+  z-index: 1100;
+}
+
+.language-switcher details {
+  background: var(--pst-color-background);
+  border: 1px solid var(--pst-color-border);
+  border-radius: 0.35rem;
+  min-width: 9rem;
+}
+
+.language-switcher summary {
+  color: var(--pst-color-text-base);
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  list-style: none;
+  padding: 0.55rem 0.75rem;
+}
+
+.language-switcher summary::-webkit-details-marker {
+  display: none;
+}
+
+.language-switcher summary i {
+  color: var(--pst-color-primary);
+  margin-right: 0.4rem;
+}
+
+.language-switcher nav {
+  border-top: 1px solid var(--pst-color-border);
+  display: grid;
+  padding: 0.35rem;
+}
+
+.language-switcher nav a {
+  border-radius: 0.25rem;
+  color: var(--pst-color-text-base);
+  padding: 0.4rem 0.5rem;
+  text-decoration: none;
+}
+
+.language-switcher nav a:hover {
+  background: var(--pst-color-info-bg);
+  color: var(--pst-color-primary);
+}
+
+.language-switcher nav a[aria-current="page"] {
+  color: var(--pst-color-primary);
+  font-weight: 700;
 }
 
 @media (max-width: 768px) {
@@ -203,5 +272,10 @@ body {
   .course-path-table {
     display: block;
     overflow-x: auto;
+  }
+
+  .language-switcher {
+    bottom: 0.5rem;
+    right: 0.5rem;
   }
 }
