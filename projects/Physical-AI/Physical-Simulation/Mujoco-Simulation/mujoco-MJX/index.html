@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="MuJoCo MJX — hands-on AMD GPU teaching labs" />
+  <title>MuJoCo MJX — AUP Teaching Labs</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../../../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../../../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../../../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../../../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="Main">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../">Overview</a></li>
+                  <li class="caption"><span>Physical AI</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/Physical-AI/">Physical AI Overview</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="../../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">Robot Policy Deployment</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 Deployment</a></li>
+                  <li class="caption"><span>AI Foundations</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/CV/">Computer Vision</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/DL/">Deep Learning</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/LLM/">LLM from Scratch</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="mujoco-mjx">
+                <div class="course-kicker">Physical Simulation</div>
+                <h1>MuJoCo MJX</h1>
+                <p>Learn robot simulation with MuJoCo and scale it with JAX, MJX, vectorized rollouts, domain randomization, and Playground PPO.</p>
+                <img class="demo-gif" src="../../../../../assets/readme/MJX_Demo.gif" alt="MuJoCo MJX demo" />
+                <h2>Goals</h2>
+                <ul>
+                  <li>Understand MJCF, contacts, cameras, control, and inverse kinematics</li>
+                  <li>Move MuJoCo models into MJX</li>
+                  <li>Use JIT and vmap for parallel rollouts</li>
+                  <li>Train Playground PPO tasks including Franka pick-cube</li>
+                </ul>
+                <h2>Foundations</h2>
+                <div class="admonition note"><p class="admonition-title">What this section covers</p><p>Build the simulation and control foundations used by MJX.</p></div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/MJX01_Concepts_and_MJCF.ipynb">MJX01 — Concepts and MJCF</a></h3><p>Understand MuJoCo concepts and model robots with MJCF.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/MJX02_Rendering_Cameras_Contacts.ipynb">MJX02 — Rendering, Cameras, Contacts</a></h3><p>Render scenes and inspect cameras and contact dynamics.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/MJX03_Control_and_IK.ipynb">MJX03 — Control and IK</a></h3><p>Control robot arms with damped least-squares inverse kinematics.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/MJX04_From_MuJoCo_to_MJX.ipynb">MJX04 — From MuJoCo to MJX</a></h3><p>Move a simulation into JAX-accelerated MJX.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/MJX05_Parallel_Rollouts_and_Domain_Randomization.ipynb">MJX05 — Parallel Rollouts</a></h3><p>Vectorize rollouts and apply domain randomization.</p></li>
+                </ul>
+                <h2>Playground Reinforcement Learning</h2>
+                <div class="admonition note"><p class="admonition-title">What this section covers</p><p>Progress from RL fundamentals to accelerated control tasks.</p></div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/MJX06_RL_Refresher.ipynb">MJX06 — RL Refresher</a></h3><p>Review MDP and PPO concepts for continuous control.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/MJX07_Playground_PPO_Control.ipynb">MJX07 — Playground PPO</a></h3><p>Train a PPO control task in MuJoCo Playground.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/MJX08_Playground_PointMass.ipynb">MJX08 — PointMass</a></h3><p>Train a PointMass navigation policy.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/MJX09_Playground_PandaPickCube.ipynb">MJX09 — Panda Pick Cube</a></h3><p>Train a Franka Panda pick-cube policy.</p></li>
+                </ul>
+                <p class="see-also">Return to the <a href="../../../../../projects/Physical-AI/">Physical AI overview</a>.</p>
+              </section>
+            </article>
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">By AMD Research</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

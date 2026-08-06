@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="MuJoCo + PyTorch — hands-on AMD GPU teaching labs" />
+  <title>MuJoCo + PyTorch — AUP Teaching Labs</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../../../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../../../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../../../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../../../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="Main">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../">Overview</a></li>
+                  <li class="caption"><span>Physical AI</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/Physical-AI/">Physical AI Overview</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="../../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">Robot Policy Deployment</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 Deployment</a></li>
+                  <li class="caption"><span>AI Foundations</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/CV/">Computer Vision</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/DL/">Deep Learning</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../../projects/LLM/">LLM from Scratch</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="mujoco-torch">
+                <div class="course-kicker">Physical Simulation</div>
+                <h1>MuJoCo + PyTorch</h1>
+                <p>Move from scripted robot control to imitation learning, vision-language-action policies, PPO, and cross-domain reinforcement learning.</p>
+                <img class="demo-gif" src="../../../../../assets/readme/Mujoco_Torch_Demo.gif" alt="MuJoCo + PyTorch demo" />
+                <h2>Goals</h2>
+                <ul>
+                  <li>Control robosuite environments and design Gymnasium rewards</li>
+                  <li>Collect expert trajectories and train behavior cloning policies</li>
+                  <li>Fine-tune SmolVLA on a LeRobot dataset</li>
+                  <li>Train PPO locomotion and study cross-domain policy transfer</li>
+                </ul>
+                <h2>Simulation and Imitation Learning</h2>
+                <div class="admonition note"><p class="admonition-title">What this section covers</p><p>Build the environment and learn policies from demonstrations.</p></div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/MT01_Robosuite_Intro.ipynb">MT01 — Robosuite Introduction</a></h3><p>Explore observations, actions, and random rollouts in a Panda Lift task.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/MT02_Controllers_and_Cameras.ipynb">MT02 — Controllers and Cameras</a></h3><p>Script a reach-grasp-lift sequence and inspect visual observations.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/MT03_Gymnasium_and_Reward.ipynb">MT03 — Gymnasium and Reward</a></h3><p>Wrap a robot task as Gymnasium and design a dense reward.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/MT04_Behavior_Cloning.ipynb">MT04 — Behavior Cloning</a></h3><p>Collect expert data and train a policy to imitate it.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/MT05_VLA_SmolVLA_Finetune.ipynb">MT05 — SmolVLA Fine-tuning</a></h3><p>Fine-tune a vision-language-action model for manipulation.</p></li>
+                </ul>
+                <h2>Reinforcement Learning</h2>
+                <div class="admonition note"><p class="admonition-title">What this section covers</p><p>Train and transfer policies across robot embodiments and tasks.</p></div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/MT06_RL_PPO.ipynb">MT06 — PPO</a></h3><p>Train an end-to-end PPO locomotion policy.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/MT07_Cross_Domain_RL.ipynb">MT07 — Cross-Domain RL</a></h3><p>Transfer knowledge across morphology and task changes.</p></li>
+                </ul>
+                <p class="see-also">Return to the <a href="../../../../../projects/Physical-AI/">Physical AI overview</a>.</p>
+              </section>
+            </article>
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">By AMD Research</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

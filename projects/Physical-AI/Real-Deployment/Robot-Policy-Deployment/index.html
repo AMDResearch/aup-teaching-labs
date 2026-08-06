@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Robot Policy Deployment — hands-on AMD GPU teaching labs" />
+  <title>Robot Policy Deployment — AUP Teaching Labs</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="Main">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../">Overview</a></li>
+                  <li class="caption"><span>Physical AI</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/">Physical AI Overview</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="../../../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">Robot Policy Deployment</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 Deployment</a></li>
+                  <li class="caption"><span>AI Foundations</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/CV/">Computer Vision</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/DL/">Deep Learning</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../../../projects/LLM/">LLM from Scratch</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="robot-policy">
+                <div class="course-kicker">Real Deployment</div>
+                <h1>Robot Policy Deployment</h1>
+                <p>Collect demonstrations on a real SO-101 arm and turn them into deployable ACT and SmolVLA policies.</p>
+                <img class="demo-gif" src="../../../../assets/readme/robot_policy_demo.gif" alt="Robot Policy Deployment demo" />
+                <h2>Goals</h2>
+                <ul>
+                  <li>Teleoperate a leader-follower SO-101 setup</li>
+                  <li>Record a personal LeRobot dataset with two cameras</li>
+                  <li>Train and evaluate ACT from scratch</li>
+                  <li>Fine-tune and deploy SmolVLA on the same demonstrations</li>
+                </ul>
+                <h2>SO-101 Policy Pipeline</h2>
+                <div class="admonition note"><p class="admonition-title">What this section covers</p><p>Each lab builds on the data and calibration produced by the previous one.</p></div>
+                <ul class="lab-list">
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/RPD01_SO101_Teleoperation.ipynb">RPD01 — Teleoperation</a></h3><p>Connect, calibrate, and teleoperate the leader and follower arms.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/RPD02_Data_Collection.ipynb">RPD02 — Data Collection</a></h3><p>Record synchronized robot and camera demonstrations.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/RPD03_ACT_Train_and_Eval.ipynb">RPD03 — ACT</a></h3><p>Train ACT from scratch and deploy it on the follower arm.</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/RPD04_SmolVLA_Finetune_and_Eval.ipynb">RPD04 — SmolVLA</a></h3><p>Fine-tune SmolVLA and compare it with ACT.</p></li>
+                </ul>
+                <p class="see-also">Return to the <a href="../../../../projects/Physical-AI/">Physical AI overview</a>.</p>
+              </section>
+            </article>
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">By AMD Research</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

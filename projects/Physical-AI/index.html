@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Physical AI — hands-on AMD GPU teaching labs" />
+  <title>Physical AI — AUP Teaching Labs</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../../assets/pydata-sphinx-theme.css" />
+  <link rel="stylesheet" href="../../assets/sphinx-book-theme.css" />
+  <link rel="stylesheet" href="../../assets/sphinx-design.min.css" />
+  <link rel="stylesheet" href="../../assets/site.css" />
+</head>
+<body>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      <div class="bd-sidebar-primary bd-sidebar">
+        <div class="sidebar-primary-items__start sidebar-primary__section">
+          <div class="sidebar-primary-item">
+            <nav class="bd-links bd-docs-nav" aria-label="Main">
+              <div class="bd-toc-item navbar-nav active">
+                <ul class="nav bd-sidenav">
+                  <li class="toctree-l1"><a class="reference internal" href="../../">Overview</a></li>
+                  <li class="caption"><span>Physical AI</span></li>
+                  <li class="toctree-l1 current"><a class="current reference internal" href="../../projects/Physical-AI/">Physical AI Overview</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">Robot Policy Deployment</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 Deployment</a></li>
+                  <li class="caption"><span>AI Foundations</span></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/CV/">Computer Vision</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/DL/">Deep Learning</a></li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../projects/LLM/">LLM from Scratch</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <main class="bd-main" id="main-content" role="main">
+        <div class="bd-content">
+          <div class="bd-article-container">
+            <article class="bd-article">
+              <section id="physical-ai">
+                <h1>Physical AI</h1>
+                <p>Progress from robot simulation and policy learning to deployment on real manipulators and mobile robots. These courses connect control, perception, imitation learning, reinforcement learning, and ROS2 in one hands-on pathway.</p>
+                <table class="course-path-table">
+                  <thead><tr><th>Track</th><th>Course</th><th>What you will build</th><th>Demo</th></tr></thead>
+                  <tbody>
+                  <tr>
+                    <td rowspan="3"><strong>Physical Simulation</strong></td>
+                    <td><a href="../../projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></td>
+                    <td>Build and control robots with Genesis 1.3 on AMD GPUs, from the first scene to parallel simulation.</td>
+                    <td><img src="../../assets/readme/genesis.gif" alt="Genesis Simulation demo" /></td>
+                  </tr>
+                  <tr>
+                    
+                    <td><a href="../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></td>
+                    <td>Move from scripted robot control to imitation learning, vision-language-action policies, PPO, and cross-domain reinforcement learning.</td>
+                    <td><img src="../../assets/readme/Mujoco_Torch_Demo.gif" alt="MuJoCo + PyTorch demo" /></td>
+                  </tr>
+                  <tr>
+                    
+                    <td><a href="../../projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></td>
+                    <td>Learn robot simulation with MuJoCo and scale it with JAX, MJX, vectorized rollouts, domain randomization, and Playground PPO.</td>
+                    <td><img src="../../assets/readme/MJX_Demo.gif" alt="MuJoCo MJX demo" /></td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2"><strong>Real Deployment</strong></td>
+                    <td><a href="../../projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">Robot Policy Deployment</a></td>
+                    <td>Collect demonstrations on a real SO-101 arm and turn them into deployable ACT and SmolVLA policies.</td>
+                    <td><img src="../../assets/readme/robot_policy_demo.gif" alt="Robot Policy Deployment demo" /></td>
+                  </tr>
+                  <tr>
+                    
+                    <td><a href="../../projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 Deployment</a></td>
+                    <td>Deploy perception, mapping, and autonomous navigation on a real LeKiwi robot using an AMD-only ROCm and ROS2 stack.</td>
+                    <td><img src="../../assets/readme/ros2.gif" alt="ROS2 Deployment demo" /></td>
+                  </tr>
+                  </tbody>
+                </table>
+                <div class="admonition note">
+                  <p class="admonition-title">Real hardware tracks</p>
+                  <p>Robot Policy Deployment requires SO-101 arms and cameras. ROS2 Deployment requires a LeKiwi base and ZED 2i. Learners create their own datasets, maps, and policies.</p>
+                </div>
+              </section>
+            </article>
+            <footer class="bd-footer-content">
+              <div class="bd-footer-content__inner container">
+                <div class="footer-item"><p class="component-author">By AMD Research</p></div>
+                <div class="footer-item"><p class="copyright">© Copyright 2025-2026, Advanced Micro Devices, Inc. All rights reserved.</p></div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,7 +1,7 @@
 # Deploy the static site (this `doc` branch) to the gh-pages branch.
 # Repo setting: Settings → Pages → Build and deployment → Deploy from branch → gh-pages / (root)
 # The site sources (index.html, assets/, per-lab index.html) live on the `doc` branch;
-# the `main` branch holds reimplementation-ready course code only.
+# the `develop` branch holds the current course code.
 name: Deploy to gh-pages branch
 
 on:
@@ -26,8 +26,17 @@ jobs:
       - name: Build site
         run: |
           mkdir -p _site/projects/{CV,DL,LLM,PhySim}
+          mkdir -p _site/projects/Physical-AI/Physical-Simulation/Genesis-Simulation
+          mkdir -p _site/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/{mujoco-torch,mujoco-MJX}
+          mkdir -p _site/projects/Physical-AI/Real-Deployment/{Robot-Policy-Deployment,ROS2-Deployment}
           cp index.html .nojekyll _site/
           cp -r assets _site/
+          cp projects/Physical-AI/index.html _site/projects/Physical-AI/
+          cp projects/Physical-AI/Physical-Simulation/Genesis-Simulation/index.html _site/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/
+          cp projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/index.html _site/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/
+          cp projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/index.html _site/projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/
+          cp projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/index.html _site/projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/
+          cp projects/Physical-AI/Real-Deployment/ROS2-Deployment/index.html _site/projects/Physical-AI/Real-Deployment/ROS2-Deployment/
           cp projects/CV/index.html _site/projects/CV/
           cp projects/DL/index.html _site/projects/DL/
           cp projects/LLM/index.html _site/projects/LLM/
