@@ -1,8 +1,6 @@
-# Deploy the static site (this `doc` branch) to the gh-pages branch.
-# Repo setting: Settings → Pages → Build and deployment → Deploy from branch → gh-pages / (root)
-# The site sources (index.html, assets/, per-lab index.html) live on the `doc` branch;
-# the `develop` branch holds the current course code.
-name: Deploy to gh-pages branch
+# Build and deploy the static site from the `doc` branch with GitHub Pages.
+# The `develop` branch holds the current course code.
+name: Deploy GitHub Pages
 
 on:
   push:
@@ -10,18 +8,26 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: "pages-branch"
+  group: "pages"
   cancel-in-progress: true
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
       - name: Build site
         run: |
@@ -42,10 +48,11 @@ jobs:
           cp projects/LLM/index.html _site/projects/LLM/
           cp projects/PhySim/index.html _site/projects/PhySim/
 
-      - name: Deploy to gh-pages branch
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
-          publish_branch: gh-pages
-          force_orphan: true
+          path: ./_site
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
