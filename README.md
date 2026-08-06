@@ -1,68 +1,95 @@
 # AUP Teaching Labs
 
-To remove the barriers to teaching.
+**Hands-on Modern AI and physical AI courses accelerated by AMD GPUs.**
 
-The AMD University Program (AUP) Teaching Solutions initiative empowers educators with high-quality, hands-on curriculum resources for modern AI and robotics, designed for AMD GPU acceleration. These labs run on [AUP Learning Cloud](https://github.com/AMDResearch/aup-learning-cloud) — a JupyterHub platform delivering ROCm-accelerated course environments.
+This repository brings together popular Deep Learning, Computer Vision, LLM,
+and Physical AI topics as runnable notebooks. The course content is validated
+on AMD hardware and includes straightforward Docker environments where
+applicable.
 
-> **Branches**
-> - `main` — reimplementation-ready course code: Jupyter notebooks, assets, and the matching Dockerfile for each lab.
-> - `doc` — the GitHub Pages web portal (`index.html`, `assets/`, per-lab pages). Browse it at [https://amdresearch.github.io/aup-teaching-labs/](https://amdresearch.github.io/aup-teaching-labs/).
+## Physical AI
 
-## Repository Structure
+The Physical AI curriculum forms a complete learning path from physical simulation
+to embodied intelligence and deployment:
 
-```
-aup-teaching-labs/
-└── projects/
-    ├── CV/                                  # Computer Vision notebooks
-    ├── DL/                                  # Deep Learning notebooks
-    ├── LLM/                                 # LLM from Scratch notebooks
-    └── Physical-AI/
-        ├── Physical-Simulation/
-        │   ├── Genesis-Simulation/          # Genesis (formerly PhySim) + Dockerfile
-        │   └── Mujoco-Simulation/
-        │       ├── mujoco-torch/            # MuJoCo + PyTorch labs + Dockerfile
-        │       └── mujoco-MJX/              # MuJoCo MJX labs + Dockerfile
-        └── Real-Deployment/
-            ├── Robot-Policy-Deployment/     # (planned)
-            └── ROS2-Deployment/             # (planned)
-```
+<table>
+  <thead>
+    <tr>
+      <th>Track</th>
+      <th>Course</th>
+      <th>What you will build</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="3"><strong>Physical Simulation</strong></td>
+      <td><a href="projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></td>
+      <td>Load and control a Franka Panda, tune PD controllers, solve inverse kinematics, execute pick-and-place, and scale to parallel GPU environments.</td>
+    </tr>
+    <tr>
+      <td><a href="projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></td>
+      <td>Build Gymnasium environments, collect demonstrations, train behavior cloning and PPO policies, fine-tune SmolVLA, and explore cross-domain reinforcement learning.</td>
+    </tr>
+    <tr>
+      <td><a href="projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></td>
+      <td>Learn MJCF, robot control, and inverse kinematics before scaling to JIT-compiled parallel rollouts, domain randomization, and Playground PPO.</td>
+    </tr>
+    <tr>
+      <td rowspan="2"><strong>Real Deployment</strong></td>
+      <td><a href="projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">Robot Policy Deployment</a></td>
+      <td>Teleoperate a real SO-101 arm, record a LeRobot dataset, train ACT from scratch, and fine-tune SmolVLA for autonomous manipulation.</td>
+    </tr>
+    <tr>
+      <td><a href="projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 Deployment</a></td>
+      <td>Build maps with stereo depth and RTAB-Map, explore autonomously, localize with Nav2, and drive a LeKiwi to task-specific goals.</td>
+    </tr>
+  </tbody>
+</table>
 
-Each lab folder contains its Jupyter notebooks, any required assets, and a `Dockerfile` describing the environment needed to run it.
+## More AI Courses
 
-## Course Taxonomy
+Physical AI is supported by a full progression through computer vision, deep
+learning, and language models:
 
-### 1. Physical AI
+| Course | Journey |
+|---|---|
+| [**Computer Vision**](projects/CV/) | Image classification and ResNet → object detection → segmentation and SAM → tracking → VAE and diffusion models |
+| [**Deep Learning**](projects/DL/) | PCA, SVM, clustering, and trees → neural networks and CNNs → Word2Vec, autoencoders, Seq2Seq, GANs, and Transformers |
+| [**LLM from Scratch**](projects/LLM/) | Tensor fundamentals and autograd → tokenization and attention → FlashAttention, MoE, LoRA, training, KV cache, and a Tiny LLaMA capstone |
 
-#### 1-1 Physical Simulation
+## Start Learning
 
-- **1-1-1 Genesis Simulation** (`projects/Physical-AI/Physical-Simulation/Genesis-Simulation/`)
-  Robotics and physics simulation with [Genesis](https://github.com/Genesis-Embodied-AI/Genesis) on AMD GPUs — load robots into scenes, apply PD controllers, pick-and-place with Inverse Kinematics, and scale to parallel environments.
+The labs can be run locally using the provided notebooks and environment
+instructions. Selected courses also integrate with
+[AUP Learning Cloud](https://github.com/AMDResearch/aup-learning-cloud), which
+provides pre-built Jupyter environments with AMD GPU acceleration through ROCm.
 
-- **1-1-2 Mujoco Simulation**
-  - **mujoco-torch** (`.../Mujoco-Simulation/mujoco-torch/`) — Robosuite/MuJoCo with PyTorch: controllers and cameras, Gymnasium and rewards, behavior cloning, SmolVLA fine-tuning, PPO, and cross-domain RL.
-  - **mujoco-MJX** (`.../Mujoco-Simulation/mujoco-MJX/`) — MuJoCo MJX: MJCF concepts, rendering and contacts, control and IK, MuJoCo→MJX, parallel rollouts and domain randomization, and MuJoCo Playground PPO.
-
-#### 1-2 Real Deployment
-
-- **1-2-1 Robot Policy Deployment** — placeholder for upcoming content.
-- **1-2-2 ROS2 Deployment** — placeholder for upcoming content.
-
-## Other Labs
-
-- **Computer Vision** (`projects/CV/`) — classification, detection, segmentation, tracking, and generative vision models in PyTorch.
-- **Deep Learning** (`projects/DL/`) — classical ML through neural networks, CNNs, GANs, and Transformers from first principles.
-- **Large Language Model from Scratch** (`projects/LLM/`) — PyTorch fundamentals to a working LLaMA-style decoder.
-
-## Running on AUP Learning Cloud
-
-These notebooks are designed to run on [AUP Learning Cloud](https://github.com/AMDResearch/aup-learning-cloud), AMD's JupyterHub platform for hands-on AI education, which provides pre-built course images with AMD GPU acceleration via ROCm. Each lab's `Dockerfile` mirrors the image used to run that lab.
-
-Full platform documentation: [https://amdresearch.github.io/aup-learning-cloud/](https://amdresearch.github.io/aup-learning-cloud/)
+- Browse the hosted course portal:
+  [amdresearch.github.io/aup-teaching-labs](https://amdresearch.github.io/aup-teaching-labs/)
+- Learn about the cloud platform:
+  [AUP Learning Cloud documentation](https://amdresearch.github.io/aup-learning-cloud/)
 
 ## Acknowledgments
 
-Lab content is developed and maintained as part of the AMD University Program, in collaboration with university partners including National Taiwan University (CV, DL) and Nanjing University (LLM).
+AUP would like to thank the following universities, professors, and labs. This
+teaching content was made possible through the joint efforts of these partners.
+
+| University | Professors and Labs | Course Contributions |
+|---|---|---|
+| National Taiwan University | [Prof. Chun-Yi Lee](https://www.csie.ntu.edu.tw/en/member/Faculty/Chun-Yi-Lee-67240464), [ELSA Lab](https://elsalab.ai/) | DL, CV |
+| Nanjing University | [Prof. Jingwei Xu](https://njudeepengine.github.io/jingweixu/), [NJUDeepEngine](https://github.com/NJUDeepEngine) | LLM |
+
+We also thank the open-source projects that make these labs possible,
+including [Genesis](https://github.com/Genesis-Embodied-AI/Genesis) and
+[MuJoCo](https://github.com/google-deepmind/mujoco).
 
 ## License
 
-Lab notebooks retain the copyright and license terms from the original AUP Learning Cloud project. See individual notebook headers for details.
+Lab notebooks retain the copyright and license terms from their source
+projects. See individual notebooks and project folders for details.
+
+---
+
+Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved. Portions
+of this file consist of AI-generated content.
+SPDX-License-Identifier: MIT
