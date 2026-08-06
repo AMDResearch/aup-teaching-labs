@@ -84,7 +84,7 @@ teaching content was made possible through the joint efforts of these partners.
 |---|---|---|
 | National Taiwan University | [Prof. Chun-Yi Lee](https://www.csie.ntu.edu.tw/en/member/Faculty/Chun-Yi-Lee-67240464), [ELSA Lab](https://elsalab.ai/) | DL, CV |
 | Nanjing University | [Prof. Jingwei Xu](https://njudeepengine.github.io/jingweixu/), [NJUDeepEngine](https://github.com/NJUDeepEngine) | LLM |
-| National Yang Ming Chiao Tung University | [Prof. Ping-Chun Hsieh](https://pinghsieh.github.io/), [Reinforcement Learning and Bandits Lab](https://pinghsieh.github.io/group.html) | Reinforcement Learning on MuJoCo |
+| National Yang Ming Chiao Tung University | [Prof. Ping-Chun Hsieh](https://pinghsieh.github.io/), [Reinforcement Learning and Bandits Lab](https://pinghsieh.github.io/group.html) | Physical AI, Reinforcement Learning on MuJoCo |
 
 We also thank the open-source projects that make these labs possible,
 including [Genesis](https://github.com/Genesis-Embodied-AI/Genesis) and
