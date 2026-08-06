@@ -18,6 +18,7 @@ to embodied intelligence and deployment:
       <th>Track</th>
       <th>Course</th>
       <th>What you will build</th>
+      <th>Demo</th>
     </tr>
   </thead>
   <tbody>
@@ -25,23 +26,28 @@ to embodied intelligence and deployment:
       <td rowspan="3"><strong>Physical Simulation</strong></td>
       <td><a href="projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></td>
       <td>Load and control a Franka Panda, tune PD controllers, solve inverse kinematics, execute pick-and-place, and scale to parallel GPU environments.</td>
+      <td><img src="assets/readme/genesis.gif" alt="Genesis parallel robot simulation" width="240"></td>
     </tr>
     <tr>
       <td><a href="projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></td>
       <td>Build Gymnasium environments, collect demonstrations, train behavior cloning and PPO policies, fine-tune SmolVLA, and explore cross-domain reinforcement learning.</td>
+      <td><img src="assets/readme/Mujoco_Torch_Demo.gif" alt="MuJoCo cross-domain reinforcement learning demo" width="240"></td>
     </tr>
     <tr>
       <td><a href="projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-MJX/">MuJoCo MJX</a></td>
       <td>Learn MJCF, robot control, and inverse kinematics before scaling to JIT-compiled parallel rollouts, domain randomization, and Playground PPO.</td>
+      <td><img src="assets/readme/MJX_Demo.gif" alt="MuJoCo MJX robot control demo" width="240"></td>
     </tr>
     <tr>
       <td rowspan="2"><strong>Real Deployment</strong></td>
       <td><a href="projects/Physical-AI/Real-Deployment/Robot-Policy-Deployment/">Robot Policy Deployment</a></td>
       <td>Teleoperate a real SO-101 arm, record a LeRobot dataset, train ACT from scratch, and fine-tune SmolVLA for autonomous manipulation.</td>
+      <td><img src="assets/readme/robot_policy_demo.gif" alt="Real robot policy deployment demo" width="240"></td>
     </tr>
     <tr>
       <td><a href="projects/Physical-AI/Real-Deployment/ROS2-Deployment/">ROS2 Deployment</a></td>
       <td>Build maps with stereo depth and RTAB-Map, explore autonomously, localize with Nav2, and drive a LeKiwi to task-specific goals.</td>
+      <td><img src="assets/readme/ros2.gif" alt="ROS2 autonomous navigation demo" width="240"></td>
     </tr>
   </tbody>
 </table>
