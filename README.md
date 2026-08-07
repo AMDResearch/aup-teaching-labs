@@ -1,6 +1,6 @@
 # AUP Teaching Labs
 
-[English](README.md) | [繁體中文](README.zh-TW.md)
+[English](README.md) | [中文](README.zh-TW.md)
 
 **Hands-on Modern AI and Physical AI courses accelerated by AMD GPUs.**
 

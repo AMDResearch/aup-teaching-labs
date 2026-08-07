@@ -1,6 +1,6 @@
 # AUP Teaching Labs
 
-[English](README.md) | [繁體中文](README.zh-TW.md)
+[English](README.md) | [中文](README.zh-TW.md)
 
 **以 AMD GPU 加速的現代 AI 與實體 AI 實作課程。**
 
