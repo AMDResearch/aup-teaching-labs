@@ -150,6 +150,43 @@ body {
   background: var(--pst-color-background);
 }
 
+.foundation-course-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.foundation-card {
+  display: grid;
+  grid-template-columns: minmax(240px, 40%) minmax(0, 1fr);
+  min-height: 220px;
+  overflow: hidden;
+}
+
+.foundation-card > .sd-card-img-top {
+  align-self: stretch;
+  aspect-ratio: auto;
+  grid-column: 1;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.foundation-card > .sd-card-body {
+  align-self: center;
+  grid-column: 2;
+  padding: 1.75rem 2rem;
+}
+
+.foundation-card .sd-card-title {
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.foundation-card .sd-card-text {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
 .course-kicker {
   color: var(--pst-color-primary);
   font-size: 0.78rem;
@@ -272,6 +309,23 @@ body {
   .course-path-table {
     display: block;
     overflow-x: auto;
+  }
+
+  .foundation-card {
+    grid-template-columns: 1fr;
+  }
+
+  .foundation-card > .sd-card-img-top,
+  .foundation-card > .sd-card-body {
+    grid-column: 1;
+  }
+
+  .foundation-card > .sd-card-img-top {
+    height: 190px;
+  }
+
+  .foundation-card > .sd-card-body {
+    padding: 1.25rem;
   }
 
   .language-switcher {
