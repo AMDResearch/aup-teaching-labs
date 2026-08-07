@@ -1,6 +1,8 @@
 # AUP Teaching Labs
 
-**Hands-on Modern AI and physical AI courses accelerated by AMD GPUs.**
+[English](README.md) | [中文](README.zh-TW.md)
+
+**Hands-on Modern AI and Physical AI courses accelerated by AMD GPUs.**
 
 This repository brings together popular Deep Learning, Computer Vision, LLM,
 and Physical AI topics as runnable notebooks. The course content is validated
