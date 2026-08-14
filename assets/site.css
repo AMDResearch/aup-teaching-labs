@@ -9,7 +9,7 @@ body {
 }
 
 .bd-page-width {
-  max-width: calc(100% - 3rem);
+  max-width: calc(100% - 6rem);
 }
 
 .bd-main .bd-content .bd-article-container {
@@ -334,7 +334,7 @@ body {
 
 @media (max-width: 768px) {
   .bd-page-width {
-    max-width: calc(100% - 1.5rem);
+    max-width: calc(100% - 3rem);
   }
 
   .sd-row-cols-2 > * {
