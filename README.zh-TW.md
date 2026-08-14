@@ -77,7 +77,7 @@ AUP 感謝以下大學、教授與實驗室的共同投入，讓這些教學內�
 | 南京大學 | [徐经纬教授](https://njudeepengine.github.io/jingweixu/)、[NJUDeepEngine](https://github.com/NJUDeepEngine) | LLM |
 | 國立陽明交通大學 | [謝秉均教授](https://pinghsieh.github.io/)、[Reinforcement Learning and Bandits Lab](https://pinghsieh.github.io/group.html) | 實體 AI、MuJoCo 強化學習 |
 
-我們也感謝支援這些課程的開源專案，包括 [Genesis](https://github.com/Genesis-Embodied-AI/Genesis) 與 [MuJoCo](https://github.com/google-deepmind/mujoco)。
+我們也感謝 AMD AECG 團隊提供部分實體 AI 教學素材，以及支援這些課程的開源專案，包括 [Genesis](https://github.com/Genesis-Embodied-AI/Genesis) 與 [MuJoCo](https://github.com/google-deepmind/mujoco)。各項素材的詳細來源說明與原始 repository 連結，皆附於相關 notebook 中。
 
 ## 授權
 

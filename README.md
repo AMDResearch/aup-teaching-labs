@@ -88,9 +88,12 @@ teaching content was made possible through the joint efforts of these partners.
 | Nanjing University | [Prof. Jingwei Xu](https://njudeepengine.github.io/jingweixu/), [NJUDeepEngine](https://github.com/NJUDeepEngine) | LLM |
 | National Yang Ming Chiao Tung University | [Prof. Ping-Chun Hsieh](https://pinghsieh.github.io/), [Reinforcement Learning and Bandits Lab](https://pinghsieh.github.io/group.html) | Physical AI, Reinforcement Learning on MuJoCo |
 
-We also thank the open-source projects that make these labs possible,
-including [Genesis](https://github.com/Genesis-Embodied-AI/Genesis) and
-[MuJoCo](https://github.com/google-deepmind/mujoco).
+We also thank the AMD AECG team for contributing portions of the Physical AI
+teaching materials, along with the open-source projects that make these labs
+possible, including [Genesis](https://github.com/Genesis-Embodied-AI/Genesis)
+and [MuJoCo](https://github.com/google-deepmind/mujoco). Detailed source
+attributions and links to the original repositories are provided in each
+relevant notebook.
 
 ## License
 
