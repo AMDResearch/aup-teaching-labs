@@ -23,8 +23,8 @@
     <tr>
       <td rowspan="3"><strong>物理模擬</strong></td>
       <td><a href="projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></td>
-      <td>載入並控制 Franka Panda、調整 PD 控制器、求解逆向運動學、執行夾取與放置，並擴展至 GPU 平行模擬環境。</td>
-      <td><img src="assets/readme/genesis.gif" alt="Genesis 平行機器人模擬" width="240"></td>
+      <td>從 Franka 控制、逆向運動學與 GPU 平行模擬，進階至 ROCm 視覺與觸覺感知，最後建立具備互動式即時 HUD、可重現場景配置與安全驗證流程的語言引導代理。</td>
+      <td><img src="assets/readme/physim06.gif" alt="Genesis 語言引導實體 AI 代理" width="240"></td>
     </tr>
     <tr>
       <td><a href="projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></td>

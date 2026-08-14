@@ -27,8 +27,8 @@ to embodied intelligence and deployment:
     <tr>
       <td rowspan="3"><strong>Physical Simulation</strong></td>
       <td><a href="projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></td>
-      <td>Load and control a Franka Panda, tune PD controllers, solve inverse kinematics, execute pick-and-place, and scale to parallel GPU environments.</td>
-      <td><img src="assets/readme/genesis.gif" alt="Genesis parallel robot simulation" width="240"></td>
+      <td>Progress from Franka control, inverse kinematics, and parallel GPU simulation to ROCm vision and tactile perception, then build a guarded language-guided agent with an interactive live HUD and reproducible scene layouts.</td>
+      <td><img src="assets/readme/physim06.gif" alt="Genesis language-guided Physical AI agent" width="240"></td>
     </tr>
     <tr>
       <td><a href="projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></td>
