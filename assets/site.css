@@ -220,19 +220,19 @@ body {
 }
 
 .course-path-table col.track-column {
-  width: 7%;
+  width: 12%;
 }
 
 .course-path-table col.course-column {
-  width: 10%;
+  width: 12%;
 }
 
 .course-path-table col.build-column {
-  width: 48%;
+  width: 45%;
 }
 
 .course-path-table col.demo-column {
-  width: 35%;
+  width: 31%;
 }
 
 .course-path-table th,
