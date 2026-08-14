@@ -215,7 +215,24 @@ body {
 .course-path-table {
   border-collapse: collapse;
   margin: 1.5rem 0;
+  table-layout: fixed;
   width: 100%;
+}
+
+.course-path-table col.track-column {
+  width: 11%;
+}
+
+.course-path-table col.course-column {
+  width: 14%;
+}
+
+.course-path-table col.build-column {
+  width: 45%;
+}
+
+.course-path-table col.demo-column {
+  width: 30%;
 }
 
 .course-path-table th,
@@ -228,7 +245,7 @@ body {
 .course-path-table img {
   display: block;
   height: auto;
-  max-width: 220px;
+  max-width: 320px;
   width: 100%;
 }
 
