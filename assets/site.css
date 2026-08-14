@@ -9,7 +9,7 @@ body {
 }
 
 .bd-page-width {
-  max-width: 100%;
+  max-width: calc(100% - 3rem);
 }
 
 .bd-main .bd-content .bd-article-container {
@@ -252,8 +252,12 @@ body {
   display: block;
   height: auto;
   margin: 1rem 0 1.75rem;
-  max-width: 960px;
+  max-width: 520px;
   width: 100%;
+}
+
+#genesis .demo-gif {
+  max-width: 960px;
 }
 
 .language-switcher {
@@ -312,6 +316,10 @@ body {
 }
 
 @media (max-width: 768px) {
+  .bd-page-width {
+    max-width: calc(100% - 1.5rem);
+  }
+
   .sd-row-cols-2 > * {
     width: 100% !important;
     flex: 0 0 auto !important;
