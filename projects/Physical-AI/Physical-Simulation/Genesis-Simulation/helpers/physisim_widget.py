@@ -263,7 +263,7 @@ class LiveHUDController:
 
 
 class LiveAgentController(LiveHUDController):
-    """Live command console for the PhySim06 language-guided agent."""
+    """Live command console for the GS06 language-guided agent."""
 
     ACTIONS = (
         ("Run Command", "run"),

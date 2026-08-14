@@ -1,7 +1,7 @@
 # Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 
-"""OpenCV HUD and recording helpers for PhySim05 and PhySim06.
+"""OpenCV HUD and recording helpers for GS05 and GS06.
 
 The module is intentionally independent of Genesis and the planner. Notebooks
 pass ordinary NumPy images and structured receipts into :func:`compose_hud_frame`.
