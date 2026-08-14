@@ -8,6 +8,14 @@ body {
   margin: 0;
 }
 
+.bd-page-width {
+  max-width: 100%;
+}
+
+.bd-main .bd-content .bd-article-container {
+  max-width: 100%;
+}
+
 .navbar-brand.logo {
   text-decoration: none;
   color: inherit;
