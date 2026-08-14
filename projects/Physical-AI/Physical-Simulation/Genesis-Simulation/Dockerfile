@@ -67,7 +67,7 @@ RUN pip3 install --no-cache-dir \
     "genesis-world==${GENESIS_WORLD_VERSION}"
 
 COPY --from=llama-builder /src/llama.cpp/build/bin/llama-server /opt/llama/bin/llama-server
-COPY --chown=jovyan:1000 PhySim*.ipynb /opt/workspace/PhySim/
+COPY --chown=jovyan:1000 GS*.ipynb /opt/workspace/PhySim/
 COPY --chown=jovyan:1000 helpers /opt/workspace/PhySim/helpers
 COPY --chown=jovyan:1000 xml /opt/workspace/PhySim/xml
 

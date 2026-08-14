@@ -3,12 +3,12 @@
 This directory contains six Jupyter labs for learning Genesis physical
 simulation on AMD GPUs:
 
-1. `PhySim01_hello_genesis.ipynb` — create a scene and load a robot
-2. `PhySim02_control_your_robot.ipynb` — joint and PD control
-3. `PhySim03_motion_planning.ipynb` — IK, motion planning, and grasping
-4. `PhySim04_parallel_simulation.ipynb` — parallel GPU environments
-5. `PhySim05_perception_with_rocm.ipynb` — ROCm vision and tactile perception
-6. `PhySim06_language_guided_agent.ipynb` — tactile-gated, language-guided Physical AI agent
+1. `GS01_hello_genesis.ipynb` — create a scene and load a robot
+2. `GS02_control_your_robot.ipynb` — joint and PD control
+3. `GS03_motion_planning.ipynb` — IK, motion planning, and grasping
+4. `GS04_parallel_simulation.ipynb` — parallel GPU environments
+5. `GS05_perception_with_rocm.ipynb` — ROCm vision and tactile perception
+6. `GS06_language_guided_agent.ipynb` — tactile-gated, language-guided Physical AI agent
 
 The Docker image uses `genesis-world==1.3.1` and includes the ROCm runtime,
 PyTorch, JupyterLab, the Franka Panda assets, and all notebook dependencies.
@@ -75,7 +75,7 @@ and generated videos remain on the host after the container stops.
 
 ## 3. Run the labs
 
-Open the notebooks in numerical order, starting with PhySim01. Run cells from
+Open the notebooks in numerical order, starting with GS01. Run cells from
 top to bottom.
 
 Genesis scenes should be built only once in a notebook kernel. If you need to
@@ -86,11 +86,11 @@ Generated files are written to:
 
 - `Videos/video_05.mp4` — raw tactile-grasp camera recording
 - `Videos/video_05_hud.mp4` — vision, tactile, and GPU telemetry HUD
-- `Videos/video_05_live_hud.mp4` — exported PhySim05 widget interaction
+- `Videos/video_05_live_hud.mp4` — exported GS05 widget interaction
 - `Videos/video_06.mp4` — raw language-guided mission recording
 - `Videos/video_06_hud.mp4` — AI plan, execution, telemetry, and tactile HUD
-- `Videos/video_06_live_hud.mp4` — exported PhySim06 widget interaction
-- `Videos/interactive_session.mp4` — optional PhySim06 typed-command HUD
+- `Videos/video_06_live_hud.mp4` — exported GS06 widget interaction
+- `Videos/interactive_session.mp4` — optional GS06 typed-command HUD
 - `Artifacts/` — perception figures
 
 The reusable OpenCV compositor, ffmpeg writer, and AMD GPU telemetry reader live
@@ -98,9 +98,9 @@ in `helpers/physisim_hud.py`. They consume notebook-owned NumPy arrays and
 structured receipts; they do not build Genesis scenes, control the robot, or
 start an LLM server.
 
-### PhySim05 live simulation
+### GS05 live simulation
 
-After running PhySim05 through the **Live simulation interface** section, use
+After running GS05 through the **Live simulation interface** section, use
 the notebook buttons in this order:
 
 1. **Reset**
@@ -122,9 +122,9 @@ layout or **Random (seeded)**. A seeded layout samples collision-free cube
 positions inside the reachable workspace; using the same seed reproduces the
 same positions. Reset also returns the Franka to its saved upright pose.
 
-### PhySim06 live language-agent interface
+### GS06 live language-agent interface
 
-After running PhySim06 through the **Live language-agent interface** section:
+After running GS06 through the **Live language-agent interface** section:
 
 1. Enter a command such as `pick green` or `stack blue on red`.
 2. Select the **Offline** or **LLM endpoint** planner.
@@ -147,7 +147,7 @@ Offline mode works without any model. LLM mode requires a llama.cpp
 The Docker image already contains a pinned Vulkan `llama-server` at
 `/opt/llama/bin/llama-server`.
 
-In PhySim06, press **Download Llama 3.2 3B GGUF (2.02 GB)**. The opt-in cell
+In GS06, press **Download Llama 3.2 3B GGUF (2.02 GB)**. The opt-in cell
 downloads a pinned model from `bartowski/Llama-3.2-3B-Instruct-GGUF`, verifies
 its SHA256, and stores it at:
 
@@ -175,13 +175,13 @@ Keep the Terminal open and verify the endpoint from another Terminal:
 curl http://127.0.0.1:8081/health
 ```
 
-Rerun PhySim06's LLM health-check cell, then select **LLM endpoint**. Press
+Rerun GS06's LLM health-check cell, then select **LLM endpoint**. Press
 `Ctrl+C` in the server Terminal to stop it. Advanced users may override
 `LLAMA_SERVER_BIN` or `LLAMA_MODEL_PATH` before running the helper.
 
 ### Optional typed-command demo
 
-After running PhySim06 through its function-definition cells, call:
+After running GS06 through its function-definition cells, call:
 
 ```python
 run_typed_demo(mode="offline")
@@ -203,7 +203,7 @@ The container is removed automatically because it was started with `--rm`.
 
 ## Automated notebook test
 
-The following example executes PhySim05 non-interactively. A successful run
+The following example executes GS05 non-interactively. A successful run
 exits with status code `0`.
 
 ```bash
@@ -220,11 +220,11 @@ docker run --rm \
   --to notebook \
   --execute \
   --ExecutePreprocessor.timeout=1200 \
-  --output /tmp/PhySim05-executed.ipynb \
-  /opt/workspace/PhySim/PhySim05_perception_with_rocm.ipynb
+  --output /tmp/GS05-executed.ipynb \
+  /opt/workspace/PhySim/GS05_perception_with_rocm.ipynb
 ```
 
-Run the same command for PhySim06 with a longer timeout:
+Run the same command for GS06 with a longer timeout:
 
 ```bash
 docker run --rm \
@@ -240,8 +240,8 @@ docker run --rm \
   --to notebook \
   --execute \
   --ExecutePreprocessor.timeout=2400 \
-  --output /tmp/PhySim06-executed.ipynb \
-  /opt/workspace/PhySim/PhySim06_language_guided_agent.ipynb
+  --output /tmp/GS06-executed.ipynb \
+  /opt/workspace/PhySim/GS06_language_guided_agent.ipynb
 ```
 
 ## Third-party assets and licenses
@@ -256,7 +256,7 @@ docker run --rm \
 ### `ModuleNotFoundError: No module named 'huggingface_hub'`
 
 The running JupyterHub container predates the latest course image. Rerun the
-PhySim06 download cell: it installs `huggingface-hub` into the current kernel
+GS06 download cell: it installs `huggingface-hub` into the current kernel
 when missing. Alternatively, use a Terminal:
 
 ```bash
