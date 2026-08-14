@@ -49,21 +49,25 @@
               <section id="genesis">
                 <div class="course-kicker">物理模擬</div>
                 <h1>Genesis Simulation</h1>
-                <p>在 AMD GPU 上使用 Genesis 1.3 建立與控制機器人，從第一個模擬場景一路進階到平行環境。</p>
-                <img class="demo-gif" src="../../../../../assets/readme/genesis.gif" alt="Genesis Simulation 示範" />
+                <p>在 AMD GPU 上使用 Genesis 1.3 建立與控制機器人，並從平行模擬進階至 ROCm 感知、觸覺互動與具備安全驗證流程的語言引導代理。</p>
+                <img class="demo-gif" src="../../../../../assets/readme/physim06.gif" alt="Genesis 語言引導實體 AI 代理" />
                 <h2>學習目標</h2><ul>
                   <li>建立 Genesis 場景並載入 Franka Panda 機器人</li>
                   <li>調整 PD 控制器並讀取機器人狀態</li>
                   <li>使用逆向運動學完成夾取與放置</li>
                   <li>將單一場景擴展成 GPU 批次平行環境</li>
+                  <li>使用 ROCm 處理視覺與指尖觸覺觀測</li>
+                  <li>在執行機器人動作前驗證語言規劃結果</li>
                 </ul>
                 <h2>Genesis 實作課程</h2>
-                <div class="admonition note"><p class="admonition-title">本節內容</p><p>從模擬基礎、機器人控制到 GPU 平行模擬的完整路徑。</p></div>
+                <div class="admonition note"><p class="admonition-title">本節內容</p><p>六個循序漸進的實作課程，從模擬基礎一路完成互動式多模態實體 AI 代理。</p></div>
                 <ul class="lab-list">
                   <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/PhySim01_hello_genesis.ipynb">PhySim01 — 初探 Genesis</a></h3><p>初始化 Genesis、建立場景、載入機器人並取得相機影像。</p></li>
                   <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/PhySim02_control_your_robot.ipynb">PhySim02 — 控制你的機器人</a></h3><p>使用 PD 控制器、調整增益並在重力環境中控制關節。</p></li>
                   <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/PhySim03_motion_planning.ipynb">PhySim03 — 運動規劃</a></h3><p>透過逆向運動學與路徑規劃完成接近、夾取與抬升。</p></li>
                   <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/develop/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/PhySim04_parallel_simulation.ipynb">PhySim04 — 平行模擬</a></h3><p>同時執行多個 Franka 環境，提升實驗吞吐量。</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/physicalai%2Fgenesis/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/PhySim05_perception_with_rocm.ipynb">PhySim05 — ROCm 感知</a></h3><p>將 RGB、深度、分割、表面法線與 8×8 指尖觸覺整合至互動式即時 HUD。</p></li>
+                  <li><h3><a href="https://github.com/AMDResearch/aup-teaching-labs/blob/physicalai%2Fgenesis/projects/Physical-AI/Physical-Simulation/Genesis-Simulation/PhySim06_language_guided_agent.ipynb">PhySim06 — 語言引導代理</a></h3><p>將受限語言規劃轉換為通過感知確認與觸覺門控的機器人動作，並支援可重現場景配置。</p></li>
                 </ul>
                 <p class="see-also">返回<a href="../../../../projects/Physical-AI/">實體 AI 總覽</a>。</p>
               </section>
