@@ -1,22 +1,6 @@
-<!-- Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved. -->
 <!--
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Franka Emika Panda model derived from MuJoCo Menagerie.
+Licensed under Apache-2.0; see LICENSE in this directory.
 -->
 
 # Franka Emika Panda Description (MJCF)
@@ -30,10 +14,6 @@ Panda](https://www.franka.de/) developed by [Franka
 Emika](https://www.franka.de/company). It is derived from the [publicly
 available URDF
 description](https://github.com/frankaemika/franka_ros/tree/develop/franka_description).
-
-<p float="left">
-  <img src="panda.png" width="400">
-</p>
 
 ## URDF → MJCF derivation steps
 
@@ -59,7 +39,8 @@ description](https://github.com/frankaemika/franka_ros/tree/develop/franka_descr
 13. Added an equality constraint so that the left finger mimics the position of the right finger.
 14. Added a tendon to split the force equally between both fingers and a
     position actuator acting on this tendon.
-15. Added `scene.xml` which includes the robot, with a textured groundplane, skybox, and haze.
+15. The upstream package also provides a separate `scene.xml`; this course uses
+    `panda.xml` directly inside Genesis.
 
 ## License
 
