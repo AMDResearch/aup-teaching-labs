@@ -1,0 +1,7 @@
+.ipynb_checkpoints/
+Artifacts/
+Videos/
+models/
+helpers/__pycache__/
+*.pyc
+*.gguf
