@@ -23,8 +23,8 @@
     <tr>
       <td rowspan="3"><strong>物理模擬</strong></td>
       <td><a href="projects/Physical-AI/Physical-Simulation/Genesis-Simulation/">Genesis Simulation</a></td>
-      <td>載入並控制 Franka Panda、調整 PD 控制器、求解逆向運動學、執行夾取與放置，並擴展至 GPU 平行模擬環境。</td>
-      <td><img src="assets/readme/genesis.gif" alt="Genesis 平行機器人模擬" width="240"></td>
+      <td>從 Franka 控制、逆向運動學與 GPU 平行模擬，進階至 ROCm 視覺與觸覺感知，最後建立具備互動式即時 HUD、可重現場景配置與安全驗證流程的語言引導代理。</td>
+      <td><img src="assets/readme/gs06.gif" alt="Genesis 語言引導實體 AI 代理" width="240"></td>
     </tr>
     <tr>
       <td><a href="projects/Physical-AI/Physical-Simulation/Mujoco-Simulation/mujoco-torch/">MuJoCo + PyTorch</a></td>
@@ -77,7 +77,7 @@ AUP 感謝以下大學、教授與實驗室的共同投入，讓這些教學內�
 | 南京大學 | [徐经纬教授](https://njudeepengine.github.io/jingweixu/)、[NJUDeepEngine](https://github.com/NJUDeepEngine) | LLM |
 | 國立陽明交通大學 | [謝秉均教授](https://pinghsieh.github.io/)、[Reinforcement Learning and Bandits Lab](https://pinghsieh.github.io/group.html) | 實體 AI、MuJoCo 強化學習 |
 
-我們也感謝支援這些課程的開源專案，包括 [Genesis](https://github.com/Genesis-Embodied-AI/Genesis) 與 [MuJoCo](https://github.com/google-deepmind/mujoco)。
+我們也感謝 AMD AECG 團隊提供部分實體 AI 教學素材，以及支援這些課程的開源專案，包括 [Genesis](https://github.com/Genesis-Embodied-AI/Genesis) 與 [MuJoCo](https://github.com/google-deepmind/mujoco)。各項素材的詳細來源說明與原始 repository 連結，皆附於相關 notebook 中。
 
 ## 授權
 
