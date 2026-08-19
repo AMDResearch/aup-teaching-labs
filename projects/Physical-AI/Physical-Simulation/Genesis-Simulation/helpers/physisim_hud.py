@@ -15,11 +15,12 @@ import json
 import os
 import shutil
 import subprocess
+import tempfile
 import textwrap
 import threading
 import time
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import IO, Any, Mapping, Sequence
 
 import cv2
 import numpy as np
@@ -528,6 +529,7 @@ class FFmpegHUDWriter:
         self.width = int(width)
         self.height = int(height)
         self._process: subprocess.Popen[bytes] | None = None
+        self._stderr_log: IO[bytes] | None = None
         self.frames_written = 0
 
     def open(self) -> "FFmpegHUDWriter":
@@ -559,12 +561,24 @@ class FFmpegHUDWriter:
             "yuv420p",
             self.path,
         ]
+        # A pipe would block ffmpeg once the 64 KiB buffer fills, because stderr
+        # is only drained on failure or shutdown. A temp file has no such limit.
+        self._stderr_log = tempfile.TemporaryFile()
         self._process = subprocess.Popen(
             command,
             stdin=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            stderr=self._stderr_log,
         )
         return self
+
+    def _read_stderr(self) -> str:
+        if self._stderr_log is None:
+            return ""
+        try:
+            self._stderr_log.seek(0)
+            return self._stderr_log.read().decode("utf-8", errors="replace")
+        except ValueError:
+            return ""
 
     def write(self, frame: Any) -> None:
         if self._process is None:
@@ -579,11 +593,7 @@ class FFmpegHUDWriter:
         try:
             self._process.stdin.write(arr.tobytes())
         except BrokenPipeError as error:
-            stderr = (
-                self._process.stderr.read().decode("utf-8", errors="replace")
-                if self._process.stderr is not None
-                else ""
-            )
+            stderr = self._read_stderr()
             raise RuntimeError(f"ffmpeg stopped while writing a frame: {stderr}") from error
         self.frames_written += 1
 
@@ -597,12 +607,11 @@ class FFmpegHUDWriter:
         except subprocess.TimeoutExpired:
             self._process.kill()
             return_code = self._process.wait(timeout=5)
-        stderr = (
-            self._process.stderr.read().decode("utf-8", errors="replace")
-            if self._process.stderr is not None
-            else ""
-        )
+        stderr = self._read_stderr()
         self._process = None
+        if self._stderr_log is not None:
+            self._stderr_log.close()
+            self._stderr_log = None
         if return_code != 0:
             raise RuntimeError(f"ffmpeg exited with status {return_code}: {stderr}")
 
