@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import html
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -172,9 +173,10 @@ class LiveHUDController:
         self.handlers[action] = handler
 
     def set_status(self, message: str, *, error: bool = False) -> None:
+        # Status text can carry planner output, LLM replies and exception strings.
         color = "#d32f2f" if error else "#2e7d32"
         self.status.value = (
-            f"<b>Status:</b> <span style='color:{color}'>{message}</span> "
+            f"<b>Status:</b> <span style='color:{color}'>{html.escape(message)}</span> "
             f"<span style='color:#777'>· captured {self.captured_frames} frames</span>"
         )
 
