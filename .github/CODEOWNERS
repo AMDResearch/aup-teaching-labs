@@ -1,0 +1,3 @@
+# Only takes effect while the main branch ruleset enables
+# "Require review from Code Owners".
+* @sonyyang-tw
