@@ -61,6 +61,15 @@ Four hands-on notebooks introduce practical artificial intelligence through loca
 - Several gigabytes of free disk space for downloaded pose and diffusion models
 - Internet access on the first Fruit Ninja and Art Director run
 
+Ryzen AI APU hosts, including Radeon 8060S (`gfx1151`), must use the Ubuntu 24.04 OEM 6.14 kernel required by the [AUP Learning Cloud prerequisites](https://github.com/AMDResearch/aup-learning-cloud#prerequisites). Install it and reboot before building or running the image:
+
+```shell
+sudo apt update
+sudo apt install linux-oem-6.14
+sudo reboot
+uname -r  # expected: 6.14.x-oem
+```
+
 PyTorch exposes AMD HIP devices through CUDA-compatible API names. In these notebooks, `cuda:0` means the first ROCm device.
 
 ## Build the Environment
