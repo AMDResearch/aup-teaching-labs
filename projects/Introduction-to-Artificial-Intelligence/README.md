@@ -30,28 +30,28 @@ Four hands-on notebooks introduce practical artificial intelligence through loca
 - **Focus**: Interactive story continuation with a local language model
 - **Key Learning**: REST APIs, streamed responses, prompt construction, and local model serving
 - **Implementation**: The notebook sends OpenAI-compatible requests to LM Studio and renders generated story continuations as they arrive.
-- **Notebook**: [`Story_Relay_Robot.ipynb`](Story_Relay_Robot.ipynb)
+- **Notebook**: [`IAI01_Story_Relay_Robot.ipynb`](IAI01_Story_Relay_Robot.ipynb)
 
 ### **Minesweeper Agent**
 
 - **Focus**: The Observe → Plan → Act → Reflect agent loop
 - **Key Learning**: State observation, candidate actions, tool calls, feedback, safety boundaries, and human approval
 - **Implementation**: A self-contained game engine and agent first revise a constrained Minesweeper specification, then use the resulting tool set to play through an interactive widget.
-- **Notebook**: [`Minesweeper_Agent.ipynb`](Minesweeper_Agent.ipynb)
+- **Notebook**: [`IAI02_Minesweeper_Agent.ipynb`](IAI02_Minesweeper_Agent.ipynb)
 
 ### **Fruit Ninja**
 
 - **Focus**: Hands-free interaction driven by pose estimation
 - **Key Learning**: Pose keypoints, ROCm inference, frame processing, collision detection, game state, and rendering
 - **Implementation**: A local YOLOv8 pose model maps wrist keypoints to blades used to slice moving fruit. The first code cell downloads the checksum-pinned model and sprite assets into `runtime_assets/` when needed.
-- **Notebook**: [`Fruit_Ninja.ipynb`](Fruit_Ninja.ipynb)
+- **Notebook**: [`IAI03_Fruit_Ninja.ipynb`](IAI03_Fruit_Ninja.ipynb)
 
 ### **Art Director**
 
 - **Focus**: Prompt expansion and comparison of diffusion generation strategies
 - **Key Learning**: Local LLM prompting, deterministic seeds, multi-step diffusion, one-step generation, GPU memory ownership, and measured runtime comparison
 - **Implementation**: LM Studio expands one intent; Stable Diffusion 1.5 and SD-Turbo receive the same prompt and seed. The first code cell downloads pinned model revisions into `runtime_assets/` and reuses existing snapshots.
-- **Notebook**: [`Art_Director.ipynb`](Art_Director.ipynb)
+- **Notebook**: [`IAI04_Art_Director.ipynb`](IAI04_Art_Director.ipynb)
 
 ## Requirements
 
