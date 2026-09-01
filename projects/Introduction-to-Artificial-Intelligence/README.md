@@ -80,14 +80,14 @@ Start the container with GPU access, expose Jupyter, and mount a writable cache 
 ```shell
 docker run --rm -it \
   --device=/dev/kfd --device=/dev/dri \
-  --group-add video \
+  --group-add "$(stat -c '%g' /dev/kfd)" \
   -p 8888:8888 \
   -v "$(pwd)/runtime_assets:/opt/workspace/Introduction-to-Artificial-Intelligence/runtime_assets" \
   aup-introduction-to-ai \
   jupyter notebook --ip=0.0.0.0 --no-browser
 ```
 
-For webcam use, also pass the host camera device supported by your Docker platform. LM Studio runs on the host; configure its endpoint environment variable in a notebook if `127.0.0.1` is not reachable from the container.
+The supplemental group uses the host `/dev/kfd` group ID, which may differ from the container's `video` or `render` group IDs. For webcam use, also pass the host camera device supported by your Docker platform. LM Studio runs on the host; configure its endpoint environment variable in a notebook if `127.0.0.1` is not reachable from the container.
 
 Open the desired notebook and run its cells from top to bottom. Fruit Ninja and Art Director may take time on their first run while assets download. Later runs reuse valid local files.
 
