@@ -23,20 +23,10 @@ FROM ${BASE_IMAGE}
 USER root
 
 RUN pip3 install --no-cache-dir \
-    "requests>=2.31.0" \
-    "pandas>=2.0.0" \
-    "ipywidgets>=8.1.0" \
-    "numpy>=1.26.0" \
-    "opencv-python-headless>=4.9.0" \
-    "Pillow>=10.0.0" \
     "ultralytics>=8.2.0" \
     "diffusers>=0.30.0" \
     "transformers>=4.44.0" \
-    "accelerate>=0.33.0" \
-    "safetensors>=0.4.0" \
-    "huggingface-hub>=0.24.0" \
-    "sentencepiece>=0.2.0" \
-    "protobuf>=4.25.0"
+    "accelerate>=0.33.0"
 
 RUN mkdir -p /opt/workspace/Introduction-to-Artificial-Intelligence
 COPY . /opt/workspace/Introduction-to-Artificial-Intelligence
