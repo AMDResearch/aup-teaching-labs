@@ -71,6 +71,14 @@ From this directory:
 docker build -t aup-introduction-to-ai .
 ```
 
+Select the base-image tag that matches the host GPU. For example, Radeon AI PRO R9700 (`gfx1201`) uses the `gfx120x` image:
+
+```shell
+docker build \
+  --build-arg BASE_IMAGE=ghcr.io/amdresearch/auplc-base:latest-gfx120x \
+  -t aup-introduction-to-ai .
+```
+
 The Dockerfile extends the shared AUP ROCm image and installs the dependency union for all four notebooks. Model weights and game sprites are intentionally not baked into the image; the relevant notebooks download them at runtime.
 
 ## Run the Labs
