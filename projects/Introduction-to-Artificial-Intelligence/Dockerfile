@@ -22,6 +22,11 @@ FROM ${BASE_IMAGE}
 
 USER root
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN pip3 install --no-cache-dir \
     "ultralytics>=8.2.0" \
     "diffusers>=0.30.0" \
