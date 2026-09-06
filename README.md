@@ -4,10 +4,10 @@
 
 **Hands-on Modern AI and Physical AI courses accelerated by AMD GPUs.**
 
-This repository brings together popular Deep Learning, Computer Vision, LLM,
-and Physical AI topics as runnable notebooks. The course content is validated
-on AMD hardware and includes straightforward Docker environments where
-applicable.
+This repository brings together introductory Artificial Intelligence, Deep
+Learning, Computer Vision, LLM, and Physical AI topics as runnable notebooks.
+The course content is validated on AMD hardware and includes straightforward
+Docker environments where applicable.
 
 ## Physical AI
 
@@ -56,11 +56,12 @@ to embodied intelligence and deployment:
 
 ## More AI Courses
 
-Physical AI is supported by a full progression through computer vision, deep
-learning, and language models:
+Beyond Physical AI, the repository provides learning paths in introductory
+artificial intelligence, computer vision, deep learning, and language models:
 
 | Course | Journey |
 |---|---|
+| [**Introduction to Artificial Intelligence**](projects/Introduction-to-Artificial-Intelligence/) | Local LLM story generation → agent loops and tool use → pose-driven interaction → diffusion image generation |
 | [**Computer Vision**](projects/CV/) | Image classification and ResNet → object detection → segmentation and SAM → tracking → VAE and diffusion models |
 | [**Deep Learning**](projects/DL/) | PCA, SVM, clustering, and trees → neural networks and CNNs → Word2Vec, autoencoders, Seq2Seq, GANs, and Transformers |
 | [**LLM from Scratch**](projects/LLM/) | Tensor fundamentals and autograd → tokenization and attention → FlashAttention, MoE, LoRA, training, KV cache, and a Tiny LLaMA capstone |

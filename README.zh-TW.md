@@ -4,7 +4,7 @@
 
 **以 AMD GPU 加速的現代 AI 與實體 AI 實作課程。**
 
-本專案將深度學習、電腦視覺、大型語言模型與實體 AI 等熱門主題整理成可直接執行的 Jupyter notebooks。所有課程內容皆於 AMD 硬體上完成驗證，並在適用的課程中提供易於使用的 Docker 環境。
+本專案將人工智慧導論、深度學習、電腦視覺、大型語言模型與實體 AI 等熱門主題整理成可直接執行的 Jupyter notebooks。所有課程內容皆於 AMD 硬體上完成驗證，並在適用的課程中提供易於使用的 Docker 環境。
 
 ## 實體 AI
 
@@ -52,10 +52,11 @@
 
 ## 更多 AI 課程
 
-除了實體 AI，本專案也提供完整的電腦視覺、深度學習與大型語言模型學習路徑：
+除了實體 AI，本專案也提供人工智慧導論、電腦視覺、深度學習與大型語言模型的完整學習路徑：
 
 | 課程 | 學習路徑 |
 |---|---|
+| [**人工智慧導論**](projects/Introduction-to-Artificial-Intelligence/) | 本地語言模型故事續寫 → 智慧代理迴圈與工具使用 → 姿態驅動互動 → 擴散模型圖像生成 |
 | [**Computer Vision**](projects/CV/) | 影像分類與 ResNet → 物件偵測 → 影像分割與 SAM → 多物件追蹤 → VAE 與擴散模型 |
 | [**Deep Learning**](projects/DL/) | PCA、SVM、分群與決策樹 → 神經網路與 CNN → Word2Vec、自編碼器、Seq2Seq、GAN 與 Transformer |
 | [**從零打造大型語言模型**](projects/LLM/) | Tensor 與自動微分 → Tokenization 與 Attention → FlashAttention、MoE、LoRA、訓練、KV Cache 與 Tiny LLaMA |
