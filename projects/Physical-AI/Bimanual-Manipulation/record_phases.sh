@@ -15,7 +15,7 @@
 #   TARGET_OPEN_CLOSE=10 TARGET_PICK=18         # the defaults; only affect the printed targets
 #
 # Only one leader needs to be connected. The other arm is still read and recorded, held at the
-# pose it started in, and its action channels are constant -- trim_dims.py --keep right|left drops
+# pose it started in, and its action channels are constant -- training/trim_dims.py --keep right|left drops
 # them when building the per-arm training sets. So the recording is 17-wide like every other
 # dataset here and the decision about how many policies to train stays open.
 #
@@ -85,7 +85,7 @@ FPS="${FPS:-15}"
 CAMERA_FPS="${CAMERA_FPS:-$FPS}"
 
 # The head and wheels take no part in this task, so leave them un-energised. They are still read,
-# so the observation stays 17-wide; trim_dims.py cuts it to the 12 arm channels before training.
+# so the observation stays 17-wide; training/trim_dims.py cuts it to the 12 arm channels before training.
 HEAD_WHEELS="${HEAD_WHEELS:-0}"
 [ "$HEAD_WHEELS" = "0" ] && ARMS_ONLY=(--no-head-wheels) || ARMS_ONLY=()
 
@@ -162,7 +162,7 @@ echo "    r start cycle    c next phase    x discard cycle    ctrl-c stop"
 # -- which distorts the timestamps of everything recorded.
 # --images-not-video: torchcodec cannot load against this ROCm torch, so a video dataset records
 # fine but cannot be read back.
-python -u "$(dirname "$0")/record_teleop.py" \
+python -u "$(dirname "$0")/data_collect/record_teleop.py" \
   --port1="$PORT1" --port2="$PORT2" \
   --left-leader="$LEFT_LEADER" --left-leader-id=left_leader \
   --right-leader="$RIGHT_LEADER" --right-leader-id=right_leader \

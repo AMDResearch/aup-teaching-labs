@@ -270,9 +270,9 @@ here.
 ## Viewing the cameras
 
 ```bash
-./run.sh python view_cams.py                          # both, 640x480
-./run.sh python view_cams.py --width 320 --height 240 # recommended over SSH
-./run.sh python view_cams.py --cam wrist              # one only
+./run.sh python data_collect/view_cams.py                          # both, 640x480
+./run.sh python data_collect/view_cams.py --width 320 --height 240 # recommended over SSH
+./run.sh python data_collect/view_cams.py --cam wrist              # one only
 ```
 
 Works remotely over `ssh -X`, measured at **12.1 Hz** (29.9 Hz locally). X11 forwarding ships
@@ -285,7 +285,7 @@ machine's.
 LEFT_LEADER=none RIGHT_LEADER=/dev/ttyACM2 ./record_phases.sh blue open,close
 RIGHT_LEADER=none LEFT_LEADER=/dev/ttyACM2 ./record_phases.sh blue pick
 ./run.sh ./record_phases.sh --status        # progress across all nine datasets
-./run.sh python check_phases.py             # quality check
+./run.sh python data_collect/check_phases.py             # quality check
 ```
 
 | key | action |
@@ -325,7 +325,7 @@ take about 12.5 hours; intermediate checkpoints can be evaluated directly.
 ./run.sh ./eval.sh blue 60             # latest checkpoint, blue drawer, 60 s
 ./run.sh ./eval.sh green 60 010000     # a specific checkpoint
 FPS=15 HORIZON=20 ./eval.sh blue
-./run.sh python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
+./run.sh python eval/chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
   --colour blue --checkpoint 005000,020000,005000 --trace /tmp/chain.npz
 ```
 

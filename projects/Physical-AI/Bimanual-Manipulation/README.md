@@ -63,13 +63,13 @@ docker build -t auplc-bimanual .
 ./run.sh ./record_phases.sh blue open,close # right leader: open + close in one take
 RIGHT_LEADER=none LEFT_LEADER=... \
   ./run.sh ./record_phases.sh blue pick     # swap the leader over: record pick
-./run.sh python check_phases.py             # dataset quality
+./run.sh python data_collect/check_phases.py             # dataset quality
 
 # 5. Training
 ./run.sh ./train_pipeline.sh                # prepare + verify + train 10 models
 
 # 6. Eval
-./run.sh python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
+./run.sh python eval/chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
   --colour blue --checkpoint 005000,020000,005000
 ```
 
@@ -100,6 +100,18 @@ three specialists each shown 18 single-colour demonstrations, against one genera
 
 ## Files
 
+The shell scripts are the entry points and stay at the top level; the Python they drive is
+grouped by stage. `common/` exists because `stdin_keyboard.py` is imported by both the recording
+and the evaluation stage, and `verify_env.py` sits at the top with `run.sh` and the `Dockerfile`
+that call it.
+
+```
+record_phases.sh  train_pipeline.sh  eval.sh      # entry points
+run.sh  setup_lerobot.sh  Dockerfile  verify_env.py
+data_collect/  training/  eval/  common/  lerobot_patches/
+```
+
+
 ### Environment and running
 
 | file | purpose |
@@ -115,32 +127,32 @@ three specialists each shown 18 single-colour demonstrations, against one genera
 | file | purpose |
 |---|---|
 | `record_phases.sh` | phase recording — one continuous demonstration written into several datasets (`r` start, `c` cut phase, `x` discard the whole cycle) |
-| `record_teleop.py` | teleop + recording engine (two leaders + keyboard for head/base, live OpenCV view) |
-| `stdin_keyboard.py` | reads the keyboard from stdin under Wayland, replacing the broken pynput path |
-| `check_phases.py` | quality check on the phase datasets: episode counts, dimensions, constant channels, cameras |
-| `delete_episodes.py` | delete episodes and renumber |
+| `data_collect/record_teleop.py` | teleop + recording engine (two leaders + keyboard for head/base, live OpenCV view) |
+| `common/stdin_keyboard.py` | reads the keyboard from stdin under Wayland, replacing the broken pynput path |
+| `data_collect/check_phases.py` | quality check on the phase datasets: episode counts, dimensions, constant channels, cameras |
+| `data_collect/delete_episodes.py` | delete episodes and renumber |
 
 ### Training
 
 | file | purpose |
 |---|---|
 | `train_pipeline.sh` | **main entry point**: trim → merge → fix stats → verify → train 10 models |
-| `trim_dims.py` | 17 → 12 dims (or `--keep left/right` for a single 6-dim arm) |
-| `fix_constant_stats.py` | fix normalisation stats for constant channels (**without this step training fails silently**) |
-| `verify_arms.py` | verify the data before training and refuse to start if it fails (called directly by `train_pipeline.sh`) |
+| `training/trim_dims.py` | 17 → 12 dims (or `--keep left/right` for a single 6-dim arm) |
+| `training/fix_constant_stats.py` | fix normalisation stats for constant channels (**without this step training fails silently**) |
+| `training/verify_arms.py` | verify the data before training and refuse to start if it fails (called directly by `train_pipeline.sh`) |
 
 ### Evaluation
 
 | file | purpose |
 |---|---|
-| `chain_eval.py` | **multi-phase chaining**: connect once, swap only the policy, automatic hand-over, masking, ramped transitions |
+| `eval/chain_eval.py` | **multi-phase chaining**: connect once, swap only the policy, automatic hand-over, masking, ramped transitions |
 | `eval.sh` | single-phase evaluation via `lerobot-rollout` (matching the official path) |
 
 ### Cameras
 
 | file | purpose |
 |---|---|
-| `view_cams.py` | independent preview of both cameras (check framing, focus, lighting) |
+| `data_collect/view_cams.py` | independent preview of both cameras (check framing, focus, lighting) |
 
 ### Installed into lerobot itself
 

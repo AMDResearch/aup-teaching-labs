@@ -245,9 +245,9 @@ config。`eval.sh` 和 `chain_eval.py` 都只對 SmolVLA 加這個 map。訓練�
 ## 看相機
 
 ```bash
-./run.sh python view_cams.py                          # 兩台，640x480
-./run.sh python view_cams.py --width 320 --height 240 # 走 SSH 時建議降解析度
-./run.sh python view_cams.py --cam wrist              # 只看一台
+./run.sh python data_collect/view_cams.py                          # 兩台，640x480
+./run.sh python data_collect/view_cams.py --width 320 --height 240 # 走 SSH 時建議降解析度
+./run.sh python data_collect/view_cams.py --cam wrist              # 只看一台
 ```
 
 `ssh -X` 遠端看得到，實測 **12.1 Hz**（本機 29.9 Hz）。X11 forwarding 傳的是
@@ -259,7 +259,7 @@ config。`eval.sh` 和 `chain_eval.py` 都只對 SmolVLA 加這個 map。訓練�
 LEFT_LEADER=none RIGHT_LEADER=/dev/ttyACM2 ./record_phases.sh blue open,close
 RIGHT_LEADER=none LEFT_LEADER=/dev/ttyACM2 ./record_phases.sh blue pick
 ./run.sh ./record_phases.sh --status        # 九份資料集的進度
-./run.sh python check_phases.py             # 品質檢查
+./run.sh python data_collect/check_phases.py             # 品質檢查
 ```
 
 | 鍵 | 作用 |
@@ -296,7 +296,7 @@ RIGHT_LEADER=none LEFT_LEADER=/dev/ttyACM2 ./record_phases.sh blue pick
 ./run.sh ./eval.sh blue 60             # 最新 checkpoint,藍色抽屜,60 秒
 ./run.sh ./eval.sh green 60 010000     # 指定 checkpoint
 FPS=15 HORIZON=20 ./eval.sh blue
-./run.sh python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
+./run.sh python eval/chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
   --colour blue --checkpoint 005000,020000,005000 --trace /tmp/chain.npz
 ```
 

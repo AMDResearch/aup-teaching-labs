@@ -58,13 +58,13 @@ docker build -t auplc-bimanual .
 ./run.sh ./record_phases.sh blue open,close # 右 leader:一次錄完 open + close
 RIGHT_LEADER=none LEFT_LEADER=... \
   ./run.sh ./record_phases.sh blue pick     # 換左 leader:錄 pick
-./run.sh python check_phases.py             # 資料品質
+./run.sh python data_collect/check_phases.py             # 資料品質
 
 # 5. Training
 ./run.sh ./train_pipeline.sh                # 準備 + 驗證 + 訓練 10 個模型
 
 # 6. Eval
-./run.sh python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
+./run.sh python eval/chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
   --colour blue --checkpoint 005000,020000,005000
 ```
 
@@ -93,6 +93,17 @@ RIGHT_LEADER=none LEFT_LEADER=... \
 
 ## 檔案
 
+shell 腳本是入口,留在最外層;它們驅動的 Python 依階段分資料夾。`common/` 的存在是因為
+`stdin_keyboard.py` 同時被錄製和評估兩個階段 import,而 `verify_env.py` 跟呼叫它的 `run.sh`
+與 `Dockerfile` 放在一起。
+
+```
+record_phases.sh  train_pipeline.sh  eval.sh      # 入口
+run.sh  setup_lerobot.sh  Dockerfile  verify_env.py
+data_collect/  training/  eval/  common/  lerobot_patches/
+```
+
+
 ### 環境與執行
 
 | 檔案 | 用途 |
@@ -108,10 +119,10 @@ RIGHT_LEADER=none LEFT_LEADER=... \
 | 檔案 | 用途 |
 |---|---|
 | `record_phases.sh` | 分段錄製,一個連續示範寫進多個 dataset(`r` 開始、`c` 切段、`x` 丟棄整輪) |
-| `record_teleop.py` | teleop + 錄製引擎(雙 leader + 鍵盤控頭/底盤,OpenCV 即時畫面) |
-| `stdin_keyboard.py` | Wayland 下從 stdin 讀鍵盤,取代失效的 pynput |
-| `check_phases.py` | 分段資料的品質檢查:episode 數、維度、恆定 channel、相機 |
-| `delete_episodes.py` | 刪除 episode 並重新編號 |
+| `data_collect/record_teleop.py` | teleop + 錄製引擎(雙 leader + 鍵盤控頭/底盤,OpenCV 即時畫面) |
+| `common/stdin_keyboard.py` | Wayland 下從 stdin 讀鍵盤,取代失效的 pynput |
+| `data_collect/check_phases.py` | 分段資料的品質檢查:episode 數、維度、恆定 channel、相機 |
+| `data_collect/delete_episodes.py` | 刪除 episode 並重新編號 |
 
 ### 訓練
 
@@ -120,22 +131,22 @@ RIGHT_LEADER=none LEFT_LEADER=... \
 | `run.sh` | 用正確的 GPU / 序列埠 / 相機 / X11 flag 啟動容器(`--check` 先驗環境) |
 | `verify_env.py` | 環境檢查:torch 是不是 ROCm 版、GPU 真的算得動、patch 有沒有生效(由 `train_pipeline.sh` 和 `docker build` 自動呼叫) |
 | `train_pipeline.sh` | **主要入口**:trim → merge → 修 stats → 驗證 → 訓練 10 個模型 |
-| `trim_dims.py` | 17 → 12 維(或 `--keep left/right` 切成單臂 6 維) |
-| `fix_constant_stats.py` | 修正恆定 channel 的正規化統計(**沒有這步訓練會靜默失敗**) |
-| `verify_arms.py` | 訓練前驗證資料,不過就拒絕開始(由 `train_pipeline.sh` 直接呼叫) |
+| `training/trim_dims.py` | 17 → 12 維(或 `--keep left/right` 切成單臂 6 維) |
+| `training/fix_constant_stats.py` | 修正恆定 channel 的正規化統計(**沒有這步訓練會靜默失敗**) |
+| `training/verify_arms.py` | 訓練前驗證資料,不過就拒絕開始(由 `train_pipeline.sh` 直接呼叫) |
 
 ### 評估
 
 | 檔案 | 用途 |
 |---|---|
-| `chain_eval.py` | **多段串接**:連線一次、只換 policy、自動交棒、masking、ramp transition |
+| `eval/chain_eval.py` | **多段串接**:連線一次、只換 policy、自動交棒、masking、ramp transition |
 | `eval.sh` | 單段評估,走 `lerobot-rollout`(和官方路徑一致) |
 
 ### 相機
 
 | 檔案 | 用途 |
 |---|---|
-| `view_cams.py` | 雙相機獨立預覽(確認視角、對焦、光線) |
+| `data_collect/view_cams.py` | 雙相機獨立預覽(確認視角、對焦、光線) |
 
 ### 裝進 lerobot 本體
 

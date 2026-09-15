@@ -87,7 +87,7 @@ status() {
 # unchecked normalisation is what this script exists to prevent.
 if [ "${1:-}" = "--train-only" ]; then
   echo "=== verifying (preparation skipped) ==="
-  "$PY" "$HERE/verify_arms.py" || { echo; echo "ABORTED: fix the above first." >&2; exit 1; }
+  "$PY" "$HERE/training/verify_arms.py" || { echo; echo "ABORTED: fix the above first." >&2; exit 1; }
   SKIP_PREP=1
 else
   SKIP_PREP=0
@@ -103,7 +103,7 @@ for phase in open pick close; do
   done
 done
 [ ${#TRIM[@]} -gt 0 ] || { echo "ERROR: no phase recordings found under $DATA" >&2; exit 1; }
-"$PY" "$HERE/trim_dims.py" "${TRIM[@]}" --keep both --prefix xlerobot_ \
+"$PY" "$HERE/training/trim_dims.py" "${TRIM[@]}" --keep both --prefix xlerobot_ \
   | grep -E '^===|channels|-> ' || exit 1
 
 # --- 2. merge the three pick sets, so SmolVLA sees all three instructions ----------------------
@@ -132,12 +132,12 @@ lerobot-edit-dataset \
 # merged channel a small non-zero std and hide the problem while still poisoning the targets.
 echo
 echo "=== 3/4  repairing normalisation statistics ==="
-"$PY" "$HERE/fix_constant_stats.py" --all-arms || exit 1
+"$PY" "$HERE/training/fix_constant_stats.py" --all-arms || exit 1
 
 # --- 4. verify before spending a night on it ----------------------------------------------------
 echo
 echo "=== 4/4  verifying ==="
-if ! "$PY" "$HERE/verify_arms.py"; then
+if ! "$PY" "$HERE/training/verify_arms.py"; then
   echo
   echo "ABORTED before training: fix the above first." >&2
   exit 1
@@ -234,4 +234,4 @@ fi
 echo
 echo "evaluate with:"
 echo "  ./eval.sh act/open_blue blue 40 005000"
-echo "  python chain_eval.py --stages act_open_blue,act_close_blue --checkpoint 005000"
+echo "  python eval/chain_eval.py --stages act_open_blue,act_close_blue --checkpoint 005000"

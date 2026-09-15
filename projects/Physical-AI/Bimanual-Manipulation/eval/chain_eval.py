@@ -59,6 +59,11 @@ from lerobot.utils.feature_utils import (
 )
 from lerobot.utils.robot_utils import precise_sleep
 
+import sys
+from pathlib import Path
+# stdin_keyboard is shared with the other stages, so it lives in common/ rather than in
+# this folder. Scripts are run by path, which puts only their own directory on sys.path.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "common"))
 from stdin_keyboard import StdinKeyboardTeleop
 
 OUT_BASE = Path.home() / "lerobot_out"
