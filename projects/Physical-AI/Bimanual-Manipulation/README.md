@@ -1,136 +1,218 @@
 <!-- Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved. -->
 
-# Bimanual Manipulation Course
-
 [中文](README.zh.md) | **English**
 
-Content for the **Bimanual Manipulation** course (image `auplc-bimanual`: PyTorch
-ROCm + lerobot + the XLeRobot driver). A real two-armed robot — two SO-101 arms, a
-pan/tilt head and a three-wheel base, 17 commanded channels — learns to put a cube
-into a drawer: the right arm opens it, the left arm moves the cube in, the right
-arm closes it. Everything runs on AMD ROCm / Strix Halo (gfx1151).
+# XLeRobot — cube to drawer, as a chain of per-arm policies
 
-The interesting decision is that this is **not** one bimanual policy. The task is
-recorded as three phases and trained as a chain of single-arm policies, which is
-what makes it tractable with a single leader arm and tens of demonstrations rather
-than hundreds. `chain_eval.py` then runs the phases back to back on the robot,
-handing over between them.
+Using [LeRobot](https://github.com/huggingface/lerobot) on a dual-arm XLeRobot to do
+"open the drawer → put the red cube in → close the drawer", split into three phases,
+trained separately, and chained together on the real robot.
 
-Unlike the simulation courses in this repository, this lab drives physical
-hardware: USB serial buses, two cameras, and a GPU, all attached to one container.
+Runs on an **AMD GPU (Radeon 8060S / gfx1151)**.
 
-## Setup
+> **This repo does not work on its own.** The XLeRobot driver these scripts import is not in
+> upstream lerobot — `./setup_lerobot.sh` clones it and installs
+> the driver and the four patches for you; [`lerobot_patches/`](lerobot_patches/) explains what each
+> one does. Baseline is commit `95211b98`.
+> Environment rebuild and every trap hit along the way: [SETUP.md](SETUP.md).
+
+---
+
+## Architecture
+
+The whole task is a relay between **two arms**, and only one of them moves at a time:
+
+```
+right: open  →  left: pick  →  right: close
+```
+
+### The key recording decision
+
+`open` and `close` are **recorded inside one continuous demonstration**, switching with `c`
+mid-way — not as two separate recordings. The `close` data has to continue from the state
+`open` ended in, because that is the state the `open` policy actually hands over at run time.
+
+### What happens to the idle arm
+
+Every recording contains **both arms** (only one leader is connected; the other arm stays put).
+So a 12-dim policy reads the idle arm's pose in as a constant and emits it back as a constant —
+neither of which is a decision.
+
+`chain_eval.py` therefore **masks** each phase: the idle arm's input is substituted with the
+fixed pose it held during training, and its output is discarded so it holds position. This is
+equivalent to what you would get by slicing the data down to a single 6-dim arm, without having
+to make the robot advertise only 6 channels.
+
+---
+
+## Pipeline
 
 ```bash
+# 1. this repo
 git clone https://github.com/amd-weiliao/aup-teaching-labs.git ~/aup-teaching-labs
 cd ~/aup-teaching-labs/projects/Physical-AI/Bimanual-Manipulation
 
-./setup_lerobot.sh              # clone lerobot, install the driver, apply the patches
+# 2. prepare lerobot (driver + the four patches; re-runnable, --check only reports)
+./setup_lerobot.sh
+
+# 3. build the image
 docker build -t auplc-bimanual .
-./run.sh --check                # eight environment checks
+./run.sh --check                            # eight environment checks
+
+# 4. Data Collection
+./run.sh ./record_phases.sh blue open,close # right leader: open + close in one take
+RIGHT_LEADER=none LEFT_LEADER=... \
+  ./run.sh ./record_phases.sh blue pick     # swap the leader over: record pick
+./run.sh python check_phases.py             # dataset quality
+
+# 5. Training
+./run.sh ./train_pipeline.sh                # prepare + verify + train 10 models
+
+# 6. Eval
+./run.sh python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
+  --colour blue --checkpoint 005000,020000,005000
 ```
 
-`setup_lerobot.sh` is re-runnable and `--check` reports the state without changing
-anything. XLeRobot is not upstream, so a plain lerobot checkout cannot drive this
-robot: the driver goes into `src/lerobot/robots/` and four patches teach the
-official CLI that the robot exists (`lerobot_patches/README.md` explains each).
+### Data
 
-The checkout is kept **outside** this repository, at `~/lerobot` by default, and
-mounted into the container at run time — so the lerobot source you are actually
-running stays readable and editable.
+| | episodes each | driven arm | notes |
+|---|---|---|---|
+| `open_{yellow,blue,green}` | 10 | right | drawer is fixed, trajectories are nearly identical, no need for more |
+| `close_{yellow,blue,green}` | 10 | right | recorded in the same cycle as `open` |
+| `pick_{yellow,blue,green}` | 18 | left | cube on a 3x3 grid, 2 per cell |
+| `pick_all` | 54 | left | three colours merged, all 3 task strings preserved |
 
-## Labs
+Recording is 17-dim (including 2 head + 3 base velocity). `trim_dims.py` cuts it to 12-dim
+(both arms) before training.
 
-Every step runs through `./run.sh`, which starts the container with the hardware
-attached. Nothing is installed on the host.
+### Models
 
-### 1. Record — `./run.sh ./record_phases.sh blue open,close`
+| | architecture | steps | notes |
+|---|---|---|---|
+| `act_{open,close,pick}_{yellow,blue,green}` | ACT | 5000 | 9 of them, checkpoint every 1000 |
+| `smolvla_pick_all` | SmolVLA | 20000 | language-conditioned, checkpoint every 5000 |
 
-One continuous demonstration is written into several datasets. You open the drawer,
-press `c` the moment it is open, then close it, press `c` again. `close` therefore
-starts from exactly the state `open` ends in — which is the state the open policy
-will actually hand over at run time. Recording `close` separately, from a drawer
-opened by hand, would train it on states the open policy never produces, and that
-mismatch is what breaks chained policies.
+`act_pick_*` and `smolvla_pick_all` are **two takes on the same phase**, directly comparable:
+three specialists each shown 18 single-colour demonstrations, against one generalist shown all
+54 but required to read the instruction.
 
-Only one leader arm needs to be connected; swap it over and record `pick`
-separately. `./run.sh python check_phases.py` checks the result: episode counts,
-dimensions, constant channels, cameras.
-
-### 2. Train — `./run.sh ./train_pipeline.sh`
-
-Trim to per-arm dimensions, repair the normalisation statistics, gate on a data
-check, then train ten models: one ACT per phase and colour, plus a
-language-conditioned SmolVLA over all three colours of the pick phase.
-
-That comparison is the point of the project — three specialists each shown 18
-demonstrations of a single drawer, against one model shown all 54 and told which
-drawer in words.
-
-### 3. Evaluate — `./run.sh python chain_eval.py --stages ... --colour blue`
-
-Connects once, swaps policies between phases, masks the idle arm and ramps between
-poses at hand-over. `./run.sh ./eval.sh blue 60` runs a single phase through the
-official `lerobot-rollout` path instead.
-
-## Why `run.sh` exists
-
-The container needs a GPU, two USB serial buses, two cameras and an X server, and
-each flag fails differently when it is missing:
-
-| flag | what happens without it |
-|---|---|
-| `--group-add render` | `/dev/kfd` and `/dev/dri/renderD*` belong to the render group; without it `torch.cuda.is_available()` is False and nothing says why |
-| `--group-add dialout` | `/dev/ttyACM*` belong to dialout and the serial ports cannot be opened |
-| `-v /dev/serial`, `-v /dev/v4l` | `--device` passes the character device but not the by-id / by-path symlinks, and every script addresses hardware by those stable names rather than by `ttyACM0` |
-| `-e DISPLAY`, `-v /tmp/.X11-unix` | `cv2.imshow` has no X server (under Wayland this is XWayland, which is why `DISPLAY` is `:0`) |
-
-Devices are attached only when present, so the container still starts with the
-robot unplugged; training needs none of them.
-
-Two directories are mounted: this lab at `/workspace/lab` (the working directory)
-and the lerobot checkout at `/workspace/lerobot`. `PYTHONPATH` puts the mounted
-source ahead of the copy installed in the image, so the patched code is what runs
-and edits on the host take effect without a rebuild. `~/lerobot_data` and
-`~/lerobot_out` are mounted for datasets and checkpoints.
-
-## Notes
-
-**No torch is installed in the image.** The base image ships one built against
-AMD's rocm-sdk wheels (`2.9.1+rocm7.13.0`) and lerobot's declared range accepts it.
-lerobot is installed from the same commit `setup_lerobot.sh` checks out, not from
-PyPI: the two disagree about dependencies at an identical version number, and the
-mismatch is silent — training completes and reproduces its losses exactly while
-writing checkpoints that cannot be loaded back. `verify_env.py` compares the
-running source's own pins against what is installed, which is what catches this.
-
-**Datasets are image-backed.** Recording always passes `--images-not-video`:
-torchcodec 0.11.1 needs torch 2.11 or newer, so the container cannot read
-video-backed datasets. Frames are embedded as PNG in the parquet, at a cost of
-roughly 39 KB per frame.
-
-**`LD_PRELOAD` must be empty.** The rocm-sdk wheels carry their own HSA runtime;
-preloading a system one makes `import torch` die on an undefined symbol that looks
-like a broken install. `TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1` is set in the
-image.
-
-**Recording needs no GPU**, evaluation does. On CPU, ACT costs about 1.9 s per
-inference and SmolVLA about 40 s, against chunks worth 6.7 s and 3.3 s of motion.
+---
 
 ## Files
+
+### Environment and running
 
 | file | purpose |
 |---|---|
 | `setup_lerobot.sh` | prepares the lerobot checkout: pinned commit, driver, four patches (`--check` only reports) |
-| `Dockerfile` · `run.sh` | the environment, and the launcher that attaches the hardware to it |
+| `Dockerfile` | the container environment. Holds no lab code and no lerobot source; both are mounted at run time |
+| `run.sh` | starts the container with the right GPU / serial / camera / X11 flags (`--check` verifies first) |
 | `verify_env.py` | eight environment checks, called by `train_pipeline.sh` and `docker build` |
-| `record_phases.sh` · `record_teleop.py` · `stdin_keyboard.py` | phase recording, teleoperation, and a Wayland-safe keyboard reader |
-| `check_phases.py` · `delete_episodes.py` | dataset quality check, and episode deletion with renumbering |
-| `train_pipeline.sh` · `trim_dims.py` · `fix_constant_stats.py` · `verify_arms.py` | the training pipeline and its preparation and gating steps |
-| `chain_eval.py` · `eval.sh` · `view_cams.py` | chained evaluation, single-phase evaluation, camera preview |
-| `lerobot_patches/` | the XLeRobot driver and the four patches applied to lerobot |
-| `environment.yml` · `build_env.sh` | conda environment for running on the host without the container (see `SETUP.md`) |
+| `environment.yml` · `build_env.sh` | conda environment for running on the host without the container (see SETUP.md) |
 
-`SETUP.md` covers the hardware wiring, the traps found along the way and the
-physical root causes behind them. Chinese translations are in `README.zh.md` and
-`SETUP.zh.md`.
+### Recording
+
+| file | purpose |
+|---|---|
+| `record_phases.sh` | phase recording — one continuous demonstration written into several datasets (`r` start, `c` cut phase, `x` discard the whole cycle) |
+| `record_teleop.py` | teleop + recording engine (two leaders + keyboard for head/base, live OpenCV view) |
+| `stdin_keyboard.py` | reads the keyboard from stdin under Wayland, replacing the broken pynput path |
+| `check_phases.py` | quality check on the phase datasets: episode counts, dimensions, constant channels, cameras |
+| `delete_episodes.py` | delete episodes and renumber |
+
+### Training
+
+| file | purpose |
+|---|---|
+| `train_pipeline.sh` | **main entry point**: trim → merge → fix stats → verify → train 10 models |
+| `trim_dims.py` | 17 → 12 dims (or `--keep left/right` for a single 6-dim arm) |
+| `fix_constant_stats.py` | fix normalisation stats for constant channels (**without this step training fails silently**) |
+| `verify_arms.py` | verify the data before training and refuse to start if it fails (called directly by `train_pipeline.sh`) |
+
+### Evaluation
+
+| file | purpose |
+|---|---|
+| `chain_eval.py` | **multi-phase chaining**: connect once, swap only the policy, automatic hand-over, masking, ramped transitions |
+| `eval.sh` | single-phase evaluation via `lerobot-rollout` (matching the official path) |
+
+### Cameras
+
+| file | purpose |
+|---|---|
+| `view_cams.py` | independent preview of both cameras (check framing, focus, lighting) |
+
+### Installed into lerobot itself
+
+| file | purpose |
+|---|---|
+| `lerobot_patches/xlerobot/` | XLeRobot driver (two SO-101 arms + head + 3-wheel base), goes into `src/lerobot/robots/` |
+| `lerobot_patches/*.patch` | four patches: make the official CLI recognise this robot, and reconcile the state dimensions between record and rollout |
+
+---
+
+## What `chain_eval.py` does
+
+At every hand-over:
+
+1. **Ramped transition** — walk to the next phase's demonstrated start pose, with the duration
+   derived from the distance (20 units/s). Only the joints that phase drives are moved.
+2. **Masking** — the idle arm's input is substituted with the training constant, its output
+   discarded so it holds position.
+3. **Reset** — the new policy does not inherit the previous phase's action chunk.
+
+```
+ENTER  start      c  end this phase early      h  freeze (press again to resume)      x  abort
+```
+
+Auto-advance is on by default and is **counted in ticks, not seconds**: a chunked policy's
+trajectory advances one slot per call, and ACT takes about 34 ms (15 Hz) while SmolVLA takes
+about 320 ms (3 Hz). Timing in seconds would cut the SmolVLA phase off a quarter of the way
+through, which looks like a model failure but is really the timer firing first.
+
+| option | default | notes |
+|---|---|---|
+| `--colour` | inferred from the model name | required for language-conditioned models (`smolvla_pick_all` has no colour in its name) |
+| `--checkpoint` | `last` | a single value, or one per phase (`005000,020000,005000`) |
+| `--auto` | `demo` | tick budget from the demonstration length; or give seconds; `off` for manual |
+| `--ramp-speed` | 20 | hand-over ramp speed, `0` disables it (then expect a current spike) |
+| `--n-action-steps` | 0 | keep whatever the checkpoint was trained with (100 for ACT). **Do not set it to 1** — re-planning every tick lets an out-of-distribution observation sustain itself and the arm locks up in place |
+| `--max-step` | 0 | per-tick displacement cap. **Off by default** — Feetech torque is proportional to (goal − present), so capping displacement caps torque and the arm can no longer pull against the drawer's resistance |
+| `--trace` | — | per-tick record written as `.npz` (commanded / observed / timestamp) |
+
+---
+
+## Issues
+
+### 1. Why three phases and two architectures
+
+SmolVLA performs poorly on long-horizon tasks. Training on the full
+`right: open → left: pick → right: close` motion as a single data sample lets the two arms'
+movements interfere with each other. So it is split into three smaller tasks: during
+`open`/`close` the cabinet is fixed and the arm trajectory is fairly consistent, so ACT is used;
+during `pick` the target cube can appear in different positions and more generalisation is
+needed, so SmolVLA is used.
+
+### 2. Constant channels destroy MEAN_STD normalisation
+
+Only one arm is teleoperated, so the other arm's channels never move at all. The numerator of
+`(x − mean) / (std + 1e-8)` is a float32 rounding residue, and dividing it by 1e-8 turns it into
+a constant target on the order of **10 to 100**.
+
+Training looks completely normal — loss falls smoothly from 0.68 to 0.131, as good as a model
+that actually works. But the largest gradient signal in the entire run is that meaningless
+constant, and the resulting model does not look at its inputs: on the robot it commanded
+**0.2** units of travel over 104 ticks, where the demonstration covers **344**.
+
+`fix_constant_stats.py` sets the std of those channels to 1.0. The criterion is the **raw range
+of variation** being < 1 unit, not the std — one joint had std 0.0127 and slipped past the std
+threshold while only actually moving 0.18 units. After the fix the mean |z| drops from 1.67 to
+0.44, and the same architecture is usable after 1000 steps.
+
+`verify_arms.py` blocks any dataset that has not been fixed.
+
+### 3. Pose jump at hand-over
+
+See "The key recording decision" above. A 48.7-unit step command → current spike → USB adapter
+reset → EIO. The symptoms are identical to a loose cable. Solved by `chain_eval.py`'s ramp
+plus masking.

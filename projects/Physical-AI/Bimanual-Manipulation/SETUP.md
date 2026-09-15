@@ -2,7 +2,7 @@
 
 [中文](SETUP.zh.md) | **English**
 
-# Environment rebuild — XLeRobot + SmolVLA (AMD GPU)
+# Environment and hardware — XLeRobot + SmolVLA (AMD GPU)
 
 The general single-arm steps are in `~/so101_pick/SETUP.md`. This document covers only
 **this dual-arm machine's environment**: hardware addressing, the patches that have to be
@@ -63,11 +63,12 @@ to match.
 
 ---
 
-# The three patches to apply to LeRobot itself
+# The four patches applied to LeRobot itself
 
-XLeRobot is not upstream, and adding `src/lerobot/robots/xlerobot/` is not enough — the official
-CLI reads a hardcoded list. All three sites are in **tracked files**, so `git pull` will
-conflict. Baseline commit `95211b98`.
+`./setup_lerobot.sh` applies these; this section is what it does and why, for when upstream moves
+and a patch stops applying. XLeRobot is not upstream, and adding `src/lerobot/robots/xlerobot/`
+is not enough — the official CLI reads a hardcoded list. Every site is in a **tracked file**, so
+`git pull` will conflict. Baseline commit `95211b98`.
 
 **1. `src/lerobot/robots/utils.py`** — add a branch to `make_robot_from_config`:
 
@@ -135,6 +136,39 @@ All three **mask symptoms**. The root causes are in the last section.
 ---
 
 # Software environment
+
+## The container
+
+`run.sh` starts it with the hardware attached. Two directories are mounted, because they are two
+repositories:
+
+| host | container |
+|---|---|
+| this lab directory | `/workspace/lab` (the working directory) |
+| `~/lerobot` (override with `LEROBOT=`) | `/workspace/lerobot` |
+| `~/lerobot_data`, `~/lerobot_out` | the same names under `/home/jovyan/` |
+
+The image holds no lab code and no lerobot source, only dependencies.
+`PYTHONPATH=/workspace/lerobot/src` puts the mounted source ahead of the copy installed in the
+image, so the patched code is what runs and edits on the host take effect without a rebuild.
+
+The rest of the flag list exists because each item fails differently when it is missing:
+
+| flag | what happens without it |
+|---|---|
+| `--group-add render` | `/dev/kfd` and `/dev/dri/renderD*` belong to the render group; without it `torch.cuda.is_available()` is False and nothing says why |
+| `--group-add dialout` | `/dev/ttyACM*` belong to dialout and the serial ports cannot be opened |
+| `-v /dev/serial`, `-v /dev/v4l` | `--device` passes the character device but not the by-id / by-path symlinks, and every script addresses hardware by those stable names rather than by `ttyACM0` |
+| `-e DISPLAY`, `-v /tmp/.X11-unix` | `cv2.imshow` has no X server (under Wayland this is XWayland, which is why `DISPLAY` is `:0`) |
+
+Devices are attached only when present, so the container still starts with the robot unplugged;
+training needs none of them.
+
+Two consequences worth knowing. A container's supplementary groups are set by the daemon, which
+is root, so **the host user does not have to be in `dialout`**: the serial ports are read-write
+inside even where they are not outside (`sudo usermod -aG dialout $USER` fixes the host too).
+And the host uid is 1000 and the container's `jovyan` is also 1000, so **the mounts need no
+chown** — datasets read and checkpoints written back line up.
 
 ## Running without the container
 
@@ -236,9 +270,9 @@ here.
 ## Viewing the cameras
 
 ```bash
-python view_cams.py                          # both, 640x480
-python view_cams.py --width 320 --height 240 # recommended over SSH
-python view_cams.py --cam wrist              # one only
+./run.sh python view_cams.py                          # both, 640x480
+./run.sh python view_cams.py --width 320 --height 240 # recommended over SSH
+./run.sh python view_cams.py --cam wrist              # one only
 ```
 
 Works remotely over `ssh -X`, measured at **12.1 Hz** (29.9 Hz locally). X11 forwarding ships
@@ -250,8 +284,8 @@ machine's.
 ```bash
 LEFT_LEADER=none RIGHT_LEADER=/dev/ttyACM2 ./record_phases.sh blue open,close
 RIGHT_LEADER=none LEFT_LEADER=/dev/ttyACM2 ./record_phases.sh blue pick
-./record_phases.sh --status        # progress across all nine datasets
-python check_phases.py             # quality check
+./run.sh ./record_phases.sh --status        # progress across all nine datasets
+./run.sh python check_phases.py             # quality check
 ```
 
 | key | action |
@@ -275,10 +309,10 @@ python check_phases.py             # quality check
 ## Train
 
 ```bash
-./train_pipeline.sh --prep-only   # prepare and verify only, no training
-./train_pipeline.sh               # prepare + verify + train
-./train_pipeline.sh --train-only  # skip preparation, train directly
-./train_pipeline.sh --status      # progress
+./run.sh ./train_pipeline.sh --prep-only   # prepare and verify only, no training
+./run.sh ./train_pipeline.sh               # prepare + verify + train
+./run.sh ./train_pipeline.sh --train-only  # skip preparation, train directly
+./run.sh ./train_pipeline.sh --status      # progress
 ```
 
 The preparation stage does trim to 12 dims → merge the three pick colours → fix normalisation
@@ -288,10 +322,10 @@ take about 12.5 hours; intermediate checkpoints can be evaluated directly.
 ## Eval
 
 ```bash
-./eval.sh blue 60             # latest checkpoint, blue drawer, 60 s
-./eval.sh green 60 010000     # a specific checkpoint
+./run.sh ./eval.sh blue 60             # latest checkpoint, blue drawer, 60 s
+./run.sh ./eval.sh green 60 010000     # a specific checkpoint
 FPS=15 HORIZON=20 ./eval.sh blue
-python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
+./run.sh python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
   --colour blue --checkpoint 005000,020000,005000 --trace /tmp/chain.npz
 ```
 
@@ -447,4 +481,5 @@ every time it is driven the whole USB subsystem restarts.
 | training logs | `~/lerobot_out/run_<model>.log`, `train_pipeline.log` |
 | calibration files | `~/.cache/huggingface/lerobot/calibration/robots/xlerobot/` |
 | XLeRobot driver | `<lerobot>/src/lerobot/robots/xlerobot/` |
-| conda env | `~/miniforge3/envs/lerobot/`, snapshot in `environment.yml`, rebuilt with `build_env.sh` |
+| container image | `auplc-bimanual`, built from `Dockerfile`, launched by `run.sh` |
+| conda env (no container) | `~/miniforge3/envs/lerobot/`, snapshot in `environment.yml`, rebuilt with `build_env.sh` |

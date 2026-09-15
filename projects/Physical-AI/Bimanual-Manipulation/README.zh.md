@@ -9,8 +9,8 @@
 
 跑在 **AMD GPU(Radeon 8060S / gfx1151)** 上。
 
-> **這個 repo 不能單獨運作。** 腳本 import 的 XLeRobot 驅動不在上游 lerobot 裡,先參考 [`lerobot_patches/`](lerobot_patches/),
-> 照那裡的說明裝進你的 lerobot checkout。基準是 commit `95211b98`。
+> **這個 repo 不能單獨運作。** 腳本 import 的 XLeRobot 驅動不在上游 lerobot 裡,`./setup_lerobot.sh` 會幫你 clone 並裝好驅動和四個 patch;
+> [`lerobot_patches/`](lerobot_patches/) 說明每個 patch 在做什麼。基準是 commit `95211b98`。
 > 環境重建與所有踩過的坑見 [SETUP.md](SETUP.md)。
 
 ---
@@ -39,27 +39,7 @@ open policy 真正交棒的狀態。
 
 ---
 
-## 目前的 pipeline
-
-```bash
-./setup_lerobot.sh                          # 準備 lerobot(驅動 + 四個 patch)
-docker build -t auplc-bimanual .
-./run.sh --check                            # 八項環境檢查
-
-./run.sh ./record_phases.sh blue open,close # 右 leader:一次錄完 open + close
-RIGHT_LEADER=none LEFT_LEADER=... \
-  ./run.sh ./record_phases.sh blue pick     # 換左 leader:錄 pick
-./run.sh python check_phases.py             # 資料品質
-./run.sh ./train_pipeline.sh                # 準備 + 驗證 + 訓練 10 個模型
-./run.sh python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
-  --colour blue --checkpoint 005000,020000,005000
-```
-
-### 環境:三步,之後全部走 `run.sh`
-
-這個 lab 在 `aup-teaching-labs` 裡;lerobot 是另一個 clone,放在 repo 外面,執行時掛進容器。
-分開的原因是 XLeRobot 不在上游 —— 那份 checkout 必須被改過(驅動 + 四個 patch),
-放在外面你才讀得到、也改得動實際在跑的 lerobot 原始碼。
+## Pipeline
 
 ```bash
 # 1. 這個 repo
@@ -72,53 +52,21 @@ cd ~/aup-teaching-labs/projects/Physical-AI/Bimanual-Manipulation
 
 # 3. 建 image
 docker build -t auplc-bimanual .
+./run.sh --check                            # 八項環境檢查
+
+# 4. Data Collection
+./run.sh ./record_phases.sh blue open,close # 右 leader:一次錄完 open + close
+RIGHT_LEADER=none LEFT_LEADER=... \
+  ./run.sh ./record_phases.sh blue pick     # 換左 leader:錄 pick
+./run.sh python check_phases.py             # 資料品質
+
+# 5. Training
+./run.sh ./train_pipeline.sh                # 準備 + 驗證 + 訓練 10 個模型
+
+# 6. Eval
+./run.sh python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
+  --colour blue --checkpoint 005000,020000,005000
 ```
-
-之後錄製、訓練、評估都在同一個容器:
-
-```bash
-./run.sh --check                             # 先驗環境,八項
-./run.sh ./record_phases.sh blue open,close  # 錄製
-./run.sh ./train_pipeline.sh                 # 訓練
-./run.sh python chain_eval.py --stages ... --colour blue   # 評估
-./run.sh                                     # 互動 shell
-```
-
-image 裡**沒有 lab 程式碼也沒有 lerobot 原始碼**,只有依賴。兩個目錄在執行時掛進去:
-
-| 主機 | 容器 |
-|---|---|
-| 這個 lab 目錄 | `/workspace/lab`(工作目錄) |
-| `~/lerobot`(可用 `LEROBOT=` 改) | `/workspace/lerobot` |
-| `~/lerobot_data`、`~/lerobot_out` | `/home/jovyan/` 下同名 |
-
-`PYTHONPATH=/workspace/lerobot/src` 讓掛進來的原始碼蓋過 image 裡安裝的那份,所以跑的是你打過
-patch 的程式碼,而且兩個 repo 在主機改完都馬上生效,不用重 build。
-
-### 為什麼需要 `run.sh`
-
-flag 很多,而且每一項漏掉都會用不同方式安靜地失敗:
-
-| flag | 少了會怎樣 |
-|---|---|
-| `--group-add render` | `/dev/kfd` 和 `/dev/dri/renderD*` 屬於 `render` 群組。少了它 `torch.cuda.is_available()` 是 `False`,沒有任何其他症狀 |
-| `--group-add dialout` | `/dev/ttyACM*` 屬於 `dialout`,序列埠開不了 |
-| `-v /dev/serial` `-v /dev/v4l` | `--device` 只傳字元裝置,不帶 by-id / by-path symlink —— 而所有腳本都用那些穩定名稱定址,不用 `ttyACM0` |
-| `-e DISPLAY` `-v /tmp/.X11-unix` | `cv2.imshow` 開不出視窗(Wayland 下走 XWayland,所以 `DISPLAY` 是 `:0`) |
-
-裝置只在存在時才傳,所以機器沒插也能進容器訓練。
-
-### 三個實測出來的細節
-
-**容器解掉了主機的 `dialout` 問題。** 容器的補充群組由 docker daemon(root)設定,不需要主機
-使用者本身屬於該群組 —— 即使主機的你開不了 `/dev/ttyACM0`,容器裡是 RW 的。要修主機端:
-`sudo usermod -aG dialout $USER` 再重新登入。
-
-**權限不用處理。** 主機 uid 是 1000、容器 `jovyan` 也是 1000,掛進去的資料集讀得到、
-寫回的 checkpoint 主機直接能用。
-
-**`--images-not-video` 仍然必要。** base image 的 torch 是 2.9.1,而 torchcodec 0.11.1
-需要 ≥2.11,所以容器讀不了影片型資料集。
 
 ### 資料
 

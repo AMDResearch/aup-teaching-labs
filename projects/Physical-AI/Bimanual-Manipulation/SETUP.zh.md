@@ -2,7 +2,7 @@
 
 **中文** | [English](SETUP.md)
 
-# 環境重建 — XLeRobot + SmolVLA（AMD GPU）
+# 環境與硬體 — XLeRobot + SmolVLA（AMD GPU）
 
 單臂版的通用步驟見 `~/so101_pick/SETUP.md`。這份只寫**這台雙臂機器的環境**:
 硬體定址、LeRobot 本體要打的 patch、軟體套件的坑,以及實測查明的實體問題。
@@ -55,7 +55,7 @@ ls -l /dev/v4l/by-path/*-usb-*-video-index0 | grep -v usbv2
 
 ---
 
-# LeRobot 本體要打的三個 patch
+# LeRobot 本體要打的四個 patch
 
 XLeRobot 不在上游，只加 `src/lerobot/robots/xlerobot/` 是不夠的 —— 官方 CLI 讀的是
 硬編碼清單。這三處都在**追蹤檔案**裡，`git pull` 會衝突。基準 commit `95211b98`。
@@ -123,6 +123,36 @@ action_features_hw = dict(robot.action_features)
 ---
 
 # 軟體環境
+
+## 容器
+
+`run.sh` 負責把硬體接上去。掛兩個目錄,因為它們是兩個 repo:
+
+| 主機 | 容器 |
+|---|---|
+| 這個 lab 目錄 | `/workspace/lab`(工作目錄) |
+| `~/lerobot`(可用 `LEROBOT=` 改) | `/workspace/lerobot` |
+| `~/lerobot_data`、`~/lerobot_out` | `/home/jovyan/` 下同名 |
+
+image 裡沒有 lab 程式碼也沒有 lerobot 原始碼,只有依賴。`PYTHONPATH=/workspace/lerobot/src`
+讓掛進來的原始碼蓋過 image 裡安裝的那份,所以跑的是你打過 patch 的程式碼,而且在主機改完
+馬上生效,不用重 build。
+
+其餘 flag 之所以都要給,是因為每一項漏掉都會用不同方式失敗:
+
+| flag | 少了會怎樣 |
+|---|---|
+| `--group-add render` | `/dev/kfd` 和 `/dev/dri/renderD*` 屬於 `render` 群組。少了它 `torch.cuda.is_available()` 是 `False`,沒有任何其他症狀 |
+| `--group-add dialout` | `/dev/ttyACM*` 屬於 `dialout`,序列埠開不了 |
+| `-v /dev/serial` `-v /dev/v4l` | `--device` 只傳字元裝置,不帶 by-id / by-path symlink —— 而所有腳本都用那些穩定名稱定址,不用 `ttyACM0` |
+| `-e DISPLAY` `-v /tmp/.X11-unix` | `cv2.imshow` 開不出視窗(Wayland 下走 XWayland,所以 `DISPLAY` 是 `:0`) |
+
+裝置只在存在時才傳,所以機器沒插也能進容器訓練。
+
+兩個附帶結論。容器的補充群組由 docker daemon(root)設定,所以**主機使用者不需要屬於
+`dialout`** —— 即使主機開不了序列埠,容器裡是 RW 的(要修主機端:`sudo usermod -aG dialout $USER`)。
+另外主機 uid 是 1000、容器 `jovyan` 也是 1000,所以**掛載不用 chown**,資料集讀得到、
+寫回的 checkpoint 主機直接能用。
 
 ## 不用容器時:直接在主機建 conda env
 
@@ -215,9 +245,9 @@ config。`eval.sh` 和 `chain_eval.py` 都只對 SmolVLA 加這個 map。訓練�
 ## 看相機
 
 ```bash
-python view_cams.py                          # 兩台，640x480
-python view_cams.py --width 320 --height 240 # 走 SSH 時建議降解析度
-python view_cams.py --cam wrist              # 只看一台
+./run.sh python view_cams.py                          # 兩台，640x480
+./run.sh python view_cams.py --width 320 --height 240 # 走 SSH 時建議降解析度
+./run.sh python view_cams.py --cam wrist              # 只看一台
 ```
 
 `ssh -X` 遠端看得到，實測 **12.1 Hz**（本機 29.9 Hz）。X11 forwarding 傳的是
@@ -228,8 +258,8 @@ python view_cams.py --cam wrist              # 只看一台
 ```bash
 LEFT_LEADER=none RIGHT_LEADER=/dev/ttyACM2 ./record_phases.sh blue open,close
 RIGHT_LEADER=none LEFT_LEADER=/dev/ttyACM2 ./record_phases.sh blue pick
-./record_phases.sh --status        # 九份資料集的進度
-python check_phases.py             # 品質檢查
+./run.sh ./record_phases.sh --status        # 九份資料集的進度
+./run.sh python check_phases.py             # 品質檢查
 ```
 
 | 鍵 | 作用 |
@@ -251,10 +281,10 @@ python check_phases.py             # 品質檢查
 ## Train
 
 ```bash
-./train_pipeline.sh --prep-only   # 只做準備和驗證,不訓練
-./train_pipeline.sh               # 準備 + 驗證 + 訓練
-./train_pipeline.sh --train-only  # 跳過準備,直接訓練
-./train_pipeline.sh --status      # 進度
+./run.sh ./train_pipeline.sh --prep-only   # 只做準備和驗證,不訓練
+./run.sh ./train_pipeline.sh               # 準備 + 驗證 + 訓練
+./run.sh ./train_pipeline.sh --train-only  # 跳過準備,直接訓練
+./run.sh ./train_pipeline.sh --status      # 進度
 ```
 
 準備階段 trim 成 12 維 → merge 三色 pick → 修正規化統計 → `verify_arms.py`，
@@ -263,10 +293,10 @@ python check_phases.py             # 品質檢查
 ## Eval
 
 ```bash
-./eval.sh blue 60             # 最新 checkpoint,藍色抽屜,60 秒
-./eval.sh green 60 010000     # 指定 checkpoint
+./run.sh ./eval.sh blue 60             # 最新 checkpoint,藍色抽屜,60 秒
+./run.sh ./eval.sh green 60 010000     # 指定 checkpoint
 FPS=15 HORIZON=20 ./eval.sh blue
-python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
+./run.sh python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
   --colour blue --checkpoint 005000,020000,005000 --trace /tmp/chain.npz
 ```
 
@@ -408,4 +438,5 @@ USB 子系統重啟。
 | 訓練 log | `~/lerobot_out/run_<model>.log`、`train_pipeline.log` |
 | 校正檔 | `~/.cache/huggingface/lerobot/calibration/robots/xlerobot/` |
 | XLeRobot 驅動 | `<lerobot>/src/lerobot/robots/xlerobot/` |
-| conda env | `~/miniforge3/envs/lerobot/`,快照在 `environment.yml`,重建用 `build_env.sh` |
+| 容器 image | `auplc-bimanual`,由 `Dockerfile` 建,用 `run.sh` 啟動 |
+| conda env(不走容器) | `~/miniforge3/envs/lerobot/`,快照在 `environment.yml`,重建用 `build_env.sh` |
