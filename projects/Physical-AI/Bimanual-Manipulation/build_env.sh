@@ -275,7 +275,13 @@ def check(label, fn):
 check("torch",   lambda: f"{importlib.import_module('torch').__version__}")
 check("gpu",     lambda: (lambda t: f"{t.cuda.is_available()}  {t.cuda.get_device_name(0) if t.cuda.is_available() else ''}")(importlib.import_module("torch")))
 check("triton",  lambda: importlib.import_module("triton").__version__)
-check("cv2 GUI", lambda: "Qt:" in importlib.import_module("cv2").getBuildInformation())
+def cv2_gui():
+    b = importlib.import_module("cv2").getBuildInformation()
+    # The field reads "GUI:   QT5" / "GTK+" on a GUI build and "NONE" on the headless one.
+    # Do not grep for "Qt:" -- that string is never present, so the test always fails.
+    line = next((l for l in b.splitlines() if l.strip().startswith("GUI:")), "")
+    return line.split(":", 1)[1].strip() or "NONE"
+check("cv2 GUI", cv2_gui)
 check("lerobot", lambda: importlib.import_module("lerobot").__file__)
 
 # Expected to fail -- torchcodec is built against upstream torch and its ABI does not match the

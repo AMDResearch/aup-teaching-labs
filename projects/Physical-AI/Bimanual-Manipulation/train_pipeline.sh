@@ -26,7 +26,8 @@ set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 DATA="$HOME/lerobot_data"
 OUT_BASE="$HOME/lerobot_out"
-PY="${PY:-python}"
+# Many images ship python3 without a bare `python` -- the training container is one.
+PY="${PY:-$(command -v python || command -v python3)}"
 COLOURS=(yellow blue green)
 
 ACT_STEPS="${ACT_STEPS:-5000}"
@@ -76,6 +77,11 @@ status() {
 }
 
 [ "${1:-}" = "--status" ] && { status; exit 0; }
+
+# Environment gate, before anything reads a dataset. Without it the first sign of a broken GPU
+# setup is a bare `assert torch.cuda.is_available()` inside get_safe_torch_device -- an
+# AssertionError with no message, raised after the whole preparation stage has already run.
+"$PY" "$HERE/verify_env.py" --train || { echo; echo "ABORTED: fix the environment first." >&2; exit 1; }
 
 # --train-only still verifies: preparation is skippable, but starting a twelve-hour run on
 # unchecked normalisation is what this script exists to prevent.

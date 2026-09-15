@@ -52,6 +52,71 @@ python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
   --colour blue --checkpoint 005000,020000,005000
 ```
 
+### 環境:三步,之後全部走 `run.sh`
+
+這個 lab 在 `aup-teaching-labs` 裡;lerobot 是另一個 clone,放在 repo 外面,執行時掛進容器。
+分開的原因是 XLeRobot 不在上游 —— 那份 checkout 必須被改過(驅動 + 四個 patch),
+放在外面你才讀得到、也改得動實際在跑的 lerobot 原始碼。
+
+```bash
+# 1. 這個 repo
+git clone https://github.com/amd-weiliao/aup-teaching-labs.git ~/aup-teaching-labs
+cd ~/aup-teaching-labs/projects/Physical-AI/Bimanual-Manipulation
+
+# 2. 準備 lerobot(clone 到 ~/lerobot、放驅動、套四個 patch。可重複執行)
+./setup_lerobot.sh
+./setup_lerobot.sh --check      # 只報告狀態,不動任何東西
+
+# 3. 建 image
+docker build -t auplc-bimanual .
+```
+
+之後錄製、訓練、評估都在同一個容器:
+
+```bash
+./run.sh --check                             # 先驗環境,八項
+./run.sh ./record_phases.sh blue open,close  # 錄製
+./run.sh ./train_pipeline.sh                 # 訓練
+./run.sh python chain_eval.py --stages ... --colour blue   # 評估
+./run.sh                                     # 互動 shell
+```
+
+image 裡**沒有 lab 程式碼也沒有 lerobot 原始碼**,只有依賴。兩個目錄在執行時掛進去:
+
+| 主機 | 容器 |
+|---|---|
+| 這個 lab 目錄 | `/workspace/lab`(工作目錄) |
+| `~/lerobot`(可用 `LEROBOT=` 改) | `/workspace/lerobot` |
+| `~/lerobot_data`、`~/lerobot_out` | `/home/jovyan/` 下同名 |
+
+`PYTHONPATH=/workspace/lerobot/src` 讓掛進來的原始碼蓋過 image 裡安裝的那份,所以跑的是你打過
+patch 的程式碼,而且兩個 repo 在主機改完都馬上生效,不用重 build。
+
+### 為什麼需要 `run.sh`
+
+flag 很多,而且每一項漏掉都會用不同方式安靜地失敗:
+
+| flag | 少了會怎樣 |
+|---|---|
+| `--group-add render` | `/dev/kfd` 和 `/dev/dri/renderD*` 屬於 `render` 群組。少了它 `torch.cuda.is_available()` 是 `False`,沒有任何其他症狀 |
+| `--group-add dialout` | `/dev/ttyACM*` 屬於 `dialout`,序列埠開不了 |
+| `-v /dev/serial` `-v /dev/v4l` | `--device` 只傳字元裝置,不帶 by-id / by-path symlink —— 而所有腳本都用那些穩定名稱定址,不用 `ttyACM0` |
+| `-e DISPLAY` `-v /tmp/.X11-unix` | `cv2.imshow` 開不出視窗(Wayland 下走 XWayland,所以 `DISPLAY` 是 `:0`) |
+
+裝置只在存在時才傳,所以機器沒插也能進容器訓練。
+
+### 三個實測出來的細節
+
+**容器解掉了主機的 `dialout` 問題。** 容器的補充群組由 docker daemon(root)設定,不需要主機
+使用者本身屬於該群組 —— 即使主機的你開不了 `/dev/ttyACM0`,容器裡是 RW 的。要修主機端:
+`sudo usermod -aG dialout $USER` 再重新登入。
+
+**權限不用處理。** 主機 uid 是 1000、容器 `jovyan` 也是 1000,掛進去的資料集讀得到、
+寫回的 checkpoint 主機直接能用。
+
+**`--images-not-video` 仍然必要。** base image 的 torch 是 2.9.1,而 torchcodec 0.11.1
+需要 ≥2.11,所以容器讀不了影片型資料集。
+
 ### 資料
 
 | | 每份 episode 數 | 驅動手 | 說明 |
@@ -77,12 +142,15 @@ python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
 
 ## 檔案
 
-### 環境
+### 環境與執行
 
 | 檔案 | 用途 |
 |---|---|
-| `environment.yml` | `conda env export` 的快照(**不能**直接 `conda env create -f` 餵進去,原因見 SETUP.md) |
-| `build_env.sh` | 從快照重建 env:拆掉 pip 區段、ROCm torch 改走 AMD 的 index、lerobot 裝成 editable、最後修 opencv |
+| `setup_lerobot.sh` | 準備 lerobot checkout:clone 到釘住的 commit、放 XLeRobot 驅動、套四個 patch(`--check` 只報告狀態) |
+| `Dockerfile` | 容器環境。不含 lab 程式碼也不含 lerobot 原始碼,兩者執行時掛進來 |
+| `run.sh` | 用正確的 GPU / 序列埠 / 相機 / X11 flag 啟動容器(`--check` 先驗環境) |
+| `verify_env.py` | 八項環境檢查:torch 是不是 ROCm 版、GPU 真的算得動、依賴與原始碼一致、patch 有沒有生效。由 `train_pipeline.sh` 和 `docker build` 自動呼叫 |
+| `environment.yml` · `build_env.sh` | 直接在主機用 conda 建環境的舊路徑,不走容器時才需要(見 SETUP.md) |
 
 ### 錄製
 
@@ -98,6 +166,8 @@ python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
 
 | 檔案 | 用途 |
 |---|---|
+| `run.sh` | 用正確的 GPU / 序列埠 / 相機 / X11 flag 啟動容器(`--check` 先驗環境) |
+| `verify_env.py` | 環境檢查:torch 是不是 ROCm 版、GPU 真的算得動、patch 有沒有生效(由 `train_pipeline.sh` 和 `docker build` 自動呼叫) |
 | `train_pipeline.sh` | **主要入口**:trim → merge → 修 stats → 驗證 → 訓練 10 個模型 |
 | `trim_dims.py` | 17 → 12 維(或 `--keep left/right` 切成單臂 6 維) |
 | `fix_constant_stats.py` | 修正恆定 channel 的正規化統計(**沒有這步訓練會靜默失敗**) |
@@ -107,7 +177,7 @@ python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
 
 | 檔案 | 用途 |
 |---|---|
-| `chain_eval.py` | **多段串接**:連線一次、只換 policy、自動交棒、masking、斜坡過渡 |
+| `chain_eval.py` | **多段串接**:連線一次、只換 policy、自動交棒、masking、ramp transition |
 | `eval.sh` | 單段評估,走 `lerobot-rollout`(和官方路徑一致) |
 
 ### 相機
@@ -129,7 +199,7 @@ python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
 
 每次交棒:
 
-1. **斜坡過渡** — 走到下一段的示範起始姿勢,時間依距離決定(20 units/s)。
+1. **ramp transition** — 走到下一段的示範起始姿勢,時間依距離決定(20 units/s)。
    只移動該段要驅動的關節。
 2. **masking** — 閒置手的輸入頂替成訓練常數,輸出丟棄、原地保持。
 3. **重置** — 新的 policy 不會帶著上一段的 action chunk。
@@ -145,7 +215,7 @@ ENTER  開始      c  提前結束這一段      h  凍結(原地不動,再按�
 | `--colour` | 由模型名推得 | 語言條件模型必填(`smolvla_pick_all` 名字裡沒有顏色) |
 | `--checkpoint` | `last` | 單一值或每段一個(`005000,020000,005000`) |
 | `--auto` | `demo` | 由示範長度決定 tick 預算;或給秒數;`off` 改成手動 |
-| `--ramp-speed` | 20 | 交棒斜坡的速度,`0` 關閉(然後預期電流尖峰) |
+| `--ramp-speed` | 20 | 交棒ramp的速度,`0` 關閉(然後預期電流尖峰) |
 | `--n-action-steps` | 0 | 沿用 checkpoint 原值(ACT 是 100)。**不要調成 1** —— 每 tick 重新決策會讓分布外的觀測自我維持,手臂原地卡死 |
 | `--max-step` | 0 | 每 tick 位移上限。**預設關閉** —— Feetech 力矩正比於 (goal − present),限位移等於限力矩,一碰到抽屜阻力就拉不動 |
 | `--trace` | — | 逐 tick 記錄成 `.npz`(commanded / observed / timestamp) |
@@ -175,4 +245,4 @@ SmolVLA對於長序列任務的表現較差，若把`右手 open  →  左手 pi
 ### 3. 交棒的姿勢跳變
 
 見上方「分段錄製的關鍵決定」。48.7 單位的階躍指令 → 電流尖峰 → USB 轉接器重置 → EIO。
-症狀和線材鬆脫完全一樣。`chain_eval.py` 的斜坡 + masking 解決。
+症狀和線材鬆脫完全一樣。`chain_eval.py` 的ramp + masking 解決。

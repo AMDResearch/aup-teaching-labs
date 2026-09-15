@@ -169,16 +169,25 @@ export TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
 
 `train_pipeline.sh` and `eval.sh` already set this.
 
-## torchcodec will not load in this environment → datasets must be image-based
+## Video-backed vs image-backed datasets → keep `--images-not-video`
 
-`torchcodec 0.11.1` is built against upstream torch; this machine runs `2.12.0+rocm7.14.0` (AMD
-`rocm-sdk` wheels) and the ABI does not match (patching `LD_LIBRARY_PATH` does not help either).
-The effect: **video-based datasets record fine but cannot be read back**, and training dies on
-the first frame fetch.
+The two environments disagree about torchcodec, and a dataset has to be readable in both:
 
-So recording always passes `--images-not-video`, embedding frames as PNG inside the parquet and
-bypassing the decoder entirely. The cost is disk: roughly 39 KB per frame measured, two cameras
-at 30 fps ≈ 200 MB per episode, about 4 GB for 20 episodes.
+| | torch | torchcodec | video-backed datasets |
+|---|---|---|---|
+| host (`build_env.sh`) | 2.12.0+rocm7.14.0 | works | readable |
+| training container (base image) | 2.9.1+rocm7.13.0 | **unusable** | unreadable |
+
+The container case is a genuine ABI mismatch: torchcodec 0.11.1 needs torch 2.11 or newer. So
+recording always passes `--images-not-video`, embedding frames as PNG inside the parquet, which
+both sides can read. The cost is disk: about 39 KB per frame measured, so two cameras at 30 fps
+is roughly 200 MB per episode and about 4 GB for 20 episodes.
+
+One correction to an older conclusion: "torchcodec does not load, the ABI does not match" was a
+misdiagnosis on the host -- the symptom there came from `LD_PRELOAD` breaking torch's ROCm chain
+(previous section). Measured 2026-09-15, with `unset LD_PRELOAD` the host decodes mp4 fine and a
+video-backed `LeRobotDataset` both writes and reads back. The container limitation is real
+though, so the recommendation is unchanged.
 
 ## SmolVLA needs `--rename_map`, ACT does not
 

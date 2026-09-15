@@ -156,14 +156,23 @@ export TORCH_ROCM_AOTRITON_ENABLE_EXPERIMENTAL=1
 
 `train_pipeline.sh` 和 `eval.sh` 已經內建。
 
-## torchcodec 在這個環境載不起來 → 資料集必須是圖片型
+## 影片型 vs 圖片型資料集 → 繼續用 `--images-not-video`
 
-`torchcodec 0.11.1` 是對上游 torch 建的,這台是 `2.12.0+rocm7.14.0`(AMD `rocm-sdk` wheel),
-ABI 不合(補 `LD_LIBRARY_PATH` 也沒用)。影響:**影片型資料集錄得出來但讀不回來**,
-訓練會在第一次取 frame 時死。
+兩個環境的 torchcodec 狀態不同,而資料集要兩邊都讀得到:
 
-所以錄製一律帶 `--images-not-video`，影格以 PNG 內嵌在 parquet，完全繞過解碼器。
-代價是磁碟：實測約 39 KB/張，兩台相機 30 fps ≈ 每集 200 MB，20 集約 4 GB。
+| | torch | torchcodec | 影片型資料集 |
+|---|---|---|---|
+| 主機 (`build_env.sh`) | 2.12.0+rocm7.14.0 | 可用 | 讀得到 |
+| 訓練容器 (base image) | 2.9.1+rocm7.13.0 | **不可用** | 讀不到 |
+
+容器那邊是真的 ABI 不合:torchcodec 0.11.1 需要 torch ≥2.11。所以錄製一律帶
+`--images-not-video`,影格以 PNG 內嵌在 parquet,兩邊都能讀。代價是磁碟:實測約 39 KB/張,
+兩台相機 30 fps ≈ 每集 200 MB,20 集約 4 GB。
+
+順帶更正一個舊結論:先前寫「torchcodec ABI 不合、載不起來」是誤判 —— 在主機上那是
+`LD_PRELOAD` 打壞 torch 的 ROCm 鏈造成的(見上一節)。實測(2026-09-15)主機
+`unset LD_PRELOAD` 後 torchcodec 解得出 mp4,影片型 `LeRobotDataset` 也寫得出讀得回。
+但容器端的限制是真的,所以結論不變。
 
 ## SmolVLA 需要 `--rename_map`，ACT 不需要
 

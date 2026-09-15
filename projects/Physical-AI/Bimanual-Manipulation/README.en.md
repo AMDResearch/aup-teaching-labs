@@ -57,6 +57,76 @@ python chain_eval.py --stages act_open_blue,smolvla_pick_all,act_close_blue \
   --colour blue --checkpoint 005000,020000,005000
 ```
 
+### Environment: three steps, then everything goes through `run.sh`
+
+This lab lives inside `aup-teaching-labs`; lerobot is a separate clone kept outside the repo and
+mounted into the container at run time. They are separate because XLeRobot is not upstream --
+that checkout has to be modified (the driver plus four patches), and keeping it outside means you
+can read and edit the lerobot source you are actually running.
+
+```bash
+# 1. this repo
+git clone https://github.com/amd-weiliao/aup-teaching-labs.git ~/aup-teaching-labs
+cd ~/aup-teaching-labs/projects/Physical-AI/Bimanual-Manipulation
+
+# 2. prepare lerobot (clones to ~/lerobot, adds the driver, applies the four patches; re-runnable)
+./setup_lerobot.sh
+./setup_lerobot.sh --check      # report the state, change nothing
+
+# 3. build the image
+docker build -t auplc-bimanual .
+```
+
+After that, recording, training and evaluation all happen in the same container:
+
+```bash
+./run.sh --check                             # verify the environment first, eight checks
+./run.sh ./record_phases.sh blue open,close  # record
+./run.sh ./train_pipeline.sh                 # train
+./run.sh python chain_eval.py --stages ... --colour blue   # evaluate
+./run.sh                                     # interactive shell
+```
+
+The image holds **no lab code and no lerobot source**, only the dependencies. Two directories are
+mounted in at run time:
+
+| host | container |
+|---|---|
+| this lab directory | `/workspace/lab` (the working directory) |
+| `~/lerobot` (override with `LEROBOT=`) | `/workspace/lerobot` |
+| `~/lerobot_data`, `~/lerobot_out` | the same names under `/home/jovyan/` |
+
+`PYTHONPATH=/workspace/lerobot/src` puts the mounted source ahead of the copy installed in the
+image, so the patched code is what runs, and edits to either repository on the host take effect
+without a rebuild.
+
+### Why `run.sh` exists
+
+The flag list is long, and every item on it fails silently or obscurely when it is missing:
+
+| flag | what happens without it |
+|---|---|
+| `--group-add render` | `/dev/kfd` and `/dev/dri/renderD*` belong to the render group; without it `torch.cuda.is_available()` is False and nothing says why |
+| `--group-add dialout` | `/dev/ttyACM*` belong to dialout, and the serial ports cannot be opened |
+| `-v /dev/serial`, `-v /dev/v4l` | `--device` passes the character device but not the by-id / by-path symlinks, and every script addresses hardware by those stable names rather than by `ttyACM0` |
+| `-e DISPLAY`, `-v /tmp/.X11-unix` | `cv2.imshow` has no X server (under Wayland this is XWayland, which is why `DISPLAY` is `:0`) |
+
+Devices are attached only when they exist, so the container still starts with the robot
+unplugged; training needs none of them.
+
+### Three details, all measured
+
+**The container works around the host's dialout problem.** A container's supplementary groups are
+set by the daemon, which is root, so the host user does not have to be in the group: even where
+you cannot open `/dev/ttyACM0` on the host, it is read-write inside. To fix the host side too,
+`sudo usermod -aG dialout $USER` and log in again.
+
+**The mounts need no chown.** The host uid is 1000 and the container's `jovyan` is also 1000, so
+datasets read and checkpoints written back line up.
+
+**`--images-not-video` is still required.** The base image ships torch 2.9.1 and torchcodec
+0.11.1 needs 2.11 or newer, so the container cannot read video-backed datasets.
+
 ### Data
 
 | | episodes each | driven arm | notes |
@@ -84,12 +154,15 @@ three specialists each shown 18 single-colour demonstrations, against one genera
 
 ## Files
 
-### Environment
+### Environment and running
 
 | file | purpose |
 |---|---|
-| `environment.yml` | a `conda env export` snapshot (**not** something `conda env create -f` can consume directly — see SETUP.en.md for why) |
-| `build_env.sh` | rebuilds the env from that snapshot: splits out the pip section, pulls ROCm torch from AMD's index, installs lerobot editable, repairs opencv last |
+| `setup_lerobot.sh` | prepares the lerobot checkout: clones it at the pinned commit, installs the XLeRobot driver, applies the four patches (`--check` only reports) |
+| `Dockerfile` | the container environment. Holds no lab code and no lerobot source; both are mounted at run time |
+| `run.sh` | starts the container with the right GPU / serial / camera / X11 flags (`--check` verifies the environment first) |
+| `verify_env.py` | eight environment checks: torch is a ROCm build, the GPU actually computes, the installed dependencies match the source, the patches took. Called automatically by `train_pipeline.sh` and `docker build` |
+| `environment.yml` · `build_env.sh` | the older path that builds a conda env directly on the host, needed only when not using the container (see SETUP.en.md) |
 
 ### Recording
 
@@ -105,6 +178,8 @@ three specialists each shown 18 single-colour demonstrations, against one genera
 
 | file | purpose |
 |---|---|
+| `run.sh` | starts the container with the right GPU / serial / camera / X11 flags (`--check` verifies the environment first) |
+| `verify_env.py` | environment check: torch is a ROCm build, the GPU actually computes, the patches took (called automatically by `train_pipeline.sh` and `docker build`) |
 | `train_pipeline.sh` | **main entry point**: trim → merge → fix stats → verify → train 10 models |
 | `trim_dims.py` | 17 → 12 dims (or `--keep left/right` for a single 6-dim arm) |
 | `fix_constant_stats.py` | fix normalisation stats for constant channels (**without this step training fails silently**) |
@@ -114,7 +189,7 @@ three specialists each shown 18 single-colour demonstrations, against one genera
 
 | file | purpose |
 |---|---|
-| `chain_eval.py` | **multi-phase chaining**: connect once, swap only the policy, automatic hand-over, masking, ramped transitions |
+| `chain_eval.py` | **multi-phase chaining**: connect once, swap only the policy, automatic hand-over, masking, ramp transition |
 | `eval.sh` | single-phase evaluation via `lerobot-rollout` (matching the official path) |
 
 ### Cameras
@@ -136,7 +211,7 @@ three specialists each shown 18 single-colour demonstrations, against one genera
 
 At every hand-over:
 
-1. **Ramped transition** — walk to the next phase's demonstrated start pose, with the duration
+1. **Ramp transition** — walk to the next phase's demonstrated start pose, with the duration
    derived from the distance (20 units/s). Only the joints that phase drives are moved.
 2. **Masking** — the idle arm's input is substituted with the training constant, its output
    discarded so it holds position.
