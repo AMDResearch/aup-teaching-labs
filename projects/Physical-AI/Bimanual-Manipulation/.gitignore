@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# datasets, checkpoints and captures live outside the repo -- never commit them
+outputs/
+datasets/
+*.mp4
+*.parquet
+*.safetensors
+*.png
+*.npz

@@ -1,0 +1,12 @@
+diff --git a/src/lerobot/scripts/lerobot_replay.py b/src/lerobot/scripts/lerobot_replay.py
+index b2ab2b73..3f42c141 100644
+--- a/src/lerobot/scripts/lerobot_replay.py
++++ b/src/lerobot/scripts/lerobot_replay.py
+@@ -69,6 +69,7 @@ from lerobot.robots import (  # noqa: F401
+     rebot_b601_follower,
+     so_follower,
+     unitree_g1,
++    xlerobot,
+ )
+ from lerobot.utils.constants import ACTION
+ from lerobot.utils.import_utils import register_third_party_plugins

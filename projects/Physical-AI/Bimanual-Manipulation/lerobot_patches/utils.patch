@@ -1,0 +1,15 @@
+diff --git a/src/lerobot/robots/utils.py b/src/lerobot/robots/utils.py
+index f897a560..c8abfa78 100644
+--- a/src/lerobot/robots/utils.py
++++ b/src/lerobot/robots/utils.py
+@@ -44,6 +44,10 @@ def make_robot_from_config(config: RobotConfig) -> Robot:
+         from .lekiwi import LeKiwi
+ 
+         return LeKiwi(config)
++    elif config.type == "xlerobot":
++        from .xlerobot import XLerobot
++
++        return XLerobot(config)
+     elif config.type == "hope_jr_hand":
+         from .hope_jr import HopeJrHand
+ 

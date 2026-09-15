@@ -1,0 +1,24 @@
+diff --git a/src/lerobot/rollout/context.py b/src/lerobot/rollout/context.py
+index 2bada502..a20c77c0 100644
+--- a/src/lerobot/rollout/context.py
++++ b/src/lerobot/rollout/context.py
+@@ -294,12 +294,15 @@ def build_rollout_context(
+     # ``observation_features`` values are either a tuple (camera shape) or the
+     # ``float`` type itself used as a sentinel for scalar motor features —
+     # see ``dict[str, type | tuple]`` annotation on ``Robot.observation_features``.
++    # LOCAL CHANGE: keep every scalar channel, not just ``.pos``. ``lerobot-record`` builds its
++    # dataset from ``robot.observation_features`` wholesale, so on a robot that also reports
++    # velocities (XLerobot: 12 arm + 2 head ``.pos`` plus 3 base ``.vel``) the recorded state is
++    # 17-wide while the filter below produced 14, and the policy's normalizer refused it.
++    # Dropping the filter makes the rollout tensors match what was recorded and trained on.
+     observation_features_hw = {
+-        k: v
+-        for k, v in all_obs_features.items()
+-        if isinstance(v, tuple) or (v is float and k.endswith(".pos"))
++        k: v for k, v in all_obs_features.items() if isinstance(v, tuple) or v is float
+     }
+-    action_features_hw = {k: v for k, v in robot.action_features.items() if k.endswith(".pos")}
++    action_features_hw = dict(robot.action_features)
+ 
+     # The action side is always needed: sync inference reads action names from
+     # ``dataset_features[ACTION]`` to map policy tensors back to robot actions.
