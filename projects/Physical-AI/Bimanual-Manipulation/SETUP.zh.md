@@ -15,26 +15,39 @@
 
 | 裝置 | 內容 | 定址方式 |
 |---|---|---|
-| `port1` | 左臂 6 顆 + 頭 2 顆（id 1-8） | by-id `usb-1a86_USB_Single_Serial_5B14034094-if00` |
-| `port2` | 右臂 6 顆 + 輪子 3 顆（id 1-9） | by-id `usb-1a86_USB_Single_Serial_5B14115158-if00` |
+| `port1` | 左臂 6 顆 + 頭 2 顆（id 1-8） | 預設 `/dev/ttyACM0` |
+| `port2` | 右臂 6 顆 + 輪子 3 顆（id 1-9） | 預設 `/dev/ttyACM1` |
 | 左 / 右 leader | SO-101 leader | 錄製時才接,`/dev/ttyACM*` |
 | head 相機 | USB Camera 640x480 | by-path `pci-0000:bf:00.4-usb-0:1:...`(獨立 controller) |
 | wrist 相機 | USB Camera 640x480 | by-path `pci-0000:bd:00.4-usb-0:1.3:...` |
 
 共 17 顆 Feetech STS3215，兩條 bus。
 
-## follower bus 必須用 by-id，不能用 `ttyACM` 編號
+## follower bus:用 `/dev/ttyACM*`,跳掉了怎麼救
 
-cdc_acm 在列舉時取**最低的空號**，所以 `/dev/ttyACM0` 不是裝置的屬性。一個掉線
-重連的轉接器會拿到當下任何空著的號碼 —— 實測這台機器在三分鐘內把兩隻手臂對調：
-`3-1.2` 在 11:27 是 `ttyACM0`，11:30 變成 `ttyACM1`。
+腳本預設 `/dev/ttyACM0`(左臂 + 頭)和 `/dev/ttyACM1`(右臂 + 輪),可用 `PORT1=` / `PORT2=` 覆蓋。
 
-之後傳 `--port1=/dev/ttyACM0` 就是在對**另一隻手臂**下指令，而且**不會有任何錯誤**：
-lerobot 的 handshake 只檢查「要的 id 在不在」，9 顆馬達的 bus 完全能通過「需要 8 顆」
-的檢查。每一個關節指令都落在錯的馬達上。
+這些編號不是裝置的屬性。`cdc_acm` 在列舉時取最低的空號,所以一個掉線重連的轉接器會拿到
+當下任何空著的號碼 —— 實測這台機器在三分鐘內把兩隻手臂對調:`3-1.2` 在 11:27 是 `ttyACM0`,
+11:30 變成 `ttyACM1`。
 
-`/dev/serial/by-id/` 對應轉接器自己的序號，換插槽也跟著走。所有腳本都改用它了。
-換轉接器之後到該目錄下重新取得路徑（由馬達數量辨識：8 = 左臂+頭、9 = 右臂+輪）。
+**對調不會報錯。** lerobot 的 handshake 只檢查「要的 id 在不在」,9 顆馬達的 bus 完全能通過
+「需要 8 顆」的檢查。於是每一個關節指令都落在錯的馬達上,而且哪裡都不會有錯誤訊息。
+症狀就是兩隻手臂像是被交換了。
+
+重插通常就夠了。分不出哪個是哪個時,兩條 bus 可以用馬達數辨識 —— 左邊是左臂加頭(8 顆,
+id 1-8),右邊是右臂加三顆輪子(9 顆,id 1-9):
+
+```bash
+./run.sh python common/find_ports.py
+#   /dev/ttyACM0       8 motors   left arm + head
+#   /dev/ttyACM1       9 motors   right arm + wheels
+
+eval "$(./run.sh python common/find_ports.py --export)"   # 設好 PORT1 和 PORT2
+```
+
+另一個選項是 `/dev/serial/by-id/`,那些名稱對應轉接器自己的序號,換插槽也跟著走。
+不想每次重新確認的話,把它們用 `PORT1=` / `PORT2=` 傳進去釘住。
 
 ## 相機必須用 by-path，不能用 by-id
 

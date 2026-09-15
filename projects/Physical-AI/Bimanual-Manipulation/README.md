@@ -128,6 +128,7 @@ data_collect/  training/  eval/  common/  lerobot_patches/
 |---|---|
 | `record_phases.sh` | phase recording — one continuous demonstration written into several datasets (`r` start, `c` cut phase, `x` discard the whole cycle) |
 | `data_collect/record_teleop.py` | teleop + recording engine (two leaders + keyboard for head/base, live OpenCV view) |
+| `common/find_ports.py` | tells the two serial buses apart by motor count, for when `ttyACM` numbering swaps |
 | `common/stdin_keyboard.py` | reads the keyboard from stdin under Wayland, replacing the broken pynput path |
 | `data_collect/check_phases.py` | quality check on the phase datasets: episode counts, dimensions, constant channels, cameras |
 | `data_collect/delete_episodes.py` | delete episodes and renumber |

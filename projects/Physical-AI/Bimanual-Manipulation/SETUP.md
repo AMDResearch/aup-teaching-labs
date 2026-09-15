@@ -18,28 +18,42 @@ failure modes) are in [README.md](README.md) and are not repeated here.**
 
 | device | contents | addressing |
 |---|---|---|
-| `port1` | left arm 6 + head 2 (id 1-8) | by-id `usb-1a86_USB_Single_Serial_5B14034094-if00` |
-| `port2` | right arm 6 + wheels 3 (id 1-9) | by-id `usb-1a86_USB_Single_Serial_5B14115158-if00` |
+| `port1` | left arm 6 + head 2 (id 1-8) | `/dev/ttyACM0` by default |
+| `port2` | right arm 6 + wheels 3 (id 1-9) | `/dev/ttyACM1` by default |
 | left / right leader | SO-101 leader | only connected while recording, `/dev/ttyACM*` |
 | head camera | USB Camera 640x480 | by-path `pci-0000:bf:00.4-usb-0:1:...` (separate controller) |
 | wrist camera | USB Camera 640x480 | by-path `pci-0000:bd:00.4-usb-0:1.3:...` |
 
 17 Feetech STS3215 servos in total, on two buses.
 
-## The follower bus must use by-id, never a `ttyACM` number
+## The follower bus: `/dev/ttyACM*` and how to recover a swap
 
-cdc_acm takes the **lowest free minor** at enumeration time, so `/dev/ttyACM0` is not a property
-of the device. An adapter that drops off and reconnects picks up whatever number happens to be
-free — this machine was measured swapping the two arms within three minutes: `3-1.2` was
-`ttyACM0` at 11:27 and `ttyACM1` at 11:30.
+The scripts default to `/dev/ttyACM0` (left arm + head) and `/dev/ttyACM1` (right arm + wheels),
+overridable with `PORT1=` / `PORT2=`.
 
-Passing `--port1=/dev/ttyACM0` after that means commanding **the other arm**, and there is
-**no error at all**: lerobot's handshake only checks "are the ids I want present", and a bus
-with 9 servos passes a "needs 8" check perfectly. Every joint command lands on the wrong motor.
+Those numbers are not a property of the device. `cdc_acm` hands out the lowest free minor at
+enumeration time, so an adapter that drops off the bus and comes back can take the other arm's
+number — measured on this machine, `3-1.2` was `ttyACM0` at 11:27 and `ttyACM1` at 11:30.
 
-`/dev/serial/by-id/` maps to the adapter's own serial number and follows it across ports. All
-scripts use it now. After replacing an adapter, re-derive the path from that directory (identify
-by motor count: 8 = left arm + head, 9 = right arm + wheels).
+**A swap raises nothing.** lerobot's handshake only checks that the ids it wants are present, and
+a 9-motor bus satisfies a request for 8. Every joint command then lands on the wrong motor, with
+no error anywhere. The symptom is the arms behaving as though exchanged.
+
+Re-plugging is usually enough. When it is not obvious which is which, the two buses are
+distinguishable by motor count — the left carries the left arm and the head (8, ids 1-8), the
+right carries the right arm and the three wheels (9, ids 1-9):
+
+```bash
+./run.sh python common/find_ports.py
+#   /dev/ttyACM0       8 motors   left arm + head
+#   /dev/ttyACM1       9 motors   right arm + wheels
+
+eval "$(./run.sh python common/find_ports.py --export)"   # sets PORT1 and PORT2
+```
+
+`/dev/serial/by-id/` is the other option: those names follow the adapter's own serial number and
+survive re-plugging into a different socket. Pass them through `PORT1=` / `PORT2=` if you would
+rather pin them than re-check.
 
 ## Cameras must use by-path, never by-id
 

@@ -138,9 +138,16 @@ esac
 # out the lowest free minor at enumeration time, so a device that drops off the bus and returns can
 # take a different number -- this rig has been seen swapping the two arms between one run and the
 # next. Passing ttyACM0 after that drives the wrong arm, silently and with no error. Re-derive these
-# from /dev/serial/by-id/ if an adapter is ever replaced (8 motors = left arm + head, 9 = right + wheels).
-PORT1="${PORT1:-/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B14034094-if00}"   # left arm + head
-PORT2="${PORT2:-/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B14115158-if00}"   # right arm + wheels
+# Replaced an adapter, or the arms act exchanged? `python common/find_ports.py` identifies them.
+# cdc_acm hands out the lowest free minor at enumeration time, so these numbers are not a property
+# of the device: an adapter that drops and re-enumerates can take the other arm's number, and
+# nothing raises -- lerobot's handshake only checks the ids it wants are present, and a 9-motor
+# bus satisfies a request for 8, so every joint command lands on the wrong motor. If the arms
+# behave as though exchanged, re-plug, or run `python common/find_ports.py` which tells them
+# apart by motor count (8 = left arm + head, 9 = right arm + wheels) and can export both:
+#   eval "$(python common/find_ports.py --export)"
+PORT1="${PORT1:-/dev/ttyACM0}"   # left arm + head    (8 motors)
+PORT2="${PORT2:-/dev/ttyACM1}"   # right arm + wheels (9 motors)
 BY="/dev/v4l/by-path"
 HEAD_CAM="${HEAD_CAM:-$BY/pci-0000:bf:00.4-usb-0:1:1.0-video-index0}"
 WRIST_CAM="${WRIST_CAM:-$BY/pci-0000:bd:00.4-usb-0:1.3:1.0-video-index0}"

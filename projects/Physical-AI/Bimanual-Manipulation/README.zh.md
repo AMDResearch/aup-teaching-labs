@@ -56,8 +56,7 @@ docker build -t auplc-bimanual .
 
 # 4. Data Collection
 ./run.sh ./record_phases.sh blue open,close # 右 leader:一次錄完 open + close
-RIGHT_LEADER=none LEFT_LEADER=... \
-  ./run.sh ./record_phases.sh blue pick     # 換左 leader:錄 pick
+RIGHT_LEADER=none LEFT_LEADER=/dev/ttyACM2 ./run.sh ./record_phases.sh blue pick     # 換左 leader:錄 pick
 ./run.sh python data_collect/check_phases.py             # 資料品質
 
 # 5. Training
@@ -120,6 +119,7 @@ data_collect/  training/  eval/  common/  lerobot_patches/
 |---|---|
 | `record_phases.sh` | 分段錄製,一個連續示範寫進多個 dataset(`r` 開始、`c` 切段、`x` 丟棄整輪) |
 | `data_collect/record_teleop.py` | teleop + 錄製引擎(雙 leader + 鍵盤控頭/底盤,OpenCV 即時畫面) |
+| `common/find_ports.py` | 用馬達數辨識兩條 serial bus,`ttyACM` 編號對調時用 |
 | `common/stdin_keyboard.py` | Wayland 下從 stdin 讀鍵盤,取代失效的 pynput |
 | `data_collect/check_phases.py` | 分段資料的品質檢查:episode 數、維度、恆定 channel、相機 |
 | `data_collect/delete_episodes.py` | 刪除 episode 並重新編號 |

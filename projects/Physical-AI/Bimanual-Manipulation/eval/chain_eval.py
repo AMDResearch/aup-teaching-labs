@@ -486,9 +486,12 @@ def parse_args():
     # free minor at enumeration, so an adapter that drops off the bus and returns can come back
     # under a different number -- this rig has been seen swapping the two arms between runs, which
     # drives every command onto the wrong motor with no error at all. Re-derive from
-    # /dev/serial/by-id/ if an adapter is replaced (8 motors = left arm + head, 9 = right + wheels).
-    p.add_argument("--port1", default="/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B14034094-if00")
-    p.add_argument("--port2", default="/dev/serial/by-id/usb-1a86_USB_Single_Serial_5B14115158-if00")
+    # `python common/find_ports.py` identifies the buses if an adapter is replaced.
+    # ttyACM numbering is assigned at enumeration, not fixed to a device; if the arms act as
+    # though exchanged, re-plug or run common/find_ports.py, which tells the buses apart by
+    # motor count (8 = left arm + head, 9 = right arm + wheels).
+    p.add_argument("--port1", default="/dev/ttyACM0", help="left arm + head board")
+    p.add_argument("--port2", default="/dev/ttyACM1", help="right arm + wheels board")
     p.add_argument("--robot-id", default=None)
     p.add_argument("--head-camera",
                    default=f"{V4L_BY_PATH}/pci-0000:bf:00.4-usb-0:1:1.0-video-index0")
