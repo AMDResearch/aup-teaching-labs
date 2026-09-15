@@ -1,0 +1,12 @@
+diff --git a/src/lerobot/scripts/lerobot_rollout.py b/src/lerobot/scripts/lerobot_rollout.py
+index 87907072..8b6f3673 100644
+--- a/src/lerobot/scripts/lerobot_rollout.py
++++ b/src/lerobot/scripts/lerobot_rollout.py
+@@ -171,6 +171,7 @@ from lerobot.robots import (  # noqa: F401
+     rebot_b601_follower,
+     so_follower,
+     unitree_g1 as unitree_g1_robot,
++    xlerobot,
+ )
+ from lerobot.rollout import RolloutConfig, build_rollout_context, create_strategy
+ from lerobot.teleoperators import (  # noqa: F401

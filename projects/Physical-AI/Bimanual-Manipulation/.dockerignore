@@ -1,0 +1,9 @@
+.git
+__pycache__
+*.py[cod]
+outputs/
+datasets/
+*.mp4
+*.parquet
+*.safetensors
+*.npz
