@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved.
 # Run the lab container with everything the robot needs attached.
 #
 #   ./run.sh                                   # interactive shell

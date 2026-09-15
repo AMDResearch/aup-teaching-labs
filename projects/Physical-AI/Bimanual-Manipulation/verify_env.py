@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved.
 """Verify the environment can actually run this lab. Exits non-zero if it cannot.
 
     python verify_env.py                # everything: training and the hardware path

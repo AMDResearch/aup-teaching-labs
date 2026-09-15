@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved.
 # Prepare the lerobot checkout this lab runs against. Idempotent -- safe to re-run.
 #
 #   ./setup_lerobot.sh                    # clone/patch ~/lerobot

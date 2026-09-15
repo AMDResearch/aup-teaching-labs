@@ -22,6 +22,7 @@ aup-teaching-labs/
         │   └── Mujoco-Simulation/
         │       ├── mujoco-torch/            # MuJoCo + PyTorch labs + Dockerfile
         │       └── mujoco-MJX/              # MuJoCo MJX labs + Dockerfile
+        ├── Bimanual-Manipulation/           # XLeRobot drawer task on real hardware + Dockerfile
         └── Real-Deployment/
             ├── Robot-Policy-Deployment/     # (planned)
             └── ROS2-Deployment/             # (planned)
@@ -42,10 +43,15 @@ Each lab folder contains its Jupyter notebooks, any required assets, and a `Dock
   - **mujoco-torch** (`.../Mujoco-Simulation/mujoco-torch/`) — Robosuite/MuJoCo with PyTorch: controllers and cameras, Gymnasium and rewards, behavior cloning, SmolVLA fine-tuning, PPO, and cross-domain RL.
   - **mujoco-MJX** (`.../Mujoco-Simulation/mujoco-MJX/`) — MuJoCo MJX: MJCF concepts, rendering and contacts, control and IK, MuJoCo→MJX, parallel rollouts and domain randomization, and MuJoCo Playground PPO.
 
-#### 1-2 Real Deployment
+#### 1-2 Bimanual Manipulation
 
-- **1-2-1 Robot Policy Deployment** — placeholder for upcoming content.
-- **1-2-2 ROS2 Deployment** — placeholder for upcoming content.
+- **1-2-1 XLeRobot Drawer Task** (`projects/Physical-AI/Bimanual-Manipulation/`)
+  A real two-armed robot (two SO-101 arms, a pan/tilt head, a three-wheel base) learns to put a cube into a drawer — recorded as three phases and trained as a chain of single-arm policies rather than one bimanual policy, comparing per-colour ACT specialists against a language-conditioned SmolVLA. Covers teleoperated data collection, the normalisation failure that silently ruins constant channels, and chained evaluation with hand-over on hardware.
+
+#### 1-3 Real Deployment
+
+- **1-3-1 Robot Policy Deployment** — placeholder for upcoming content.
+- **1-3-2 ROS2 Deployment** — placeholder for upcoming content.
 
 ## Other Labs
 
