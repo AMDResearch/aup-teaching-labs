@@ -92,21 +92,45 @@ The Dockerfile extends the shared AUP ROCm image and installs the dependency uni
 
 ## Run the Labs
 
-Start the container with GPU access, expose Jupyter, and mount a writable cache location if you want downloaded assets to survive container replacement. The exact GPU flags depend on the host ROCm installation. A typical Linux launch is:
+Start the container with GPU access and host networking, and mount a writable cache location if you want downloaded assets to survive container replacement. Create the cache directory first: if Docker has to create it, it is owned by `root` and the notebooks cannot write to it. The exact GPU flags depend on the host ROCm installation. A typical Linux launch is:
 
 ```shell
+mkdir -p runtime_assets
 docker run --rm -it \
+  --network host \
   --device=/dev/kfd --device=/dev/dri \
   --group-add "$(stat -c '%g' /dev/kfd)" \
-  -p 8888:8888 \
   -v "$(pwd)/runtime_assets:/opt/workspace/Introduction-to-Artificial-Intelligence/runtime_assets" \
   aup-introduction-to-ai \
-  jupyter notebook --ip=0.0.0.0 --no-browser
+  jupyter notebook --ip=127.0.0.1 --port=8888 --no-browser
 ```
 
-The supplemental group uses the host `/dev/kfd` group ID, which may differ from the container's `video` or `render` group IDs. For webcam use, also pass the host camera device supported by your Docker platform. LM Studio runs on the host; configure its endpoint environment variable in a notebook if `127.0.0.1` is not reachable from the container.
+Open the `http://127.0.0.1:8888/...` URL, including its token, that Jupyter prints. Use `--ip=0.0.0.0` only if you need to reach Jupyter from another machine, and `--port` if 8888 is already in use.
+
+`--network host` matters because LM Studio runs on the host and the notebooks reach it at `http://127.0.0.1:1234` by default; inside a default bridge-network container that address does not reach the host, and the LM Studio steps fail with a connection error.
+
+If you cannot use host networking, point the notebooks at LM Studio explicitly. Story Relay Robot, Minesweeper Agent, and Art Director all read these environment variables:
+
+| Variable | Default | Meaning |
+|----------|---------|---------|
+| `LM_STUDIO_URL` | `http://127.0.0.1:1234/v1/chat/completions` | Full chat-completions URL |
+| `LM_STUDIO_MODEL` | `local-model` | Model name sent in requests. Minesweeper Agent uses the first loaded model reported by LM Studio unless this is set |
+
+For example, with bridge networking, enable **Serve on Local Network** in LM Studio (it listens only on `127.0.0.1` by default) and add these flags to `docker run`:
+
+```shell
+  --add-host=host.docker.internal:host-gateway \
+  -e LM_STUDIO_URL=http://host.docker.internal:1234/v1/chat/completions \
+  -p 8888:8888
+```
+
+When using `-p 8888:8888` instead of `--network host`, start Jupyter with `--ip=0.0.0.0` so the published port is reachable.
+
+The supplemental group uses the host `/dev/kfd` group ID, which may differ from the container's `video` or `render` group IDs. For webcam use, also pass the host camera device and its group, for example `--device=/dev/video0 --group-add "$(stat -c '%g' /dev/video0)"`.
 
 Open the desired notebook and run its cells from top to bottom. Fruit Ninja and Art Director may take time on their first run while assets download. Later runs reuse valid local files.
+
+The first GPU run of each model also compiles kernels, which is slow and happens again in every new container. Expect about 20 seconds for the Fruit Ninja pose model, about 20 seconds for SD-Turbo, and roughly 3 minutes for Stable Diffusion 1.5 on a Radeon 8060S (`gfx1151`). Art Director performs this warm-up before it starts timing, so the printed generation times reflect steady-state speed.
 
 ## External Model Terms
 
