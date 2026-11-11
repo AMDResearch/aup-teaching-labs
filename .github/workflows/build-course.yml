@@ -1,0 +1,169 @@
+# Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+name: Build Course Image
+
+on:
+  workflow_call:
+    inputs:
+      context:
+        description: Course directory containing the Dockerfile and build context
+        required: true
+        type: string
+      image-name:
+        description: Image name, including any fork suffix (e.g. auplc-cv-dev)
+        required: true
+        type: string
+      registry-prefix:
+        description: Registry and namespace for the output image
+        default: ghcr.io/amdresearch
+        type: string
+      base-image:
+        description: GPU base image repository, without a tag
+        default: ghcr.io/amdresearch/auplc-base
+        type: string
+      base-tag:
+        description: Base tag before the GPU suffix (latest, develop, or v1.2.0)
+        default: latest
+        type: string
+      gpu-targets:
+        description: JSON array of GPU target names
+        default: '["gfx1151"]'
+        type: string
+      default-gpu-target:
+        description: Target that also publishes unsuffixed tag aliases
+        default: gfx1151
+        type: string
+      push:
+        description: Push images to the registry (always disabled for PRs)
+        default: false
+        type: boolean
+      version:
+        description: Optional additional image tag for manual builds
+        default: ''
+        type: string
+      disk-cleanup:
+        description: Free runner disk space before building large courses
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: ${{ inputs.image-name }} (${{ matrix.gpu_target }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        gpu_target: ${{ fromJSON(inputs.gpu-targets) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Free disk space
+        if: inputs.disk-cleanup
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Resolve registry host
+        id: registry
+        env:
+          PREFIX: ${{ inputs.registry-prefix }}
+        run: echo "host=${PREFIX%%/*}" >> "$GITHUB_OUTPUT"
+
+      - name: Login to container registry
+        if: inputs.push && github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ steps.registry.outputs.host }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker metadata (target-suffixed tags)
+        id: meta-suffixed
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ inputs.registry-prefix }}/${{ inputs.image-name }}
+          flavor: |
+            latest=false
+            suffix=-${{ matrix.gpu_target }}
+          tags: |
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
+            type=semver,pattern=v{{major}}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=${{ inputs.version }},enable=${{ inputs.version != '' }}
+            type=sha,prefix=sha-
+            type=ref,event=branch,enable=${{ github.ref != 'refs/heads/main' }}
+            type=ref,event=pr
+
+      - name: Docker metadata (default-target aliases)
+        if: matrix.gpu_target == inputs.default-gpu-target
+        id: meta-default
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ inputs.registry-prefix }}/${{ inputs.image-name }}
+          flavor: latest=false
+          tags: |
+            type=semver,pattern=v{{version}}
+            type=semver,pattern=v{{major}}.{{minor}}
+            type=semver,pattern=v{{major}}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=${{ inputs.version }},enable=${{ inputs.version != '' }}
+            type=sha,prefix=sha-
+            type=ref,event=branch,enable=${{ github.ref != 'refs/heads/main' }}
+            type=ref,event=pr
+
+      - name: Merge tags
+        id: tags
+        env:
+          SUFFIXED_TAGS: ${{ steps.meta-suffixed.outputs.tags }}
+          DEFAULT_TAGS: ${{ steps.meta-default.outputs.tags }}
+        run: |
+          {
+            echo 'tags<<EOF'
+            printf '%s\n' "$SUFFIXED_TAGS" "$DEFAULT_TAGS" | sed '/^$/d' | sort -u
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build and push course image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.context }}/Dockerfile
+          push: ${{ inputs.push && github.event_name != 'pull_request' }}
+          tags: ${{ steps.tags.outputs.tags }}
+          labels: ${{ steps.meta-suffixed.outputs.labels }}
+          build-args: |
+            BASE_IMAGE=${{ inputs.base-image }}:${{ inputs.base-tag }}-${{ matrix.gpu_target }}
+          cache-from: type=gha,scope=course-${{ inputs.image-name }}-${{ matrix.gpu_target }}
+          cache-to: type=gha,mode=max,scope=course-${{ inputs.image-name }}-${{ matrix.gpu_target }}
+          provenance: false
