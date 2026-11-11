@@ -25,7 +25,12 @@ FROM ${BASE_IMAGE}
 # Copy related rocm notebooks into the docker
 COPY . /opt/workspace/DL
 
+# Match the kernel names stored in the course notebooks.
 USER root
+RUN python3 -m ipykernel install --prefix=/usr/local --name dl_env \
+        --display-name "Python (dl_env)" \
+    && python3 -m ipykernel install --prefix=/usr/local --name rocm-py312 \
+        --display-name "Python (ROCm)"
 
 RUN cd /opt/workspace/DL/data/FashionMNIST && bash ./download_data.sh
 
