@@ -17,8 +17,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Use a verified ROCm PyTorch image as base
-ARG BASE_IMAGE=ghcr.io/amdresearch/auplc-base:latest
+# Base release comes from base-version.txt; CI passes the resolved image.
+ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
 # Copy related rocm notebooks into the docker
