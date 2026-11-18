@@ -17,7 +17,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-ARG BASE_IMAGE=ghcr.io/amdresearch/auplc-base:latest
+# Base release comes from base-version.txt; CI passes the resolved image.
+ARG BASE_IMAGE
 ARG LLAMA_CPP_REF=8e7f22b67ef4667b4ddd50230771287f328cfb3f
 FROM ubuntu:24.04 AS llama-builder
 
@@ -32,6 +33,8 @@ RUN git clone --filter=blob:none https://github.com/ggml-org/llama.cpp.git /src/
       -DGGML_VULKAN=ON \
       -DGGML_NATIVE=OFF \
       -DLLAMA_CURL=OFF \
+      -DLLAMA_BUILD_UI=OFF \
+      -DLLAMA_USE_PREBUILT_UI=OFF \
       -DBUILD_SHARED_LIBS=OFF && \
     cmake --build /src/llama.cpp/build --target llama-server --parallel
 
