@@ -23,8 +23,7 @@ ARG BASE_IMAGE=ghcr.io/amdresearch/auplc-base:latest
 FROM ${BASE_IMAGE}
 
 # Copy related rocm notebooks into the docker
-COPY ./course_data /opt/workspace/DL
-COPY data/ /opt/workspace/DL/data
+COPY . /opt/workspace/DL
 
 USER root
 
@@ -33,3 +32,4 @@ RUN cd /opt/workspace/DL/data/FashionMNIST && bash ./download_data.sh
 
 RUN chown -R jovyan:1000 /opt/workspace
 USER jovyan
+WORKDIR /opt/workspace/DL

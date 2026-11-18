@@ -55,7 +55,7 @@ RUN pip3 install --no-cache-dir \
 USER root
 
 # Copy related rocm notebooks into the docker
-COPY ./course_data /opt/workspace/LLM
+COPY . /opt/workspace/LLM
 
 # Datasets and pretrained weights are loaded at runtime via Hugging Face Hub
 # (e.g. load_dataset, from_pretrained) into the default HF cache — not baked into the image.
