@@ -41,7 +41,7 @@ USER root
 # 1. System packages: one package per line; '#' starts a comment.
 COPY apt-packages.txt /tmp/auplc-course/apt-packages.txt
 RUN set -eu; \
-    packages="$(sed -e 's/#.*//' /tmp/auplc-course/apt-packages.txt | xargs)"; \
+    packages="$(tr -d '\r' < /tmp/auplc-course/apt-packages.txt | sed -e 's/#.*//' | xargs)"; \
     if [ -n "${packages}" ]; then \
         apt-get update; \
         apt-get install -y --no-install-recommends ${packages}; \
