@@ -30,6 +30,7 @@
   "courses": [
     {"name": "CV", "image": "auplc-cv", "context": "projects/CV"},
     {"name": "DL", "image": "auplc-dl", "context": "projects/DL"},
-    {"name": "LLM", "image": "auplc-llm", "context": "projects/LLM"}
+    {"name": "LLM", "image": "auplc-llm", "context": "projects/LLM"},
+    {"name": "PhySim", "image": "auplc-physim", "context": "projects/Physical-AI/Physical-Simulation/Genesis-Simulation", "disk_cleanup": true}
   ]
 }
