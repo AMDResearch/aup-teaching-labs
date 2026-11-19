@@ -1,0 +1,128 @@
+# Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+name: Build Course Images
+
+# Builds changed courses to check pull requests. Nothing is pushed: AUP Learning
+# Cloud publishes course images from its aup-teaching-labs submodule.
+on:
+  pull_request:
+    paths:
+      - 'projects/**'
+      - '.github/build-config.json'
+      - '.github/workflows/docker-build.yml'
+      - '.github/workflows/build-course.yml'
+      - '.gitattributes'
+  workflow_dispatch:
+    inputs:
+      all-gpu-targets:
+        description: Build every GPU target instead of only the default one
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    name: Select changed courses
+    runs-on: ubuntu-latest
+    outputs:
+      courses: ${{ steps.config.outputs.courses }}
+      gpu-targets: ${{ steps.config.outputs.gpu-targets }}
+      default-gpu-target: ${{ steps.config.outputs.default-gpu-target }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Load config and detect changes
+        id: config
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          ALL_GPU_TARGETS: ${{ inputs.all-gpu-targets }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          config = json.loads(Path('.github/build-config.json').read_text())
+          courses = config['courses']
+          # Manual runs build every course; pull requests build changed courses.
+          if os.environ['EVENT_NAME'] == 'pull_request':
+              head = os.environ['PR_HEAD']
+              base = subprocess.check_output([
+                  'git', 'merge-base', os.environ['PR_BASE'], head
+              ], text=True).strip()
+              paths = subprocess.check_output([
+                  'git', 'diff', '--no-renames', '--name-only', '-z', base, head
+              ]).decode().split('\0')
+              shared = {
+                  '.github/build-config.json',
+                  '.github/workflows/docker-build.yml',
+                  '.github/workflows/build-course.yml',
+                  '.gitattributes',
+              }
+              if not shared.intersection(paths):
+                  courses = [course for course in courses if any(
+                      path.startswith(course['context'].rstrip('/') + '/')
+                      for path in paths
+                  )]
+
+          # Course CI checks that the course builds; LC builds and publishes
+          # every target. Build all targets only when asked on a manual run.
+          targets = [t['name'] for t in config['gpu_targets']]
+          if os.environ.get('ALL_GPU_TARGETS') != 'true':
+              targets = [config['default_gpu_target']]
+
+          outputs = {
+              'courses': json.dumps(courses, separators=(',', ':')),
+              'gpu-targets': json.dumps(targets),
+              'default-gpu-target': config['default_gpu_target'],
+          }
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              for key, value in outputs.items():
+                  print(f'{key}={value}', file=output)
+          PY
+
+  build-courses:
+    name: Build ${{ matrix.course.name }}
+    needs: changes
+    if: needs.changes.outputs.courses != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        course: ${{ fromJSON(needs.changes.outputs.courses) }}
+    uses: ./.github/workflows/build-course.yml
+    with:
+      context: ${{ matrix.course.context }}
+      image-name: ${{ matrix.course.image }}
+      gpu-targets: ${{ needs.changes.outputs.gpu-targets }}
+      default-gpu-target: ${{ needs.changes.outputs.default-gpu-target }}
+      push: false
+      disk-cleanup: ${{ matrix.course.disk_cleanup == true }}

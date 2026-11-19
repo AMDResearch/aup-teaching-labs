@@ -19,6 +19,7 @@
 
 Dockerfile
 .dockerignore
+base-version.txt
 .git
 **/.ipynb_checkpoints
 **/__pycache__
