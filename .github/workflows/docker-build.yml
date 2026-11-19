@@ -30,6 +30,11 @@ on:
       - '.github/workflows/build-course.yml'
       - '.gitattributes'
   workflow_dispatch:
+    inputs:
+      all-gpu-targets:
+        description: Build every GPU target instead of only the default one
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -58,6 +63,7 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           PR_BASE: ${{ github.event.pull_request.base.sha }}
           PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          ALL_GPU_TARGETS: ${{ inputs.all-gpu-targets }}
         run: |
           python3 - <<'PY'
           import json
@@ -88,9 +94,15 @@ jobs:
                       for path in paths
                   )]
 
+          # Course CI checks that the course builds; LC builds and publishes
+          # every target. Build all targets only when asked on a manual run.
+          targets = [t['name'] for t in config['gpu_targets']]
+          if os.environ.get('ALL_GPU_TARGETS') != 'true':
+              targets = [config['default_gpu_target']]
+
           outputs = {
               'courses': json.dumps(courses, separators=(',', ':')),
-              'gpu-targets': json.dumps([t['name'] for t in config['gpu_targets']]),
+              'gpu-targets': json.dumps(targets),
               'default-gpu-target': config['default_gpu_target'],
           }
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
