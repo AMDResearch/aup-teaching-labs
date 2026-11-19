@@ -1,0 +1,32 @@
+# Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# VS Code extensions for this course, installed from Open VSX (code-server's
+# marketplace). One extension ID per line; '#' starts a comment. Leave empty
+# if the base image already provides everything.
+#
+# Pin versions (publisher.name@x.y.z) so course builds are reproducible.
+# Do not list extensions the base already includes (Learning Cloud's
+# dockerfiles/Code/extensions.txt, e.g. ms-python.python, ms-toolsai.jupyter);
+# a duplicate extension ID fails the build. Check the base with:
+#   docker run --rm --entrypoint ls BASE_IMAGE /usr/lib/code-server/lib/vscode/extensions
+#
+# Examples:
+# ms-vscode.cmake-tools
+# llvm-vs-code-extensions.vscode-clangd
