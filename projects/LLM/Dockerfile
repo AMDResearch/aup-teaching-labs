@@ -28,29 +28,33 @@ USER root
 
 # Install course-specific packages system-wide
 RUN pip3 install --no-cache-dir \
-    transformers \    
-    datasets>=2.14.0 \
-    tokenizers>=0.15.0 \
-    accelerate>=0.25.0 \
-    evaluate>=0.4.0 \
+    transformers \
+    "datasets>=2.14.0" \
+    "tokenizers>=0.15.0" \
+    "accelerate>=0.25.0" \
+    "evaluate>=0.4.0" \
     # Parameter-efficient fine-tuning for L8 and L10
-    peft>=0.7.0 \
+    "peft>=0.7.0" \
     # Text processing and NLP utilities
-    sentencepiece>=0.1.99 \
-    protobuf>=3.20.0 \
+    "sentencepiece>=0.1.99" \
+    "protobuf>=3.20.0" \
     # Visualization
-    seaborn>=0.11.0 \
-    plotly>=5.0.0 \
-    kaleido>=0.2.1 \
+    "seaborn>=0.11.0" \
+    "plotly>=5.0.0" \
+    "kaleido>=0.2.1" \
     # Graph visualization for L3 neural network fundamentals
-    torchviz>=0.0.2 \
-    graphviz>=0.20.1 \
+    "torchviz>=0.0.2" \
+    "graphviz>=0.20.1" \
     # Image processing
-    Pillow>=8.3.0 \
-    imageio>=2.9.0 \
+    "Pillow>=8.3.0" \
+    "imageio>=2.9.0" \
     # Additional dependencies for advanced features
-    requests>=2.28.0 \
-    typing-extensions>=4.4.0
+    "requests>=2.28.0" \
+    "typing-extensions>=4.4.0"
+
+# Match the kernel name stored in the course notebooks.
+RUN python3 -m ipykernel install --prefix=/usr/local --name llm \
+    --display-name "Python (llm)"
 
 USER root
 
