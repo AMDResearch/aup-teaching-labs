@@ -36,7 +36,7 @@ RUN git clone --filter=blob:none https://github.com/ggml-org/llama.cpp.git /src/
       -DLLAMA_BUILD_UI=OFF \
       -DLLAMA_USE_PREBUILT_UI=OFF \
       -DBUILD_SHARED_LIBS=OFF && \
-    cmake --build /src/llama.cpp/build --target llama-server --parallel
+    cmake --build /src/llama.cpp/build --target llama-server --parallel "$(nproc)"
 
 FROM ${BASE_IMAGE}
 
