@@ -122,6 +122,8 @@ jobs:
     with:
       context: ${{ matrix.course.context }}
       image-name: ${{ matrix.course.image }}
+      # Courses that do not set base_image build on auplc-base.
+      base-image: ${{ matrix.course.base_image || 'ghcr.io/amdresearch/auplc-base' }}
       gpu-targets: ${{ needs.changes.outputs.gpu-targets }}
       default-gpu-target: ${{ needs.changes.outputs.default-gpu-target }}
       push: false

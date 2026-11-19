@@ -108,9 +108,17 @@ a code image as the override; an `auplc-base` image has no code-server, so the c
 would not start in VS Code.
 
 Official images are published by AUP Learning Cloud, not by these scripts or by
-teaching-labs CI. To build a code-server course in teaching-labs CI, its
-`.github/build-config.json` entry must also select the `auplc-code-gpu` repository;
-the current CI always resolves `auplc-base`.
+teaching-labs CI. Teaching-labs CI builds a course on `auplc-base` unless its
+`.github/build-config.json` entry sets `base_image`; a code-server course selects the
+code image repository there:
+
+```json
+{"name": "MyCodeCourse", "image": "auplc-mycodecourse", "context": "projects/MyCodeCourse", "base_image": "ghcr.io/amdresearch/auplc-code-gpu"}
+```
+
+CI combines that repository with `base-version.txt` and the default GPU target and
+resolves it without registry credentials, so the code image release must be publicly
+readable.
 
 ## Validate the course
 
