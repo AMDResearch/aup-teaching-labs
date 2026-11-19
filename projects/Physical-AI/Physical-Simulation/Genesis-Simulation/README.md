@@ -34,8 +34,17 @@ Run these commands from this directory:
 ```bash
 cd /path/to/aup-teaching-labs/projects/Physical-AI/Physical-Simulation/Genesis-Simulation
 
-docker build -t auplc-physisim:physicalai-genesis .
+BASE_VERSION=$(sed 's/#.*//' base-version.txt | tr -d '[:space:]')
+GPU_TARGET=gfx1151
+
+docker build \
+  --build-arg BASE_IMAGE=ghcr.io/amdresearch/auplc-base:${BASE_VERSION}-${GPU_TARGET} \
+  -t auplc-physisim:physicalai-genesis .
 ```
+
+The image builds on the AUP Learning Cloud base release named in
+`base-version.txt`. Set `GPU_TARGET` to your GPU family: `gfx110x`, `gfx1150`,
+`gfx1151`, `gfx1152`, or `gfx120x`.
 
 The first build may take several minutes and use significant disk space because
 Genesis and its rendering dependencies are included.
