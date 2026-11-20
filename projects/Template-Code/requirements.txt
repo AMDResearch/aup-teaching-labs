@@ -20,8 +20,9 @@
 # Python packages for this course (pip requirements format).
 # Leave empty if the base image already provides everything.
 #
-# Do NOT list torch / torchvision / torchaudio: the base image's ROCm wheels
-# are locked during the build, and replacing them fails the build.
+# GPU bases: do NOT list torch / torchvision / torchaudio: the base image's ROCm
+# wheels are locked during the build, and replacing them fails the build.
+# The cpu base has no torch; a CPU course may add CPU wheels (see README.md).
 # Check what the base already includes before adding packages:
 #   docker run --rm --entrypoint python3 BASE_IMAGE -m pip list
 #

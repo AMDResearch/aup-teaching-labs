@@ -70,9 +70,11 @@ automatically. Leave any list empty when nothing extra is needed.
 
 Package and extension rules:
 
-- The Python package rules of [`../Template`](../Template/README.md) apply: do not
-  list `torch`, `torchvision` or `torchaudio`, and conflicting requirements fail
-  `pip check`. The `cpu` base has no PyTorch.
+- The Python package rules of [`../Template`](../Template/README.md) apply: on GPU
+  bases do not list `torch`, `torchvision` or `torchaudio`, and conflicting
+  requirements fail `pip check`. The `cpu` base has no PyTorch; a CPU course that
+  needs it lists CPU wheels, for example
+  `--extra-index-url https://download.pytorch.org/whl/cpu` and `torch==2.9.1+cpu`.
 - Extensions are installed as built-in extensions in
   `/usr/lib/code-server/lib/vscode/extensions`, like the base's own, so every student
   gets them without anything written to their home directory. Students can still
