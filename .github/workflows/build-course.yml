@@ -35,7 +35,7 @@ on:
         default: ghcr.io/amdresearch
         type: string
       base-image:
-        description: GPU base image repository; the release comes from <context>/base-version.txt
+        description: GPU base image repository (auplc-base, or auplc-code-gpu for code-server courses); the release comes from <context>/base-version.txt
         default: ghcr.io/amdresearch/auplc-base
         type: string
       gpu-targets:
@@ -100,7 +100,7 @@ jobs:
           ref="$BASE_REPO:$version-$GPU_TARGET"
           # Build on the digest so a re-pushed tag cannot change the base mid-run.
           if ! digest=$(docker buildx imagetools inspect "$ref" --format '{{json .Manifest}}' | jq -er .digest); then
-            echo "::error file=$VERSION_FILE::Base image $ref is not published"
+            echo "::error file=$VERSION_FILE::Base image $ref is not published or not publicly readable"
             exit 1
           fi
           echo "image=$ref@$digest" >> "$GITHUB_OUTPUT"
