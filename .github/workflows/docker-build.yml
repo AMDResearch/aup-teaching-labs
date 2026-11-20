@@ -49,8 +49,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       courses: ${{ steps.config.outputs.courses }}
-      gpu-targets: ${{ steps.config.outputs.gpu-targets }}
-      default-gpu-target: ${{ steps.config.outputs.default-gpu-target }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -100,10 +98,17 @@ jobs:
           if os.environ.get('ALL_GPU_TARGETS') != 'true':
               targets = [config['default_gpu_target']]
 
+          # A course with "cpu": true builds only the cpu target. Courses that
+          # do not set base_image build on auplc-base, or auplc-default for cpu.
+          for course in courses:
+              cpu = course.get('cpu') is True
+              course.setdefault('base_image', 'ghcr.io/amdresearch/auplc-default' if cpu
+                                else 'ghcr.io/amdresearch/auplc-base')
+              course['build_targets'] = ['cpu'] if cpu else targets
+              course['default_target'] = 'cpu' if cpu else config['default_gpu_target']
+
           outputs = {
               'courses': json.dumps(courses, separators=(',', ':')),
-              'gpu-targets': json.dumps(targets),
-              'default-gpu-target': config['default_gpu_target'],
           }
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               for key, value in outputs.items():
@@ -122,9 +127,8 @@ jobs:
     with:
       context: ${{ matrix.course.context }}
       image-name: ${{ matrix.course.image }}
-      # Courses that do not set base_image build on auplc-base.
-      base-image: ${{ matrix.course.base_image || 'ghcr.io/amdresearch/auplc-base' }}
-      gpu-targets: ${{ needs.changes.outputs.gpu-targets }}
-      default-gpu-target: ${{ needs.changes.outputs.default-gpu-target }}
+      base-image: ${{ matrix.course.base_image }}
+      gpu-targets: ${{ toJSON(matrix.course.build_targets) }}
+      default-gpu-target: ${{ matrix.course.default_target }}
       push: false
       disk-cleanup: ${{ matrix.course.disk_cleanup == true }}
