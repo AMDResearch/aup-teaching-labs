@@ -53,6 +53,7 @@ RUN set -eu; \
 
 # 2. Python packages. The base image's ROCm torch wheels are locked through a
 # constraints file so pip cannot replace them with CUDA/CPU wheels from PyPI.
+# CPU bases have no torch, so a course may add its own.
 COPY requirements.txt /tmp/auplc-course/requirements.txt
 RUN set -eu; \
     python3 -m pip freeze | grep -iE '^(torch|torchvision|torchaudio)==' > /tmp/auplc-course/constraints.txt || true; \
@@ -63,7 +64,9 @@ RUN set -eu; \
     else \
         echo "requirements.txt lists no packages; skipping pip install"; \
     fi; \
-    python3 -m pip freeze | grep -iE '^(torch|torchvision|torchaudio)==' | diff /tmp/auplc-course/constraints.txt -; \
+    if [ -s /tmp/auplc-course/constraints.txt ]; then \
+        python3 -m pip freeze | grep -iE '^(torch|torchvision|torchaudio)==' | diff /tmp/auplc-course/constraints.txt -; \
+    fi; \
     python3 -m pip check; \
     rm -rf /tmp/auplc-course
 
