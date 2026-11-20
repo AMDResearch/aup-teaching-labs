@@ -35,11 +35,11 @@ on:
         default: ghcr.io/amdresearch
         type: string
       base-image:
-        description: GPU base image repository (auplc-base, or auplc-code-gpu for code-server courses); the release comes from <context>/base-version.txt
+        description: Base image repository (auplc-base or auplc-default, or auplc-code-gpu / auplc-code-cpu for code-server courses); the release comes from <context>/base-version.txt
         default: ghcr.io/amdresearch/auplc-base
         type: string
       gpu-targets:
-        description: JSON array of GPU target names
+        description: JSON array of GPU target names, or ["cpu"] for a CPU base
         default: '["gfx1151"]'
         type: string
       default-gpu-target:
@@ -97,7 +97,12 @@ jobs:
             echo "::error file=$VERSION_FILE::Set one released AUP Learning Cloud version (vX.Y.Z)"
             exit 1
           fi
-          ref="$BASE_REPO:$version-$GPU_TARGET"
+          # CPU bases (auplc-default, auplc-code-cpu) have no target suffix.
+          if [[ "$GPU_TARGET" == cpu ]]; then
+            ref="$BASE_REPO:$version"
+          else
+            ref="$BASE_REPO:$version-$GPU_TARGET"
+          fi
           # Build on the digest so a re-pushed tag cannot change the base mid-run.
           if ! digest=$(docker buildx imagetools inspect "$ref" --format '{{json .Manifest}}' | jq -er .digest); then
             echo "::error file=$VERSION_FILE::Base image $ref is not published or not publicly readable"

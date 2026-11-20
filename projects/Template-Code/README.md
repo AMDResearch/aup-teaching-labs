@@ -110,15 +110,17 @@ would not start in VS Code.
 Official images are published by AUP Learning Cloud, not by these scripts or by
 teaching-labs CI. Teaching-labs CI builds a course on `auplc-base` unless its
 `.github/build-config.json` entry sets `base_image`; a code-server course selects the
-code image repository there:
+code image repository there. `"cpu": true` builds only the `cpu` target, on
+`auplc-default` unless `base_image` is set:
 
 ```json
 {"name": "MyCodeCourse", "image": "auplc-mycodecourse", "context": "projects/MyCodeCourse", "base_image": "ghcr.io/amdresearch/auplc-code-gpu"}
+{"name": "MyCpuCourse", "image": "auplc-mycpucourse", "context": "projects/MyCpuCourse", "base_image": "ghcr.io/amdresearch/auplc-code-cpu", "cpu": true}
 ```
 
-CI combines that repository with `base-version.txt` and the default GPU target and
-resolves it without registry credentials, so the code image release must be publicly
-readable.
+CI combines that repository with `base-version.txt` as `<version>-<target>` for the
+default GPU target, or `<version>` for a `cpu` course, and resolves it without
+registry credentials, so the code image release must be publicly readable.
 
 ## Validate the course
 
