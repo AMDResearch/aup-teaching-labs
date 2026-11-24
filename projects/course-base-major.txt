@@ -17,14 +17,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# AUP Learning Cloud release this course builds on. One value; '#' starts a comment.
-# The build scripts, teaching-labs CI and Learning Cloud all read this file:
-#   GPU targets: ghcr.io/amdresearch/auplc-code-gpu:<version>-<target>
-#   cpu:         ghcr.io/amdresearch/auplc-code-cpu:<version>
+# AUP Learning Cloud major version every course builds on. One value; '#' starts
+# a comment. Teaching-labs CI and the build scripts use the floating base tag
+# for this major, which points at its newest final release:
+#   GPU targets: ghcr.io/amdresearch/auplc-base:<major>-<target>
+#   cpu:         ghcr.io/amdresearch/auplc-default:<major>
 #
-# Use a full release version such as v0.1.0, never latest or vX.Y. A pre-release
-# (e.g. v0.2.0-rc.1) is for dev testing only and must be replaced with a final
-# release before Learning Cloud promotes the course to production.
-#
-# Replace the placeholder below; builds fail until it is a real version.
-vX.Y.Z
+# Learning Cloud selects the exact release for published course images in its
+# own projects/course-base-version.txt. Change this value only when Learning
+# Cloud releases a new major version, and fix any course that breaks on it.
+# A course that cannot use this base yet may pin a release (vX.Y.Z) in its own
+# base-version.override.txt until it is fixed.
+v0

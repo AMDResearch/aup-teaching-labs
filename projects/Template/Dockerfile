@@ -24,7 +24,7 @@
 #   apt-packages.txt  system packages (apt-get install)
 #   requirements.txt  Python packages (pip install -r)
 #   course_data/      materials copied to /opt/workspace/<COURSE_NAME>/
-#   base-version.txt  Learning Cloud release used as BASE_IMAGE
+#   base-version.override.txt  optional: pin a Learning Cloud release (vX.Y.Z)
 #
 # The base already provides ROCm, ROCm PyTorch, JupyterHub singleuser,
 # JupyterLab and the jovyan user (UID 1000, GID 100).
