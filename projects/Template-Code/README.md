@@ -65,8 +65,9 @@ Course authors normally edit only these files; the Dockerfile does not need chan
 | `base-version.override.txt` | Optional. Pins the course to one AUP Learning Cloud release (`vX.Y.Z`) while it cannot use the shared base; see below. Do not add it by default. |
 | `README.md` | Course description and validation notes for maintainers (not copied into the image). |
 
-`<Course>` is the course directory name; the build scripts pass it to the Dockerfile
-automatically. Leave any list empty when nothing extra is needed.
+`<Course>` is the course directory name; the build scripts and CI pass it to the
+Dockerfile, and a plain `docker build` must pass `--build-arg COURSE_NAME=<Course>`.
+Leave any list empty when nothing extra is needed.
 
 Package and extension rules:
 
