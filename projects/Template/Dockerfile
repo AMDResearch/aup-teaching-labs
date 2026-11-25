@@ -32,12 +32,15 @@ ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
 # Folder under /opt/workspace and the landing directory. build.sh / build.ps1
-# set it to the course directory name.
-ARG COURSE_NAME=MyCourse
+# and CI set it to the course directory name.
+ARG COURSE_NAME
 ARG BASE_IMAGE
 LABEL org.opencontainers.image.base.name="${BASE_IMAGE}"
 
 USER root
+
+# Fail early instead of installing the course under a wrong folder.
+RUN test -n "${COURSE_NAME}" || { echo "COURSE_NAME is required: use build.sh / build.ps1 or pass --build-arg COURSE_NAME=<course directory name>" >&2; exit 1; }
 
 # 1. System packages: one package per line; '#' starts a comment.
 COPY apt-packages.txt /tmp/auplc-course/apt-packages.txt

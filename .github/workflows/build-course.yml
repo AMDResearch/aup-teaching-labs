@@ -203,6 +203,15 @@ jobs:
             echo EOF
           } >> "$GITHUB_OUTPUT"
 
+      - name: Resolve course name
+        id: course
+        env:
+          CONTEXT: ${{ inputs.context }}
+        run: |
+          # build.sh / build.ps1 name the course after its directory; match them.
+          dir=${CONTEXT%/}
+          echo "name=${dir##*/}" >> "$GITHUB_OUTPUT"
+
       - name: Build and push course image
         uses: docker/build-push-action@v6
         with:
@@ -216,6 +225,7 @@ jobs:
             org.opencontainers.image.base.digest=${{ steps.base.outputs.digest }}
           build-args: |
             BASE_IMAGE=${{ steps.base.outputs.image }}
+            COURSE_NAME=${{ steps.course.outputs.name }}
           cache-from: type=gha,scope=course-${{ inputs.image-name }}-${{ matrix.gpu_target }}
           cache-to: type=gha,mode=max,scope=course-${{ inputs.image-name }}-${{ matrix.gpu_target }}
           provenance: false
