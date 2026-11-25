@@ -33,6 +33,9 @@ RUN python3 -m ipykernel install --prefix=/usr/local --name dl_env \
     && python3 -m ipykernel install --prefix=/usr/local --name rocm-py312 \
         --display-name "Python (ROCm)"
 
+# imageio: DL11 assembles the GAN training progress GIF
+RUN pip3 install --no-cache-dir imageio
+
 RUN cd /opt/workspace/DL/data/FashionMNIST && bash ./download_data.sh
 
 
