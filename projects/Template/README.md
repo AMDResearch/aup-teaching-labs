@@ -99,17 +99,23 @@ Learning Cloud picks the exact release for the published course images in its ow
 release there than in teaching-labs CI. CI writes the resolved base and digest to the
 job summary and the `org.opencontainers.image.base.name` and
 `org.opencontainers.image.base.digest` labels; to reproduce a past CI build, run the
-workflow manually with that digest in `base-image-ref`.
+workflow manually with that digest in `base-image-ref` and its target in `gpu-target`.
 
 If a course cannot run on the current base yet, add `base-version.override.txt` to the
 course directory with one release such as `v0.1.1`. The scripts, teaching-labs CI and
 Learning Cloud then build that course on the pinned release and print a warning.
 Remove the file as soon as the course works on the shared base.
 
-`--base-version` / `-BaseVersion` uses another release or major for one build, and
+`projects/course-base-major.txt` accepts only a major version (`vX`), and the
+override only a release (`vX.Y.Z`), the form Learning Cloud accepts when it publishes.
+The scripts pull the base before building, so a cached floating tag cannot hide a
+newer release.
+
+`--base-version` / `-BaseVersion` uses another release (`vX.Y.Z`) for one build, and
 `--base-image` / `-BaseImage` a full reference or digest, for example to try a locally
-built base. If the floating tag for your target is not published yet, pass a release
-with `--base-version`. Official images never use these options.
+built base; `--base-image` is not pulled. If the floating tag for your target is not
+published yet, pass a release with `--base-version`. Official images never use these
+options.
 
 `--gpu-target` / `-GpuTarget` labels the course image tag; it does not select or
 build the base. Supported labels: `cpu`, `gfx110x`, `gfx1150`, `gfx1151`
