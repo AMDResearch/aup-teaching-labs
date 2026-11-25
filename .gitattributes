@@ -17,4 +17,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Courses build and run on Linux: commit text files with LF and check them out
+# with LF on every platform. Git detects binary files and leaves them alone.
+* text=auto eol=lf
 *.sh text eol=lf
