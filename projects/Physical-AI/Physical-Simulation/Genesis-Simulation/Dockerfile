@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Base release comes from base-version.txt; CI passes the resolved image.
+# CI passes the base resolved from projects/course-base-major.txt.
 ARG BASE_IMAGE
 ARG LLAMA_CPP_REF=8e7f22b67ef4667b4ddd50230771287f328cfb3f
 FROM ubuntu:24.04 AS llama-builder

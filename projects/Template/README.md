@@ -48,7 +48,7 @@ Course authors normally edit only these files; the Dockerfile does not need chan
 | `course_data/` | Course materials (notebooks, code, small datasets, images). Its contents are copied to `/opt/workspace/<Course>/`, which is the student's landing directory. |
 | `requirements.txt` | Python packages, installed with `pip install -r`. Pin versions (`package==x.y.z`). |
 | `apt-packages.txt` | Ubuntu system packages, installed with `apt-get install`. One per line; `#` starts a comment. |
-| `base-version.txt` | The AUP Learning Cloud release the course builds on, e.g. `v0.1.0`. |
+| `base-version.override.txt` | Optional. Pins the course to one AUP Learning Cloud release (`vX.Y.Z`) while it cannot use the shared base; see below. Do not add it by default. |
 | `README.md` | Course description and validation notes for maintainers (not copied into the image). |
 
 `<Course>` is the course directory name; the build scripts pass it to the Dockerfile
@@ -85,18 +85,37 @@ bash projects/MyCourse/build.sh --image-name my-course --version local --gpu-tar
 Both commands produce `my-course:local-gfx1151`. They use the course directory as
 the build context, including when invoked from another working directory.
 
-The base comes from `base-version.txt`. Each Learning Cloud release tag `vX.Y.Z`
-publishes `ghcr.io/amdresearch/auplc-base:vX.Y.Z-<target>` (and
-`ghcr.io/amdresearch/auplc-default:vX.Y.Z` for `cpu`); the scripts combine the version
-with `--gpu-target` to select it. The template ships with the placeholder `vX.Y.Z`, so
-builds fail until you set a real release such as `v0.1.0`. Do not use `latest` or the
-floating `vX.Y` / `vX` versions, which move with later releases. The same file is
-read by teaching-labs CI and by Learning Cloud when it publishes the course, so
-changing the base is a reviewed change to this file. The course image records the
-base in the `org.opencontainers.image.base.name` label.
+Courses do not choose their base release. The scripts and teaching-labs CI read the
+major version in `projects/course-base-major.txt` (for example `v0`) and build on the
+floating tag for it: `ghcr.io/amdresearch/auplc-base:<major>-<target>`, or
+`ghcr.io/amdresearch/auplc-default:<major>` for `cpu`. Learning Cloud moves that tag
+to its newest final release in the major, so a course always builds on the current
+compatible base. The major changes only when Learning Cloud releases an incompatible
+base; that change is one reviewed edit to `projects/course-base-major.txt`, made
+together with any course fixes.
 
-`--base-image` / `-BaseImage` overrides the file with a full reference or digest, for
-example to try a locally built base. Official images always use `base-version.txt`.
+Learning Cloud picks the exact release for the published course images in its own
+`projects/course-base-version.txt`, so a course may be built on a slightly older
+release there than in teaching-labs CI. CI writes the resolved base and digest to the
+job summary and the `org.opencontainers.image.base.name` and
+`org.opencontainers.image.base.digest` labels; to reproduce a past CI build, run the
+workflow manually with that digest in `base-image-ref` and its target in `gpu-target`.
+
+If a course cannot run on the current base yet, add `base-version.override.txt` to the
+course directory with one release such as `v0.1.1`. The scripts, teaching-labs CI and
+Learning Cloud then build that course on the pinned release and print a warning.
+Remove the file as soon as the course works on the shared base.
+
+`projects/course-base-major.txt` accepts only a major version (`vX`), and the
+override only a release (`vX.Y.Z`), the form Learning Cloud accepts when it publishes.
+The scripts pull the base before building, so a cached floating tag cannot hide a
+newer release.
+
+`--base-version` / `-BaseVersion` uses another release (`vX.Y.Z`) for one build, and
+`--base-image` / `-BaseImage` a full reference or digest, for example to try a locally
+built base; `--base-image` is not pulled. If the floating tag for your target is not
+published yet, pass a release with `--base-version`. Official images never use these
+options.
 
 `--gpu-target` / `-GpuTarget` labels the course image tag; it does not select or
 build the base. Supported labels: `cpu`, `gfx110x`, `gfx1150`, `gfx1151`

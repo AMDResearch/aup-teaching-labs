@@ -62,7 +62,7 @@ Course authors normally edit only these files; the Dockerfile does not need chan
 | `extensions.txt` | Extra VS Code extensions from Open VSX, one ID per line, pinned as `publisher.name@x.y.z`. |
 | `requirements.txt` | Python packages, installed with `pip install -r`. Pin versions (`package==x.y.z`). |
 | `apt-packages.txt` | Ubuntu system packages, installed with `apt-get install`. One per line; `#` starts a comment. |
-| `base-version.txt` | The AUP Learning Cloud release the course builds on, e.g. `v0.1.0`. |
+| `base-version.override.txt` | Optional. Pins the course to one AUP Learning Cloud release (`vX.Y.Z`) while it cannot use the shared base; see below. Do not add it by default. |
 | `README.md` | Course description and validation notes for maintainers (not copied into the image). |
 
 `<Course>` is the course directory name; the build scripts pass it to the Dockerfile
@@ -101,13 +101,13 @@ bash projects/MyCodeCourse/build.sh --image-name my-code-course --version local 
 ./projects/MyCodeCourse/build.ps1 -ImageName my-code-course -Version local -GpuTarget gfx1151
 ```
 
-Both commands produce `my-code-course:local-gfx1151`. The base comes from
-`base-version.txt` combined with `--gpu-target` / `-GpuTarget`, exactly as in
-[`../Template`](../Template/README.md#build-only-the-course-image): the template ships
-the placeholder `vX.Y.Z`, so builds fail until you set a real release, and
-`--base-image` / `-BaseImage` overrides the file with a full reference or digest. Use
-a code image as the override; an `auplc-base` image has no code-server, so the course
-would not start in VS Code.
+Both commands produce `my-code-course:local-gfx1151`. The base comes from the major
+version in `projects/course-base-major.txt` combined with `--gpu-target` /
+`-GpuTarget`, or from an optional `base-version.override.txt`, exactly as in
+[`../Template`](../Template/README.md#build-only-the-course-image).
+`--base-version` / `-BaseVersion` and `--base-image` / `-BaseImage` select another
+base for one build. Use a code image with `--base-image`; an `auplc-base` image has no
+code-server, so the course would not start in VS Code.
 
 Official images are published by AUP Learning Cloud, not by these scripts or by
 teaching-labs CI. Teaching-labs CI builds a course on `auplc-base` unless its
@@ -120,9 +120,10 @@ code image repository there. `"cpu": true` builds only the `cpu` target, on
 {"name": "MyCpuCourse", "image": "auplc-mycpucourse", "context": "projects/MyCpuCourse", "base_image": "ghcr.io/amdresearch/auplc-code-cpu", "cpu": true}
 ```
 
-CI combines that repository with `base-version.txt` as `<version>-<target>` for the
-default GPU target, or `<version>` for a `cpu` course, and resolves it without
-registry credentials, so the code image release must be publicly readable.
+CI combines that repository with the major version (or the course override) as
+`<version>-<target>` for the default GPU target, or `<version>` for a `cpu` course, and
+resolves it without registry credentials, so the code image must be publicly readable
+and published with that tag.
 
 ## Validate the course
 

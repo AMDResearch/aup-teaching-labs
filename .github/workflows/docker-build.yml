@@ -35,6 +35,18 @@ on:
         description: Build every GPU target instead of only the default one
         type: boolean
         default: false
+      course:
+        description: Build only this course name from build-config.json (empty builds all)
+        type: string
+        default: ''
+      base-image-ref:
+        description: Rerun on this full base reference or digest (from a past job summary) instead of projects/course-base-major.txt; set gpu-target to the target it was built for
+        type: string
+        default: ''
+      gpu-target:
+        description: Build only this GPU target (empty builds the default target, or all with all-gpu-targets)
+        type: string
+        default: ''
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -62,6 +74,9 @@ jobs:
           PR_BASE: ${{ github.event.pull_request.base.sha }}
           PR_HEAD: ${{ github.event.pull_request.head.sha }}
           ALL_GPU_TARGETS: ${{ inputs.all-gpu-targets }}
+          COURSE: ${{ inputs.course }}
+          BASE_IMAGE_REF: ${{ inputs.base-image-ref }}
+          GPU_TARGET: ${{ inputs.gpu-target }}
         run: |
           python3 - <<'PY'
           import json
@@ -81,6 +96,7 @@ jobs:
                   'git', 'diff', '--no-renames', '--name-only', '-z', base, head
               ]).decode().split('\0')
               shared = {
+                  'projects/course-base-major.txt',
                   '.github/build-config.json',
                   '.github/workflows/docker-build.yml',
                   '.github/workflows/build-course.yml',
@@ -91,11 +107,22 @@ jobs:
                       path.startswith(course['context'].rstrip('/') + '/')
                       for path in paths
                   )]
+          elif os.environ.get('COURSE'):
+              courses = [course for course in courses if course['name'] == os.environ['COURSE']]
+              if not courses:
+                  raise SystemExit(f"Unknown course: {os.environ['COURSE']}")
 
           # Course CI checks that the course builds; LC builds and publishes
           # every target. Build all targets only when asked on a manual run.
+          # A rerun on a fixed base reference covers one target, so the job
+          # name, tags and cache match the target the base was built for.
           targets = [t['name'] for t in config['gpu_targets']]
-          if os.environ.get('ALL_GPU_TARGETS') != 'true':
+          target = os.environ.get('GPU_TARGET')
+          if target:
+              if target not in targets:
+                  raise SystemExit(f'Unknown GPU target: {target}')
+              targets = [target]
+          elif os.environ.get('ALL_GPU_TARGETS') != 'true' or os.environ.get('BASE_IMAGE_REF'):
               targets = [config['default_gpu_target']]
 
           # A course with "cpu": true builds only the cpu target. Courses that
@@ -132,3 +159,4 @@ jobs:
       default-gpu-target: ${{ matrix.course.default_target }}
       push: false
       disk-cleanup: ${{ matrix.course.disk_cleanup == true }}
+      base-image-ref: ${{ inputs.base-image-ref || '' }}

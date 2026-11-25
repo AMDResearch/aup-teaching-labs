@@ -24,14 +24,16 @@ usage() {
     cat <<'HELP'
 Usage: bash build.sh [options]
 
-Build a VS Code (code-server) course image on the AUPLC code image release
-named in base-version.txt.
+Build a VS Code (code-server) course image on the AUPLC code image named in
+base-version.override.txt, or else the major version in
+projects/course-base-major.txt.
 
 Options:
   --image-name NAME   Local or registry-qualified image name (default: my-code-course)
   --version VERSION   Image version (default: local)
   --gpu-target TARGET cpu, gfx110x, gfx1150, gfx1151, gfx1152, gfx120x (default: gfx1151)
-  --base-image IMAGE  Override base-version.txt with a full base reference or digest
+  --base-version VER  Use a release (vX.Y.Z) instead of the files
+  --base-image IMAGE  Use a full base reference or digest instead of the files
   --push              Push only after a successful build
   -h, --help          Show this help
 HELP
@@ -40,12 +42,13 @@ HELP
 image_name='my-code-course'
 version='local'
 gpu_target='gfx1151'
+base_version=''
 base_image=''
 push=false
 
 while (($#)); do
     case "$1" in
-        --image-name|--version|--gpu-target|--base-image)
+        --image-name|--version|--gpu-target|--base-version|--base-image)
             if (($# < 2)) || [[ -z "$2" || "$2" == --* ]]; then
                 printf 'Missing value for %s\n' "$1" >&2
                 exit 2
@@ -54,6 +57,7 @@ while (($#)); do
                 --image-name) image_name=$2 ;;
                 --version) version=$2 ;;
                 --gpu-target) gpu_target=$2 ;;
+                --base-version) base_version=$2 ;;
                 --base-image) base_image=$2 ;;
             esac
             shift 2
@@ -72,10 +76,37 @@ esac
 # Absolute context allows invocation from any directory.
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 
+# Registry bases are pulled so a cached floating tag cannot hide a newer
+# release; --base-image may name a local image, so it is not pulled.
+pull=''
 if [[ -z "$base_image" ]]; then
-    base_version=$(sed -e 's/#.*//' -e 's/[[:space:]]//g' "$script_dir/base-version.txt" | grep -v '^$' || true)
-    if [[ ! "$base_version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
-        printf 'Set base-version.txt to one released Learning Cloud version (vX.Y.Z), or pass --base-image.\n' >&2
+    pull='--pull'
+    # The shared file takes a major only; an override or --base-version takes a
+    # release only, matching what Learning Cloud accepts when it publishes.
+    pattern='^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$'
+    expected='a release (vX.Y.Z)'
+    if [[ -z "$base_version" ]]; then
+        version_file="$script_dir/base-version.override.txt"
+        if [[ -f "$version_file" ]]; then
+            printf 'Using the pinned base in %s\n' "$version_file" >&2
+        else
+            # projects/course-base-major.txt sits above every course directory.
+            dir=$script_dir
+            while [[ "$dir" != / && ! -f "$dir/course-base-major.txt" ]]; do
+                dir=$(dirname -- "$dir")
+            done
+            version_file="$dir/course-base-major.txt"
+            if [[ ! -f "$version_file" ]]; then
+                printf 'course-base-major.txt not found above %s; pass --base-version or --base-image.\n' "$script_dir" >&2
+                exit 2
+            fi
+            pattern='^v[0-9]+$'
+            expected='a major version (vX)'
+        fi
+        base_version=$(sed -e 's/#.*//' -e 's/[[:space:]]//g' "$version_file" | grep -v '^$' || true)
+    fi
+    if [[ ! "$base_version" =~ $pattern ]]; then
+        printf 'Base version must be %s, got: %s\n' "$expected" "$base_version" >&2
         exit 2
     fi
     if [[ "$gpu_target" == cpu ]]; then
@@ -89,8 +120,8 @@ course_name=$(basename -- "$script_dir")
 image_ref="${image_name}:${version}-${gpu_target}"
 printf 'Base:   %s\nCourse: %s\nImage:  %s\n' "$base_image" "$course_name" "$image_ref"
 
-if ! docker build --build-arg "BASE_IMAGE=$base_image" --build-arg "COURSE_NAME=$course_name" \
-    -t "$image_ref" "$script_dir"; then
+if ! docker build ${pull:+"$pull"} --build-arg "BASE_IMAGE=$base_image" \
+    --build-arg "COURSE_NAME=$course_name" -t "$image_ref" "$script_dir"; then
     printf 'Course image build failed; push was not attempted.\n' >&2
     exit 1
 fi

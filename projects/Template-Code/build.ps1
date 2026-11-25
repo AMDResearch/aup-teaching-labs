@@ -23,25 +23,53 @@ param(
     [string]$Version = 'local',
     [ValidateSet('cpu', 'gfx110x', 'gfx1150', 'gfx1151', 'gfx1152', 'gfx120x')]
     [string]$GpuTarget = 'gfx1151',
-    # Overrides base-version.txt with a full base reference or digest.
+    # Release (vX.Y.Z) to use instead of the version files.
+    [string]$BaseVersion,
+    # Full base reference or digest to use instead of the version files.
     [string]$BaseImage,
     [switch]$Push
 )
 
 $ErrorActionPreference = 'Stop'
 
+# Registry bases are pulled so a cached floating tag cannot hide a newer
+# release; -BaseImage may name a local image, so it is not pulled.
+$pullArgs = @()
 if (-not $BaseImage) {
-    $versionFile = Join-Path $PSScriptRoot 'base-version.txt'
-    $values = @(Get-Content -LiteralPath $versionFile |
-        ForEach-Object { ($_ -replace '#.*', '').Trim() } |
-        Where-Object { $_ })
-    if ($values.Count -ne 1 -or $values[0] -cnotmatch '^v\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$') {
-        throw 'Set base-version.txt to one released Learning Cloud version (vX.Y.Z), or pass -BaseImage.'
+    $pullArgs = @('--pull')
+    # The shared file takes a major only; an override or -BaseVersion takes a
+    # release only, matching what Learning Cloud accepts when it publishes.
+    $pattern = '^v\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$'
+    $expected = 'a release (vX.Y.Z)'
+    if (-not $BaseVersion) {
+        $versionFile = Join-Path $PSScriptRoot 'base-version.override.txt'
+        if (Test-Path -LiteralPath $versionFile) {
+            Write-Warning "Using the pinned base in $versionFile"
+        } else {
+            # projects/course-base-major.txt sits above every course directory.
+            $dir = Split-Path -Parent $PSScriptRoot
+            while ($dir -and -not (Test-Path -LiteralPath (Join-Path $dir 'course-base-major.txt'))) {
+                $dir = Split-Path -Parent $dir
+            }
+            if (-not $dir) {
+                throw "course-base-major.txt not found above $PSScriptRoot; pass -BaseVersion or -BaseImage."
+            }
+            $versionFile = Join-Path $dir 'course-base-major.txt'
+            $pattern = '^v\d+$'
+            $expected = 'a major version (vX)'
+        }
+        $values = @(Get-Content -LiteralPath $versionFile |
+            ForEach-Object { ($_ -replace '#.*', '').Trim() } |
+            Where-Object { $_ })
+        $BaseVersion = if ($values.Count -eq 1) { $values[0] } else { '' }
+    }
+    if ($BaseVersion -cnotmatch $pattern) {
+        throw "Base version must be $expected, got: $BaseVersion"
     }
     if ($GpuTarget -eq 'cpu') {
-        $BaseImage = "ghcr.io/amdresearch/auplc-code-cpu:$($values[0])"
+        $BaseImage = "ghcr.io/amdresearch/auplc-code-cpu:$BaseVersion"
     } else {
-        $BaseImage = "ghcr.io/amdresearch/auplc-code-gpu:$($values[0])-$GpuTarget"
+        $BaseImage = "ghcr.io/amdresearch/auplc-code-gpu:$BaseVersion-$GpuTarget"
     }
 }
 
@@ -52,8 +80,8 @@ Write-Host "Course: $courseName"
 Write-Host "Image:  $imageRef"
 
 # Absolute context allows invocation from any directory.
-& docker build --build-arg "BASE_IMAGE=$BaseImage" --build-arg "COURSE_NAME=$courseName" `
-    -t $imageRef $PSScriptRoot
+& docker build @pullArgs --build-arg "BASE_IMAGE=$BaseImage" `
+    --build-arg "COURSE_NAME=$courseName" -t $imageRef $PSScriptRoot
 if ($LASTEXITCODE -ne 0) {
     throw 'Course image build failed; push was not attempted.'
 }

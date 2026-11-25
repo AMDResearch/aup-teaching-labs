@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Base release comes from base-version.txt; CI passes the resolved image.
+# CI passes the base resolved from projects/course-base-major.txt.
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 

@@ -35,8 +35,12 @@ on:
         default: ghcr.io/amdresearch
         type: string
       base-image:
-        description: Base image repository (auplc-base or auplc-default, or auplc-code-gpu / auplc-code-cpu for code-server courses); the release comes from <context>/base-version.txt
+        description: Base image repository (auplc-base or auplc-default, or auplc-code-gpu / auplc-code-cpu for code-server courses); the version comes from <context>/base-version.override.txt or projects/course-base-major.txt
         default: ghcr.io/amdresearch/auplc-base
+        type: string
+      base-image-ref:
+        description: Full base reference or digest that replaces base-image and the version files (reruns of a past build)
+        default: ''
         type: string
       gpu-targets:
         description: JSON array of GPU target names, or ["cpu"] for a CPU base
@@ -88,28 +92,55 @@ jobs:
       - name: Resolve base image
         id: base
         env:
-          VERSION_FILE: ${{ inputs.context }}/base-version.txt
+          COURSE_DIR: ${{ inputs.context }}
           BASE_REPO: ${{ inputs.base-image }}
+          BASE_REF_INPUT: ${{ inputs.base-image-ref }}
           GPU_TARGET: ${{ matrix.gpu_target }}
         run: |
-          version=$(sed -e 's/#.*//' -e 's/[[:space:]]//g' "$VERSION_FILE" | grep -v '^$' || true)
-          if [[ ! "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
-            echo "::error file=$VERSION_FILE::Set one released AUP Learning Cloud version (vX.Y.Z)"
-            exit 1
-          fi
-          # CPU bases (auplc-default, auplc-code-cpu) have no target suffix.
-          if [[ "$GPU_TARGET" == cpu ]]; then
-            ref="$BASE_REPO:$version"
+          if [[ -n "$BASE_REF_INPUT" ]]; then
+            ref=$BASE_REF_INPUT
+            source="base-image-ref input"
           else
-            ref="$BASE_REPO:$version-$GPU_TARGET"
+            # The floating major tag follows the newest final release in that
+            # major; a course may pin a release in base-version.override.txt.
+            # The shared file takes a major only; an override takes a release
+            # only, matching what Learning Cloud accepts when it publishes.
+            VERSION_FILE=projects/course-base-major.txt
+            pattern='^v[0-9]+$'
+            expected='major version (vX)'
+            if [[ -f "$COURSE_DIR/base-version.override.txt" ]]; then
+              VERSION_FILE="$COURSE_DIR/base-version.override.txt"
+              pattern='^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$'
+              expected='released version (vX.Y.Z)'
+              echo "::warning file=$VERSION_FILE::Course pins its base instead of following projects/course-base-major.txt"
+            fi
+            version=$(sed -e 's/#.*//' -e 's/[[:space:]]//g' "$VERSION_FILE" | grep -v '^$' || true)
+            if [[ ! "$version" =~ $pattern ]]; then
+              echo "::error file=$VERSION_FILE::Set one AUP Learning Cloud $expected"
+              exit 1
+            fi
+            # CPU bases (auplc-default, auplc-code-cpu) have no target suffix.
+            if [[ "$GPU_TARGET" == cpu ]]; then
+              ref="$BASE_REPO:$version"
+            else
+              ref="$BASE_REPO:$version-$GPU_TARGET"
+            fi
+            source=$VERSION_FILE
           fi
-          # Build on the digest so a re-pushed tag cannot change the base mid-run.
+          # Build on the digest so a moving or re-pushed tag cannot change the
+          # base mid-run; the summary and labels record it for reruns.
           if ! digest=$(docker buildx imagetools inspect "$ref" --format '{{json .Manifest}}' | jq -er .digest); then
-            echo "::error file=$VERSION_FILE::Base image $ref is not published or not publicly readable"
+            echo "::error::Base image $ref is not published or not publicly readable"
             exit 1
           fi
-          echo "image=$ref@$digest" >> "$GITHUB_OUTPUT"
-          echo "Base image: \`$ref@$digest\`" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "image=${ref%@*}@$digest"
+            echo "digest=$digest"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "Base image: \`$ref\` (from $source)"
+            echo "Base digest: \`${ref%@*}@$digest\` — rerun with base-image-ref set to this digest and gpu-target set to \`$GPU_TARGET\` to reproduce this build"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Resolve registry host
         id: registry
@@ -182,6 +213,7 @@ jobs:
           labels: |
             ${{ steps.meta-suffixed.outputs.labels }}
             org.opencontainers.image.base.name=${{ steps.base.outputs.image }}
+            org.opencontainers.image.base.digest=${{ steps.base.outputs.digest }}
           build-args: |
             BASE_IMAGE=${{ steps.base.outputs.image }}
           cache-from: type=gha,scope=course-${{ inputs.image-name }}-${{ matrix.gpu_target }}
