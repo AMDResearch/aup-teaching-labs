@@ -40,7 +40,11 @@ on:
         type: string
         default: ''
       base-image-ref:
-        description: Rerun on this full base reference or digest (from a past job summary) instead of projects/course-base-major.txt; builds only the default target
+        description: Rerun on this full base reference or digest (from a past job summary) instead of projects/course-base-major.txt; set gpu-target to the target it was built for
+        type: string
+        default: ''
+      gpu-target:
+        description: Build only this GPU target (empty builds the default target, or all with all-gpu-targets)
         type: string
         default: ''
 
@@ -72,6 +76,7 @@ jobs:
           ALL_GPU_TARGETS: ${{ inputs.all-gpu-targets }}
           COURSE: ${{ inputs.course }}
           BASE_IMAGE_REF: ${{ inputs.base-image-ref }}
+          GPU_TARGET: ${{ inputs.gpu-target }}
         run: |
           python3 - <<'PY'
           import json
@@ -109,9 +114,15 @@ jobs:
 
           # Course CI checks that the course builds; LC builds and publishes
           # every target. Build all targets only when asked on a manual run.
-          # A rerun on a fixed base reference covers only the default target.
+          # A rerun on a fixed base reference covers one target, so the job
+          # name, tags and cache match the target the base was built for.
           targets = [t['name'] for t in config['gpu_targets']]
-          if os.environ.get('ALL_GPU_TARGETS') != 'true' or os.environ.get('BASE_IMAGE_REF'):
+          target = os.environ.get('GPU_TARGET')
+          if target:
+              if target not in targets:
+                  raise SystemExit(f'Unknown GPU target: {target}')
+              targets = [target]
+          elif os.environ.get('ALL_GPU_TARGETS') != 'true' or os.environ.get('BASE_IMAGE_REF'):
               targets = [config['default_gpu_target']]
 
           # A course with "cpu": true builds only the cpu target. Courses that
